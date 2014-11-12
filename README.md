@@ -11,7 +11,7 @@ this field.
 
 	Architecture is realized on two big layers. We have the Client Side(Website) and Back-end Side (Java Web Service) API.
 
-	Your API will get information from services like DBpedia and FreeBase.
+Your API will get information from services like DBpedia and FreeBase.
 	
 Database - NoSql
 
