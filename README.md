@@ -15,15 +15,16 @@ and Back-end Side (Java Web Service) API.
 	Your API will get information from services like DBpedia and FreeBase.
 	
 Database - NoSql
+
 Caching mechanism - faster communication and minimum calls to another services.
 
 	Tools:
-	Jena 
-	Apache Marmotta 
+Jena,
+Apache Marmotta 
 
-	Web tools - JS, HTML, CSS
+Web tools - JS, HTML, CSS
 	
-	SPARQL tools - Virtuoso
+SPARQL tools - Virtuoso
 
 	API calls examples:
 	museums/country="Romania"
