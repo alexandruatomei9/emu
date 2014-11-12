@@ -24,7 +24,7 @@ Web tools - JS, HTML, CSS
 SPARQL tools - Virtuoso
 
 	API calls examples:
-museums/country="Romania"
-museums/city="Iasi"
-museums/city="London"&category="history"
+	museums/country="Romania"
+	museums/city="Iasi"
+	museums/city="London"&category="history"
 
