@@ -9,8 +9,7 @@ collections found in museums around the world. This application can be
 use by everybody who is interested about find useful informations from 
 this field.
 
-	Architecture is realized on two big layers. We have the Client Side(Website)
-and Back-end Side (Java Web Service) API.
+	Architecture is realized on two big layers. We have the Client Side(Website) and Back-end Side (Java Web Service) API.
 
 	Your API will get information from services like DBpedia and FreeBase.
 	
