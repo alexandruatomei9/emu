@@ -29,4 +29,7 @@ SPARQL tools - Virtuoso
 	museums/country="Romania"
 	museums/city="Iasi"
 	museums/city="London"&category="history"
+	
+
+The server application has been configured to generally respond with JSON objects(Java POJOs can be sent to the client - the JSON encryption is automatically done), but can respond with any other format type, depending on what it is requested.
 
