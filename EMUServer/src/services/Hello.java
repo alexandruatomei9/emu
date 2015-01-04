@@ -10,6 +10,8 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 
+import freebase.RdfSample;
+
 // Plain old Java Object it does not extend as class or implements 
 // an interface
 
@@ -40,9 +42,10 @@ public class Hello {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public String sayHtmlHello() {
-		// return "<html> " + "<title>" + "Hello Jersey" + "</title>"
-		// + "<body><h1>" + "Hello Jersey" + "</body></h1>" + "</html> ";
-		return testDBpedia();
+		RdfSample.testRDF();
+		 return "<html> " + "<title>" + "Hello Jersey" + "</title>"
+		 + "<body><h1>" + "Hello Jersey" + "</body></h1>" + "</html> ";
+		//return testDBpedia();
 	}
 
 	public String testDBpedia() {

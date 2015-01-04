@@ -37,6 +37,14 @@
 			<version>2.12.0</version>
 		</dependency>
 
+		<!-- APACHE MARMOTA -->
+
+		<dependency>
+			<groupId>org.apache.marmotta</groupId>
+			<artifactId>ldclient-provider-freebase</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+
 
 	</dependencies>
 
