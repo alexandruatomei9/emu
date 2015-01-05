@@ -10,7 +10,7 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 
-import freebase.RdfSample;
+import freebase.MQLClient;
 
 // Plain old Java Object it does not extend as class or implements 
 // an interface
@@ -42,10 +42,14 @@ public class Hello {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public String sayHtmlHello() {
-		RdfSample.testRDF();
-		 return "<html> " + "<title>" + "Hello Jersey" + "</title>"
-		 + "<body><h1>" + "Hello Jersey" + "</body></h1>" + "</html> ";
-		//return testDBpedia();
+		// RdfSample.testRDF();
+		String queryWithLimit = "[{\r\n  \"type\": \"/architecture/museum\",\r\n  \"name\": null,\r\n  \"mid\": null,\r\n  \"limit\": 5,\r\n  \"/common/topic/image\": [{\r\n    \"name\": null,\r\n    \"mid\": null\r\n  }]\r\n}]";
+		String query = "[{\r\n  \"type\": \"/architecture/museum\",\r\n  \"name\": null,\r\n  \"mid\": null,\r\n  \"/common/topic/image\": [{\r\n    \"name\": null,\r\n    \"mid\": null\r\n  }]\r\n}]";
+		MQLClient.retrieveResponseForQuery(queryWithLimit);
+
+		return "<html> " + "<title>" + "Hello Jersey" + "</title>"
+				+ "<body><h1>" + "Hello Jersey" + "</body></h1>" + "</html> ";
+		// return testDBpedia();
 	}
 
 	public String testDBpedia() {
@@ -81,7 +85,7 @@ public class Hello {
 		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
 		try {
 			ResultSet result = qe.execSelect();
-			while(result.hasNext()) {
+			while (result.hasNext()) {
 				QuerySolution solution = result.next();
 				System.out.println(solution.getResource("?Museum").toString());
 			}
