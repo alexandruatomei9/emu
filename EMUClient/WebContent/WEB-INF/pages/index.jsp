@@ -8,17 +8,6 @@
 <link href="<c:url value="/resources/layout/styles/layout.css" />" rel="stylesheet">
 </head>
 <body id="top">
-<div class="wrapper col1">
-  <div id="topbar">
-    <ul>
-      <li><a href="#">Libero</a></li>
-      <li><a href="#">Maecenas</a></li>
-      <li><a href="#">Mauris</a></li>
-      <li class="last"><a href="#">Suspendisse</a></li>
-    </ul>
-    <br class="clear" />
-  </div>
-</div>
 <div class="wrapper col2">
   <div id="header">
     <div id="topnav">
@@ -49,7 +38,7 @@
     	<c:forEach var="museumThumb" items="${museumThumbs}" varStatus="myIndex">
     		<c:choose>
       			<c:when test="${myIndex.index != museumThumbs.size()}">
-      				<li><img class="gal" src="${museumThumb.imageUrl}" alt="" /> <a href="#">${museumThumb.museumName} &raquo;</a></li>
+      				<li><img class="gal" src="${museumThumb.imageUrl}" alt="" /> <a href="${museumThumb.getDetailsUrl}">${museumThumb.museumName} &raquo;</a></li>
       			</c:when>
 
       			<c:otherwise>
@@ -64,28 +53,31 @@
 <div class="wrapper col4">
   <div id="container">
     <div id="content">
-      <h2>Detalii despre un anumit muzeu</h2>
-      <img class="imgl" src="<c:url value="/resources/images/demo/imgl.gif" />" alt="" width="125" height="125" />
-      <p><strong>Indonectetus facilis leo nibh</strong></p>
-      <p>This is a W3C standards compliant free website template from <a href="http://www.os-templates.com/">OS Templates</a>.</p>
-      <p>This template is distributed using a <a href="http://www.os-templates.com/template-terms">Website Template Licence</a>, which allows you to use and modify the template for both personal and commercial use when you keep the provided credit links in the footer.</p>
-      <p>For more CSS templates visit <a href="http://www.os-templates.com/">Free Website Templates</a>.</p>
-      <p>Lacusenim inte trices lorem anterdum nam sente vivamus quis fauctor mauris wisinon vivamus. Condimentumfelis et amet tellent quisquet a leo lacus nec augue accumsan. Sagittislaorem dolor ipsum at urna et pharetium malesuada nis consectus odio.</p>
+      <h2><a href="${museum.url}">${museum.name}</a></h2>
+      <img class="imgl" src="<c:url value="${museum.image}" />" alt="" width="125" height="125" />
+      <p class="justify">${museum.description}</p>
     </div>
     <div id="column">
-      <div class="holder">
-        <h2>Nullamlacus loborttis</h2>
+      <h2>Details</h2>
+      <div class="scrollbar">
         <ul id="latestnews">
-          <li><img class="imgl" src="<c:url value="/resources/images/demo/80x80.gif" />" alt="" />
-            <p><strong>Indonectetus facilis leo nibh.</strong></p>
-            <p>Nullamlacus dui ipsum cons eque loborttis non euis que morbi penas dapibulum orna.</p>
-            <p class="readmore"><a href="#">Continue Reading &raquo;</a></p>
-          </li>
-          <li class="last"><img class="imgl" src="<c:url value="/resources/images/demo/80x80.gif" />" alt="" />
-            <p><strong>Indonectetus facilis leo nibh.</strong></p>
-            <p>Nullamlacus dui ipsum cons eque loborttis non euis que morbi penas dapibulum orna.</p>
-            <p class="readmore"><a href="#">Continue Reading &raquo;</a></p>
-          </li>
+        <c:forEach var="detail" items="${museum.details}" varStatus="myIndex">
+    		<c:choose>
+      			<c:when test="${myIndex.index != museum.details.size()}">
+      				<li>
+      					<p><strong>${detail.name}</strong></p>
+            			<p>${detail.value}</p>
+      				</li>
+      			</c:when>
+
+      			<c:otherwise>
+      				<li class="last">
+      				<p><strong>${detail.name}</strong></p>
+            		<p>${detail.value}</p>
+      				</li>
+      			</c:otherwise>
+			</c:choose>
+    	</c:forEach>
         </ul>
       </div>
     </div>

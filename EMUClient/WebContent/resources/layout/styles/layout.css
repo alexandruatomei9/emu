@@ -111,7 +111,8 @@ div.wrapper h1, div.wrapper h2, div.wrapper h3, div.wrapper h4, div.wrapper h5, 
 .flickrbox ul{margin:0; padding:0; list-style:none;}
 .flickrbox li{display:block; float:left; width:80px; height:80px; margin:0 15px 15px 0; padding:4px; color:#666666; background-color:#FFFFFF; border:1px solid #CCCCCC;}
 .flickrbox li.last{margin-right:0;}
-#column .holder, #column #featured{display:block; width:300px; margin-bottom:20px;}
+#column .holder{display:block; width:300px; margin-bottom:20px;height: 300px;}
+#column #featured{display:block; width:300px; margin-bottom:20px;}
 #column .holder h2.title{display:block; width:100%; height:65px; margin:0; padding:15px 0 0 0; font-size:20px; line-height:normal; border-bottom:1px dashed #666666;}
 #column .holder h2.title img{float:left; margin:-15px 8px 0 0; padding:5px; border:1px solid #666666;}
 #column div.imgholder{display:block; width:290px; margin:0 0 10px 0; padding:4px; color:#666666; background-color:#FFFFFF; border:1px solid #CCCCCC;}
@@ -147,3 +148,32 @@ div.wrapper h1, div.wrapper h2, div.wrapper h3, div.wrapper h4, div.wrapper h5, 
 
 #copyright{padding:20px 0;}
 #copyright p{margin:0; padding:0;}
+
+/* ------ ScrollBar ------ */
+
+.scrollbar
+{
+	padding: 10px;
+	display: block;
+	float: left;
+	height: 300px;
+	width: 300px;
+	background: #F5F5F5;
+	overflow-y: scroll;
+	margin-bottom: 20px;
+}
+
+.scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    border-radius: 10px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+
