@@ -5,12 +5,18 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.json.simple.JSONArray;
+
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
+import com.jayway.jsonpath.JsonPath;
 
+import dbpedia.DBPediaQueryBuilder;
 import freebase.MQLClient;
+import freebase.RDFClient;
 
 // Plain old Java Object it does not extend as class or implements 
 // an interface
@@ -42,11 +48,30 @@ public class Hello {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public String sayHtmlHello() {
-		// RdfSample.testRDF();
-		String queryWithLimit = "[{\r\n  \"type\": \"/architecture/museum\",\r\n  \"name\": null,\r\n  \"mid\": null,\r\n  \"limit\": 5,\r\n  \"/common/topic/image\": [{\r\n    \"name\": null,\r\n    \"mid\": null\r\n  }]\r\n}]";
-		String query = "[{\r\n  \"type\": \"/architecture/museum\",\r\n  \"name\": null,\r\n  \"mid\": null,\r\n  \"/common/topic/image\": [{\r\n    \"name\": null,\r\n    \"mid\": null\r\n  }]\r\n}]";
-		MQLClient.retrieveResponseForQuery(queryWithLimit);
+		//String queryWithLimit = "[{\r\n  \"type\": \"/architecture/museum\",\r\n  \"name\": null,\r\n  \"mid\": null,\r\n  \"limit\": 5,\r\n  \"/common/topic/image\": [{\r\n    \"name\": null,\r\n    \"mid\": null\r\n  }]\r\n}]";
+		// String query =
+		// "[{\r\n  \"type\": \"/architecture/museum\",\r\n  \"name\": null,\r\n  \"mid\": null,\r\n  \"/common/topic/image\": [{\r\n    \"name\": null,\r\n    \"mid\": null\r\n  }]\r\n}]";
 
+//		JSONArray results = MQLClient.retrieveResponseForQuery(queryWithLimit);
+//		for (Object result : results) {
+//			String mid = JsonPath.read(result, "$.mid").toString().substring(1)
+//					.replace('/', '.');
+//			System.out.println(mid);
+//			RDFClient.retrieveRDFModelWithId(mid);
+//		}
+		Query query = DBPediaQueryBuilder.searchMuseumsQuery("Swe", 100);
+		String service = "http://dbpedia.org/sparql";
+		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
+		try {
+			ResultSet result = qe.execSelect();
+			while (result.hasNext()) {
+				QuerySolution solution = result.next();
+				System.out.println(solution.getResource("?museum").toString());
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(service + " has problems.");
+		}
 		return "<html> " + "<title>" + "Hello Jersey" + "</title>"
 				+ "<body><h1>" + "Hello Jersey" + "</body></h1>" + "</html> ";
 		// return testDBpedia();
