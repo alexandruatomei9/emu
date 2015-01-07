@@ -1,22 +1,21 @@
 package services;
 
+import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.json.simple.JSONArray;
+import models.responses.Museum;
+import models.responses.Museums;
 
-import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
-import com.jayway.jsonpath.JsonPath;
 
-import dbpedia.DBPediaQueryBuilder;
-import freebase.MQLClient;
-import freebase.RDFClient;
+import dbpedia.DBPediaClient;
 
 // Plain old Java Object it does not extend as class or implements 
 // an interface
@@ -37,44 +36,25 @@ public class Hello {
 		return "Hello Jersey";
 	}
 
-	// This method is called if XML is request
+	// This method is called if XML/JSON is requested
 	@GET
-	@Produces(MediaType.TEXT_XML)
-	public String sayXMLHello() {
-		return "<?xml version=\"1.0\"?>" + "<hello> Hello Jersey" + "</hello>";
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Museum getMuseums() {
+		List<Museum> list = DBPediaClient.retrieveMuseumsWithPrefix(
+				"Swe", 10);
+//		Museums m = new Museums();
+//		m.setMuseums(list);
+//		return m;
+		return list.get(0);
 	}
 
 	// This method is called if HTML is request
 	@GET
 	@Produces(MediaType.TEXT_HTML)
-	public String sayHtmlHello() {
-		//String queryWithLimit = "[{\r\n  \"type\": \"/architecture/museum\",\r\n  \"name\": null,\r\n  \"mid\": null,\r\n  \"limit\": 5,\r\n  \"/common/topic/image\": [{\r\n    \"name\": null,\r\n    \"mid\": null\r\n  }]\r\n}]";
-		// String query =
-		// "[{\r\n  \"type\": \"/architecture/museum\",\r\n  \"name\": null,\r\n  \"mid\": null,\r\n  \"/common/topic/image\": [{\r\n    \"name\": null,\r\n    \"mid\": null\r\n  }]\r\n}]";
-
-//		JSONArray results = MQLClient.retrieveResponseForQuery(queryWithLimit);
-//		for (Object result : results) {
-//			String mid = JsonPath.read(result, "$.mid").toString().substring(1)
-//					.replace('/', '.');
-//			System.out.println(mid);
-//			RDFClient.retrieveRDFModelWithId(mid);
-//		}
-		Query query = DBPediaQueryBuilder.searchMuseumsQuery("Swe", 100);
-		String service = "http://dbpedia.org/sparql";
-		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
-		try {
-			ResultSet result = qe.execSelect();
-			while (result.hasNext()) {
-				QuerySolution solution = result.next();
-				System.out.println(solution.getResource("?museum").toString());
-			}
-		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println(service + " has problems.");
-		}
-		return "<html> " + "<title>" + "Hello Jersey" + "</title>"
-				+ "<body><h1>" + "Hello Jersey" + "</body></h1>" + "</html> ";
-		// return testDBpedia();
+	public List<Museum> getMuseumsBrowser() {
+		List<Museum> list = DBPediaClient.retrieveMuseumsWithPrefix(
+				"Swe", 10);
+		return list;
 	}
 
 	public String testDBpedia() {

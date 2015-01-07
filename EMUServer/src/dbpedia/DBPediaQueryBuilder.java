@@ -18,7 +18,6 @@ public class DBPediaQueryBuilder {
 		qs.append("FILTER regex(?label, \"^" + prefix + "\", \"i\").\r\n");
 		qs.append("FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, <http://schema.org/Museum>)).");
 		qs.append("FILTER ( lang(?label) = 'en') } LIMIT " + number);
-
 		return qs.asQuery();
 	}
 
