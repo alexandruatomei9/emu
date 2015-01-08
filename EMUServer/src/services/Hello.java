@@ -8,7 +8,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import models.responses.Museum;
-import models.responses.Museums;
 
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -51,10 +50,12 @@ public class Hello {
 	// This method is called if HTML is request
 	@GET
 	@Produces(MediaType.TEXT_HTML)
-	public List<Museum> getMuseumsBrowser() {
-		List<Museum> list = DBPediaClient.retrieveMuseumsWithPrefix(
-				"Swe", 10);
-		return list;
+	public String getMuseumsBrowser() {
+//		List<Museum> list = DBPediaClient.retrieveMuseumsWithPrefix(
+//				"Swe", 10);
+//		return list;
+		DBPediaClient.retrieveNearbyMuseums(51.519459f, -0.126931f, 200);
+		return "Ceva";
 	}
 
 	public String testDBpedia() {

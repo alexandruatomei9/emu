@@ -3,6 +3,8 @@ package dbpedia;
 import java.util.ArrayList;
 import java.util.List;
 
+import utils.GeoLocationHelper;
+import models.responses.GeoMuseum;
 import models.responses.Museum;
 
 import com.hp.hpl.jena.query.Query;
@@ -28,8 +30,36 @@ public class DBPediaClient {
 					String resourceUri = solution.getResource("?museum")
 							.toString();
 					Literal lit = solution.getLiteral("?label");
-					String thumbnail = solution.getResource("?thumbnail").toString();
-					list.add(new Museum(lit.getValue().toString(),resourceUri,thumbnail));
+					String thumbnail = solution.getResource("?thumbnail")
+							.toString();
+					list.add(new Museum(lit.getValue().toString(), resourceUri,
+							thumbnail));
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(service + " has problems.");
+		}
+		return list;
+	}
+
+	public static List<GeoMuseum> retrieveNearbyMuseums(float currLatitude,
+			float currLongitude, Integer radius) {
+		Query query = DBPediaQueryBuilder.museumsWithCoordinatesQuery();
+		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
+		List<GeoMuseum> list = new ArrayList<GeoMuseum>();
+		try {
+			ResultSet result = qe.execSelect();
+			while (result.hasNext()) {
+				QuerySolution solution = result.next();
+				Literal litLat = solution.getLiteral("?maxlatitude");
+				Literal litLong = solution.getLiteral("?maxlongitude");
+				if (GeoLocationHelper.locationIsWithinRange(currLatitude,
+						currLongitude, litLat.getFloat(), litLong.getFloat(),
+						radius)) {
+					list.add(new GeoMuseum(litLat.getFloat(), litLong
+							.getFloat(), solution.getResource("?Museum")
+							.toString()));
 				}
 			}
 		} catch (Exception e) {
