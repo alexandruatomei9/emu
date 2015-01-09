@@ -46,4 +46,22 @@ public class DBPediaQueryBuilder {
 
 		return qs.asQuery();
 	}
+
+	public static Query museumsInCountryQuery(String country) {
+		ParameterizedSparqlString qs = new ParameterizedSparqlString();
+		qs.append("PREFIX  dbpedia-owl: <http://dbpedia.org/ontology/>\r\nPREFIX  "
+				+ "dbpedia: <http://dbpedia.org/resource/>\r\n\r\nSELECT DISTINCT "
+				+ " ?museum ?label ?thumbnail\r\nWHERE\r\n  "
+				+ "{ ?museum <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type .\r\n "
+				+ "   ?museum ?p ?label .\r\n  "
+				+ "  ?museum dbpedia-owl:thumbnail ?thumbnail\r\n   "
+				+ " FILTER ( ?p = <http://www.w3.org/2000/01/rdf-schema#label> )\r\n  "
+				+ "  FILTER ( ?type IN (dbpedia-owl:Museum, <http://schema.org/Museum>) )\r\n  "
+				+ "  ?museum dbpedia-owl:location dbpedia:"
+				+ country
+				+ "\r\n   "
+				+ " FILTER ( lang(?label) = \"en\" )\r\n  "
+				+ "}\r\n" + "LIMIT   100");
+		return qs.asQuery();
+	}
 }
