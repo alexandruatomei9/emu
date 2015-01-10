@@ -9,11 +9,6 @@ import javax.ws.rs.core.MediaType;
 
 import models.responses.Museum;
 
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
-
 import dbpedia.DBPediaClient;
 
 // Plain old Java Object it does not extend as class or implements 
@@ -37,7 +32,7 @@ public class Hello {
 
 	// This method is called if XML/JSON is requested
 	@GET
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	@Produces(MediaType.APPLICATION_JSON)
 	public Museum getMuseums() {
 		List<Museum> list = DBPediaClient.retrieveMuseumsWithPrefix("Swe", 10);
 		// Museums m = new Museums();

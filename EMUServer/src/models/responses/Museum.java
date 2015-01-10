@@ -1,16 +1,8 @@
 package models.responses;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
-@XmlRootElement(name = "museum")
-@XmlType(propOrder = { "name", "uri", "thumbUri" })
 public class Museum {
 	private String name;
-	@XmlElement(name = "dbpResourceUri")
 	private String uri;
-	@XmlElement(name = "dbpThumbnailUri")
 	private String thumbUri;
 
 	public Museum(String name, String uri, String thumbUri) {
