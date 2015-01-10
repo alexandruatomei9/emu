@@ -1,4 +1,4 @@
-package ro.emu.client;
+package ro.emu.client.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
