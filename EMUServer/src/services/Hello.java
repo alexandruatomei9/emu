@@ -8,7 +8,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import models.responses.Museum;
-
 import dbpedia.DBPediaClient;
 
 // Plain old Java Object it does not extend as class or implements 
@@ -34,11 +33,21 @@ public class Hello {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Museum getMuseums() {
-		List<Museum> list = DBPediaClient.retrieveMuseumsWithPrefix("Swe", 10);
+		List<Museum> list = null;
+		try {
+			list = DBPediaClient.retrieveMuseumsWithPrefix("Swe", 10);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// Museums m = new Museums();
 		// m.setMuseums(list);
 		// return m;
-		return list.get(0);
+		if(list != null && !list.isEmpty()){
+			return list.get(0);
+		}else{
+			return null;
+		}
 	}
 
 	// This method is called if HTML is request

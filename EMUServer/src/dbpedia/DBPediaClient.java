@@ -20,28 +20,24 @@ public class DBPediaClient {
 	private static String service = "http://dbpedia.org/sparql";
 
 	public static List<Museum> retrieveMuseumsWithPrefix(String prefix,
-			Integer limit) {
-		Query query = DBPediaQueryBuilder.searchMuseumsQuery(prefix, 100);
+			Integer limit) throws Exception{
+		Query query = DBPediaQueryBuilder.searchMuseumsQuery(prefix, limit);
 		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
 		List<Museum> list = new ArrayList<Museum>();
-		try {
-			ResultSet result = qe.execSelect();
-			while (result.hasNext()) {
-				QuerySolution solution = result.next();
-				if (solution != null) {
-					String resourceUri = solution.getResource("?museum")
-							.toString();
-					Literal lit = solution.getLiteral("?label");
-					String thumbnail = solution.getResource("?thumbnail")
-							.toString();
-					list.add(new Museum(lit.getValue().toString(), resourceUri,
-							thumbnail));
-				}
+
+		ResultSet result = qe.execSelect();
+		while (result.hasNext()) {
+			QuerySolution solution = result.next();
+			if (solution != null) {
+				String resourceUri = solution.getResource("?museum").toString();
+				Literal lit = solution.getLiteral("?label");
+				String thumbnail = solution.getResource("?thumbnail")
+						.toString();
+				list.add(new Museum(lit.getValue().toString(), resourceUri,
+						thumbnail));
 			}
-		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println(service + " has problems.");
 		}
+
 		return list;
 	}
 
@@ -85,7 +81,7 @@ public class DBPediaClient {
 		return model;
 
 	}
-	
+
 	public static List<Museum> retrieveMuseumsInCountry(String country) {
 		Query query = DBPediaQueryBuilder.museumsInCountryQuery(country);
 		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
