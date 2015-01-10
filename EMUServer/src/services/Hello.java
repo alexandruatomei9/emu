@@ -33,12 +33,12 @@ public class Hello {
 	// This method is called if XML/JSON is requested
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Museum getMuseums() {
-		List<Museum> list = DBPediaClient.retrieveMuseumsWithPrefix("Swe", 10);
+	public List<Museum> getMuseums() {
+		List<Museum> list = DBPediaClient.retrieveHomeMuseums(5);
 		// Museums m = new Museums();
 		// m.setMuseums(list);
 		// return m;
-		return list.get(0);
+		return list;
 	}
 
 	// This method is called if HTML is request

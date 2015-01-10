@@ -19,6 +19,31 @@ import com.hp.hpl.jena.util.FileManager;
 public class DBPediaClient {
 	private static String service = "http://dbpedia.org/sparql";
 
+	public static List<Museum> retrieveHomeMuseums(Integer limit) {
+		List<Museum> list = new ArrayList<Museum>();
+		Query query = DBPediaQueryBuilder.homepageMuseumsQuery(limit);
+		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
+		try {
+			ResultSet result = qe.execSelect();
+			while (result.hasNext()) {
+				QuerySolution solution = result.next();
+				if (solution != null) {
+					String resourceUri = solution.getResource("?museum")
+							.toString();
+					Literal lit = solution.getLiteral("?label");
+					String thumbnail = solution.getResource("?thumbnail")
+							.toString();
+					list.add(new Museum(lit.getValue().toString(), resourceUri,
+							thumbnail));
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(service + " has problems.");
+		}
+		return list;
+	}
+
 	public static List<Museum> retrieveMuseumsWithPrefix(String prefix,
 			Integer limit) {
 		Query query = DBPediaQueryBuilder.searchMuseumsQuery(prefix, 100);
@@ -85,7 +110,7 @@ public class DBPediaClient {
 		return model;
 
 	}
-	
+
 	public static List<Museum> retrieveMuseumsInCountry(String country) {
 		Query query = DBPediaQueryBuilder.museumsInCountryQuery(country);
 		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);

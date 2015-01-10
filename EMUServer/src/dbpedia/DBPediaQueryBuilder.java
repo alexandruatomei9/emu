@@ -5,6 +5,29 @@ import com.hp.hpl.jena.query.Query;
 
 public class DBPediaQueryBuilder {
 
+	public static Query homepageMuseumsQuery(Integer limit) {
+		ParameterizedSparqlString qs = new ParameterizedSparqlString();
+		qs.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+		qs.setNsPrefix("dbpedia-owl", "http://dbpedia.org/ontology/");
+		qs.setNsPrefix("dbpprop", "http://dbpedia.org/property/");
+		qs.setNsPrefix("xsd", "http://www.w3.org/2001/XMLSchema#");
+		qs.append("SELECT DISTINCT ?museum ?label ?thumbnail ");
+		qs.append("WHERE {");
+		qs.append("		?museum ?p ?label;");
+		qs.append("a ?type;");
+		qs.append("dbpprop:established ?date;");
+		qs.append("dbpedia-owl:thumbnail ?thumbnail.");
+		qs.append("FILTER ( datatype(?date) = xsd:integer ).");
+		qs.append("FILTER (?date > 1900 && ?date < 1920).");
+		qs.append("FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label>).");
+		qs.append("FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, <http://schema.org/Museum>)).");
+		qs.append("FILTER ( lang(?label) = 'en')");
+		qs.append("}");
+		qs.append("ORDER BY ASC(?date)");
+		qs.append("LIMIT " + limit);
+		return qs.asQuery();
+	}
+
 	public static Query searchMuseumsQuery(String prefix, Integer number) {
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
 		qs.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
