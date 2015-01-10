@@ -17,10 +17,9 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.jayway.jsonpath.JsonPath;
 
 public class MQLClient {
-	
+
 	/**
 	 * Retrieve an array with results from Freebase based on MQL query
 	 * 
@@ -55,9 +54,6 @@ public class MQLClient {
 			JSONObject response = (JSONObject) parser.parse(httpResponse
 					.parseAsString());
 			results = (JSONArray) response.get("result");
-			for (Object result : results) {
-				System.out.println(JsonPath.read(result, "$.name").toString());
-			}
 		} catch (IOException | ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

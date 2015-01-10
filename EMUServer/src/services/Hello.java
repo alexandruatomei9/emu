@@ -1,16 +1,20 @@
 package services;
 
+import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
+import models.responses.Museum;
 
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 
-import freebase.MQLClient;
+import dbpedia.DBPediaClient;
 
 // Plain old Java Object it does not extend as class or implements 
 // an interface
@@ -31,25 +35,27 @@ public class Hello {
 		return "Hello Jersey";
 	}
 
-	// This method is called if XML is request
+	// This method is called if XML/JSON is requested
 	@GET
-	@Produces(MediaType.TEXT_XML)
-	public String sayXMLHello() {
-		return "<?xml version=\"1.0\"?>" + "<hello> Hello Jersey" + "</hello>";
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+	public Museum getMuseums() {
+		List<Museum> list = DBPediaClient.retrieveMuseumsWithPrefix(
+				"Swe", 10);
+//		Museums m = new Museums();
+//		m.setMuseums(list);
+//		return m;
+		return list.get(0);
 	}
 
 	// This method is called if HTML is request
 	@GET
 	@Produces(MediaType.TEXT_HTML)
-	public String sayHtmlHello() {
-		// RdfSample.testRDF();
-		String queryWithLimit = "[{\r\n  \"type\": \"/architecture/museum\",\r\n  \"name\": null,\r\n  \"mid\": null,\r\n  \"limit\": 5,\r\n  \"/common/topic/image\": [{\r\n    \"name\": null,\r\n    \"mid\": null\r\n  }]\r\n}]";
-		String query = "[{\r\n  \"type\": \"/architecture/museum\",\r\n  \"name\": null,\r\n  \"mid\": null,\r\n  \"/common/topic/image\": [{\r\n    \"name\": null,\r\n    \"mid\": null\r\n  }]\r\n}]";
-		MQLClient.retrieveResponseForQuery(queryWithLimit);
-
-		return "<html> " + "<title>" + "Hello Jersey" + "</title>"
-				+ "<body><h1>" + "Hello Jersey" + "</body></h1>" + "</html> ";
-		// return testDBpedia();
+	public String getMuseumsBrowser() {
+//		List<Museum> list = DBPediaClient.retrieveMuseumsWithPrefix(
+//				"Swe", 10);
+//		return list;
+		DBPediaClient.retrieveNearbyMuseums(51.519459f, -0.126931f, 200);
+		return "Ceva";
 	}
 
 	public String testDBpedia() {
