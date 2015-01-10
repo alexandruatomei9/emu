@@ -92,17 +92,13 @@ public class DBPediaClient {
 		return list;
 	}
 
-	public static Model retrieveRDFModelForResource(String dbpediaResourceURL) {
+	public static Model retrieveRDFModelForResource(String dbpediaResourceURL) throws Exception{
 		FileManager fManager = FileManager.get();
 		fManager.addLocatorURL();
-
+		
 		Model model = null;
-		try {
-			model = fManager.loadModel(dbpediaResourceURL);
-			System.out.println(model);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		model = fManager.loadModel(dbpediaResourceURL);
+		
 		return model;
 
 	}
