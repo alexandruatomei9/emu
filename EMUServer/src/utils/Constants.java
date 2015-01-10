@@ -4,6 +4,7 @@ public class Constants {
 	// Endpoints
 	public static final String dbpediaEndpoint = "http://dbpedia.org/sparql";
 	public static final String freebaseEndpoint = "";
+	public static final String freebaseMQLEndpoint = "https://www.googleapis.com/freebase/v1/mqlread";
 
 	// Sparql prefixes
 	public static final String foafPrefix = "PREFIX foaf:<http://xmlns.com/foaf/0.1/>";

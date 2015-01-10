@@ -1,2 +1,9 @@
 /EMUClient/target/
+/EMUClient/log/
+/EMUClient/.classpath
+/EMUClient/.settings/
+
 /EMUServer/target/
+/EMUServer/log/
+/EMUServer/.classpath
+/EMUServer/.settings/

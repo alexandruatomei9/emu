@@ -37,6 +37,35 @@
 			<version>2.12.0</version>
 		</dependency>
 
+		<!-- APACHE MARMOTA -->
+
+		<dependency>
+			<groupId>org.apache.marmotta</groupId>
+			<artifactId>ldclient-provider-freebase</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+
+		<!-- GOOGLE API CLIENT -->
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client</artifactId>
+			<version>1.18.0-rc</version>
+		</dependency>
+
+		<!-- JSON SIMPLE -->
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+
+		<!-- JSON PATH -->
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path</artifactId>
+			<version>1.2.0</version>
+		</dependency>
+
 
 	</dependencies>
 
