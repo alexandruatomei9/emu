@@ -6,8 +6,8 @@ import javax.ws.rs.Path;
 
 import models.responses.Response;
 
-@Path("/home")
-public class HomeController {
+@Path("/museums")
+public class MuseumsController {
 
 	@POST
 	@Path("/getMuseumsWithLimit")
