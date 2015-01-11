@@ -12,7 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import ro.emu.client.models.Detail;
 import ro.emu.client.models.Museum;
 import ro.emu.client.models.MuseumThumbnail;
-import utils.Request;
+import ro.emu.client.utils.Request;
 
 @Controller
 @RequestMapping("/home")

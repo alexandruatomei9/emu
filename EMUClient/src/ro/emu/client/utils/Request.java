@@ -1,4 +1,4 @@
-package utils;
+package ro.emu.client.utils;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
