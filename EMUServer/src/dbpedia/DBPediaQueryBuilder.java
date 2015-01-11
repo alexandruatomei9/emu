@@ -5,6 +5,14 @@ import com.hp.hpl.jena.query.Query;
 
 public class DBPediaQueryBuilder {
 
+	/**
+	 * This method creates a sparql query for selecting a list of museums
+	 * established between 1900-1920 ordered ascending by date.
+	 * 
+	 * @param limit
+	 *            - maximum number of museums
+	 * @return a query
+	 */
 	public static Query homepageMuseumsQuery(Integer limit) {
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
 		qs.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
@@ -28,6 +36,15 @@ public class DBPediaQueryBuilder {
 		return qs.asQuery();
 	}
 
+	/**
+	 * This method creates a query for selecting the museum in which their name
+	 * starts with a given string
+	 * 
+	 * @param prefix
+	 * @param number
+	 *            ` maximum number of museums
+	 * @return a query
+	 */
 	public static Query searchMuseumsQuery(String prefix, Integer number) {
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
 		qs.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
@@ -70,6 +87,11 @@ public class DBPediaQueryBuilder {
 		return qs.asQuery();
 	}
 
+	/**
+	 * 
+	 * @param country
+	 * @return
+	 */
 	public static Query museumsInCountryQuery(String country) {
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
 		qs.append("PREFIX  dbpedia-owl: <http://dbpedia.org/ontology/>\r\nPREFIX  "
@@ -85,6 +107,55 @@ public class DBPediaQueryBuilder {
 				+ "\r\n   "
 				+ " FILTER ( lang(?label) = \"en\" )\r\n  "
 				+ "}\r\n" + "LIMIT   100");
+		return qs.asQuery();
+	}
+
+	/**
+	 * This method creates a query for selecting the works(pictures, sculptures,
+	 * etc) from museum. The <b>dbPediaMuseumName</b> should be the name which
+	 * identifies the resource on the dbpedia's webpages. EX:
+	 * http://dbpedia.org/page/<b>Indian_River_Citrus_Museum</b>
+	 * 
+	 * @param dbPediaMuseumName
+	 * @param limit
+	 *            - maximum number of museums
+	 * @return
+	 */
+	public static Query worksFromAMuseumQuery(String dbPediaMuseumName,
+			Integer limit) {
+		ParameterizedSparqlString qs = new ParameterizedSparqlString();
+		qs.setNsPrefix("dbpedia-owl", "http://dbpedia.org/ontology/");
+		qs.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+		qs.setNsPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+		qs.setNsPrefix("dbpedia", "http://dbpedia.org/resource/");
+		qs.append("SELECT DISTINCT ?work ?label ");
+		qs.append("WHERE {");
+		qs.append("?work  rdf:type dbpedia-owl:Work;");
+		qs.append("dbpedia-owl:museum dbpedia:" + dbPediaMuseumName + ";");
+		qs.append("rdfs:label ?label.");
+		qs.append(" FILTER(lang(?label) = 'en').");
+		qs.append("}");
+		qs.append("LIMIT " + limit);
+		return qs.asQuery();
+	}
+
+	public static Query museumsWithAType(String type, Integer limit) {
+		ParameterizedSparqlString qs = new ParameterizedSparqlString();
+		qs.setNsPrefix("dbpedia-owl", "http://dbpedia.org/ontology/");
+		qs.setNsPrefix("dbpprop", "http://dbpedia.org/property/");
+		qs.append("SELECT DISTINCT ?museum ?label ?thumbnail ?category ");
+		qs.append("WHERE {");
+		qs.append("?museum ?p ?label;");
+		qs.append("a ?type;");
+		qs.append("dbpedia-owl:thumbnail ?thumbnail;");
+		qs.append("dbpprop:type ?category.");
+		qs.append(" FILTER (contains(str(?category), \"" + type + "\"))");
+		qs.append("FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label>).");
+		qs.append("FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, ");
+		qs.append(" <http://schema.org/Museum>)).");
+		qs.append("FILTER ( lang(?label) = 'en')");
+		qs.append("}");
+		qs.append("LIMIT " + limit);
 		return qs.asQuery();
 	}
 }

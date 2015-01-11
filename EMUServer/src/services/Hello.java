@@ -7,7 +7,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import models.responses.Museum;
+import models.responses.CategoryMuseum;
+import models.responses.Work;
 import dbpedia.DBPediaClient;
 
 // Plain old Java Object it does not extend as class or implements 
@@ -32,10 +33,10 @@ public class Hello {
 	// This method is called if XML/JSON is requested
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Museum getMuseums() {
-		List<Museum> list = null;
+	public List<Work> getMuseums() {
+		List<Work> list = null;
 		try {
-			list = DBPediaClient.retrieveMuseumsWithPrefix("Swe", 10);
+			list = DBPediaClient.retrieveWorksForMuseum("The_Louvre", 100);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -43,11 +44,7 @@ public class Hello {
 		// Museums m = new Museums();
 		// m.setMuseums(list);
 		// return m;
-		if(list != null && !list.isEmpty()){
-			return list.get(0);
-		}else{
-			return null;
-		}
+		return list;
 	}
 
 	// This method is called if HTML is request
@@ -60,9 +57,9 @@ public class Hello {
 		// DBPediaClient.retrieveNearbyMuseums(51.519459f, -0.126931f, 200);
 		// DBPediaClient
 		// .retrieveRDFModelForResource("http://dbpedia.org/data/Ireland.rdf");
-		List<Museum> museums = DBPediaClient
-				.retrieveMuseumsInCountry("Romania");
-		System.out.println(museums);
+		// List<Museum> museums = DBPediaClient
+		// .retrieveMuseumsInCountry("Romania");
+		// System.out.println(museums);
 		return "Ceva";
 	}
 

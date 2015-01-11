@@ -1,14 +1,12 @@
 package models.responses;
 
-public class Museum {
+public class Work {
 	protected String name;
 	protected String uri;
-	protected String thumbUri;
 
-	public Museum(String name, String uri, String thumbUri) {
+	public Work(String name, String uri) {
 		this.name = name;
 		this.uri = uri;
-		this.thumbUri = thumbUri;
 	}
 
 	public String getName() {
@@ -25,13 +23,5 @@ public class Museum {
 
 	public void setUri(String uri) {
 		this.uri = uri;
-	}
-
-	public String getThumbUri() {
-		return thumbUri;
-	}
-
-	public void setThumbUri(String thumbUri) {
-		this.thumbUri = thumbUri;
 	}
 }
