@@ -7,7 +7,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import models.responses.CategoryMuseum;
+import utils.Constants;
+
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.SimpleSelector;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
+
 import models.responses.Work;
 import dbpedia.DBPediaClient;
 
@@ -36,7 +44,10 @@ public class Hello {
 	public List<Work> getMuseums() {
 		List<Work> list = null;
 		try {
-			list = DBPediaClient.retrieveWorksForMuseum("The_Louvre", 100);
+			// list = DBPediaClient.retrieveWorksForMuseum("The_Louvre", 100);
+			Model model = DBPediaClient
+					.retrieveRDFModelForResource("http://dbpedia.org/data/The_Louvre.rdf");
+			TestModel(model);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -61,6 +72,20 @@ public class Hello {
 		// .retrieveMuseumsInCountry("Romania");
 		// System.out.println(museums);
 		return "Ceva";
+	}
+
+	public void TestModel(Model model) {
+		Property geoProperty = model.createProperty(
+				Constants.dbpprop, "latitude");
+		StmtIterator iter = model.listStatements(new SimpleSelector(null,
+				geoProperty, (RDFNode) null));
+		while (iter.hasNext()) {
+			Statement stmt = iter.nextStatement();
+			System.out.print(stmt.getSubject().toString() + " ");
+			System.out.print(stmt.getPredicate().toString() + " ");
+			System.out.println(stmt.getObject().toString());
+
+		}
 	}
 
 }

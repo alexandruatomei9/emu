@@ -1,5 +1,8 @@
 package utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class Constants {
 	// Endpoints
 	public static final String dbpediaEndpoint = "http://dbpedia.org/sparql";
@@ -11,8 +14,20 @@ public class Constants {
 	public static final String geoPrefix = "PREFIX geo:<http://www.w3.org/2003/01/geo/wgs84_pos#>";
 	public static final String dbppropPrefix = "PREFIX dbpprop:<http://dbpedia.org/property/>";
 	public static final String dbpediaOwlPrefix = "PREFIX dbpedia-owl:<http://dbpedia.org/ontology/>";
-	
-	//XML tags & Dictionary keys
+
+	// RDF Namespace
+	public static final String rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+	public static final String rdfs = "http://www.w3.org/2000/01/rdf-schema#";
+	public static final String owl = "http://www.w3.org/2002/07/owl#";
+	public static final String dcterms = "http://purl.org/dc/terms/";
+	public static final String grs = "http://www.georss.org/georss/";
+	public static final String geo = "http://www.w3.org/2003/01/geo/wgs84_pos#";
+	public static final String dbpedia_owl = "http://dbpedia.org/ontology/";
+	public static final String dbpprop = "http://dbpedia.org/property/";
+	public static final String foaf = "http://xmlns.com/foaf/0.1/";
+	public static final String prov = "http://www.w3.org/ns/prov#";
+
+	// XML tags & Dictionary keys
 	public static final String dbpMuseumKey = "museum";
 	public static final String dbpThumbnailKey = "thumbnail";
 	public static final String dbpLabelKey = "label";
@@ -22,4 +37,13 @@ public class Constants {
 	public static final String dbpGeoLatKey = "lat";
 	public static final String dbpGeoLongKey = "long";
 	public static final String dbpGeoCreatorKey = "creator";
+
+	public static final ArrayList<String> artDerivates = (ArrayList<String>) Arrays
+			.asList("art", "arts", "artistic");
+	public static final ArrayList<String> historyDerivates = (ArrayList<String>) Arrays
+			.asList("history", "historic", "historical");
+	public static final ArrayList<String> scienceDerivates = (ArrayList<String>) Arrays
+			.asList("science", "scientific");
+	public static final ArrayList<String> automobileDerivates = (ArrayList<String>) Arrays
+			.asList("auto", "automobile");
 }
