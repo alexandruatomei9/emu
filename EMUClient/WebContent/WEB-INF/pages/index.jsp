@@ -21,7 +21,7 @@
           </ul>
         </li>
         <li><a href="full-width.jsp">Full Width</a><span>Test Text Here</span></li>
-        <li><a href="style-demo.jsp">Style Demo</a><span>Test Text Here</span></li>
+        <li><a href="quiz">Quiz</a><span>Test Text Here</span></li>
         <li class="active"><a href="index.jsp">Homepage</a><span>Test Text Here</span></li>
       </ul>
     </div>
