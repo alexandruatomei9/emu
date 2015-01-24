@@ -1,12 +1,10 @@
 package ro.emu.client.dbpedia;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
-import ro.emu.client.models.MuseumDictionary;
 import ro.emu.client.utils.Constants;
 
+import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -16,31 +14,6 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 public class DBPediaExtractor {
 
-	public static MuseumDictionary generateDictionaryFromModel(Model model) {
-		MuseumDictionary dictionary = new MuseumDictionary();
-		Map<String, String> prefixes = model.getNsPrefixMap();
-		Map<String, Statement> triplesMap = new HashMap<String, Statement>();
-		final ArrayList<Property> aboutProperties = filteringPropertiesForModel(model);
-		SimpleSelector aboutSelector = new SimpleSelector(null, null,
-				(RDFNode) null) {
-			public boolean selects(Statement s) {
-				return aboutProperties.contains(s.getPredicate());
-			}
-		};
-		StmtIterator iter = model.listStatements(aboutSelector);
-		while (iter.hasNext()) {
-			Statement stmt = iter.next();
-			if (stmt != null)
-				if (stmt.getPredicate() != null) {
-					System.out.println(stmt.getPredicate().toString());
-					triplesMap.put(stmt.getPredicate().toString(), stmt);
-				}
-		}
-		dictionary.setNsPrefixes(prefixes);
-		dictionary.setTriples(triplesMap);
-		return dictionary;
-	}
-
 	private static ArrayList<Property> filteringPropertiesForModel(Model model) {
 		ArrayList<Property> properties = new ArrayList<Property>();
 		// Name
@@ -48,6 +21,7 @@ public class DBPediaExtractor {
 				Constants.dbpNameKey));
 		properties.add(model.createProperty(Constants.rdfs,
 				Constants.dbpLabelKey));
+
 		// Abstract
 		properties.add(model.createProperty(Constants.dbpedia_owl,
 				Constants.dbpAbstractKey));
@@ -84,7 +58,6 @@ public class DBPediaExtractor {
 		// Curator
 		properties.add(model.createProperty(Constants.dbpprop,
 				Constants.dbpCuratorKey));
-
 		// Award of
 		properties.add(model.createProperty(Constants.dbpedia_owl,
 				Constants.dbpAwardOfKey));
@@ -103,4 +76,32 @@ public class DBPediaExtractor {
 
 		return properties;
 	}
+
+	public static Statement statementWithProperties(Model model,
+			final Property property, final String lang) {
+		SimpleSelector selector = new SimpleSelector(null, null, (RDFNode) null) {
+			public boolean selects(Statement s) {
+				RDFNode node = s.getObject();
+				if (node.isLiteral()) {
+					Literal lit = (Literal) node;
+					if (lit.getLanguage().length() > 0
+							&& !lit.getLanguage().equalsIgnoreCase(lang)) {
+						return false;
+					}
+				}
+				return s.getPredicate().equals(property);
+			}
+		};
+		StmtIterator iter = model.listStatements(selector);
+		if (iter.hasNext()) {
+			return iter.next();
+		}
+		return null;
+	}
+
+	public static Statement statementWithProperties(Model model,
+			Property property) {
+		return statementWithProperties(model, property, "en");
+	}
+
 }
