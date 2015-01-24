@@ -1,6 +1,7 @@
 package ro.emu.client.dbpedia;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ro.emu.client.utils.Constants;
 
@@ -77,7 +78,7 @@ public class DBPediaExtractor {
 		return properties;
 	}
 
-	public static Statement statementWithProperties(Model model,
+	private static StmtIterator propertyIterator(Model model,
 			final Property property, final String lang) {
 		SimpleSelector selector = new SimpleSelector(null, null, (RDFNode) null) {
 			public boolean selects(Statement s) {
@@ -93,6 +94,12 @@ public class DBPediaExtractor {
 			}
 		};
 		StmtIterator iter = model.listStatements(selector);
+		return iter;
+	}
+
+	public static Statement statementWithProperties(Model model,
+			final Property property, final String lang) {
+		StmtIterator iter = propertyIterator(model, property, lang);
 		if (iter.hasNext()) {
 			return iter.next();
 		}
@@ -102,6 +109,20 @@ public class DBPediaExtractor {
 	public static Statement statementWithProperties(Model model,
 			Property property) {
 		return statementWithProperties(model, property, "en");
+	}
+
+	public static List<Statement> statementsWithProperties(Model model,
+			final Property property, final String lang) {
+		StmtIterator iter = propertyIterator(model, property, lang);
+		if (iter != null) {
+			return iter.toList();
+		}
+		return null;
+	}
+
+	public static List<Statement> statementsWithProperties(Model model,
+			Property property) {
+		return statementsWithProperties(model, property, "en");
 	}
 
 }
