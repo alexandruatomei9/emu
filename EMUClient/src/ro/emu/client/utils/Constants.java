@@ -33,6 +33,8 @@ public class Constants {
 	public static final String dbpNameKey = "name";
 	public static final String dbpGeoLatKey = "lat";
 	public static final String dbpGeoLongKey = "long";
+	public static final String dbpPropLatitudeKey = "latitude";
+	public static final String dbpPropLongitudeLey = "longitude";
 	public static final String dbpGeoCreatorKey = "creator";
 	public static final String dbpWebsiteKey = "website";
 	public static final String dbpEstablishedKey = "established";
