@@ -12,8 +12,6 @@ public class GeoLocationHelper {
 	public static boolean locationIsWithinRange(float currLocLatitude,
 			float currLocLongitude, float otherLocLatitude,
 			float otherLocLongitude, int radius) {
-		System.out.println(currLocLatitude + " " + currLocLongitude + " "
-				+ otherLocLatitude + " " + otherLocLongitude);
 		double currentLocationLatitude = Math.toRadians(currLocLatitude);
 		double currentLocationLongitude = Math.toRadians(currLocLongitude);
 

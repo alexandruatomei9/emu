@@ -19,7 +19,7 @@ import ro.emu.client.utils.Request;
 public class HomeController {
 
 	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView printWelcome() {
+	public ModelAndView homeMuseums() {
 		ModelAndView modelAndView = new ModelAndView("index");
 		
 		String resp = null;

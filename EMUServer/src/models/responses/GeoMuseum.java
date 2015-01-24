@@ -3,30 +3,37 @@ package models.responses;
 public class GeoMuseum {
 	private float latitude;
 	private float longitude;
-	private String resourceUri;
+	private String name;
 	
-	public GeoMuseum(float latitude, float longitude, String resourceUri) {
+	public GeoMuseum(float latitude, float longitude, String name) {
 		this.latitude = latitude;
-		this.longitude = longitude;
-		this.resourceUri = resourceUri;
+		this.longitude=longitude;
+		this.name= name;
 	}
-	
+
 	public float getLatitude() {
 		return latitude;
 	}
+
 	public void setLatitude(float latitude) {
 		this.latitude = latitude;
 	}
+
 	public float getLongitude() {
 		return longitude;
 	}
+
 	public void setLongitude(float longitude) {
 		this.longitude = longitude;
 	}
-	public String getResourceUri() {
-		return resourceUri;
+
+	public String getName() {
+		return name;
 	}
-	public void setResourceUri(String resourceUri) {
-		this.resourceUri = resourceUri;
+
+	public void setName(String name) {
+		this.name = name;
 	}
+	
+	
 }

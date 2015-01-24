@@ -1,25 +1,45 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Prestigious</title>
+<title>EMU</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="keywords" content="content slider, responsive image gallery, responsive image gallery, image slider, image fade, image rotator">
 <link href="<c:url value="/resources/layout/styles/layout.css" />" rel="stylesheet">
+<script src="<c:url value="/resources/js/jquery.min.js" />"></script>
+<script type="application/javascript">
+function myIP() {
+    if (window.XMLHttpRequest) xmlhttp = new XMLHttpRequest();
+    else xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+
+    xmlhttp.open("GET","http://api.hostip.info/get_html.php",false);
+    xmlhttp.send();
+
+    hostipInfo = xmlhttp.responseText.split("\n");
+    for (i=0; hostipInfo.length >= i; i++) {
+        ipAddress = hostipInfo[i].split(":");
+        if ( ipAddress[0] == "IP" ) return ipAddress[1];
+    }
+
+    return false;
+}
+</script>
+<script type="text/javascript">
+function getMap() {
+	var theIp= myIP();
+
+    if (name != undefined || name != null) {
+        window.location = 'map?ip=' + theIp;
+    }
+}
+</script>
 </head>
 <body id="top">
 <div class="wrapper col2">
   <div id="header">
     <div id="topnav">
       <ul>
-        <li class="last"><a href="#">Link text</a><span>Test Text Here</span></li>
-        <li><a href="#">DropDown</a><span>Test Text Here</span>
-          <ul>
-            <li><a href="#">Link 1</a></li>
-            <li><a href="#">Link 2</a></li>
-            <li><a href="#">Link 3</a></li>
-          </ul>
-        </li>
+        <li class="last"><a href="#" onclick="javascript:getMap()">Map</a><span>Test Text Here</span></li>
         <li><a href="full-width.jsp">Full Width</a><span>Test Text Here</span></li>
         <li><a href="style-demo.jsp">Style Demo</a><span>Test Text Here</span></li>
         <li class="active"><a href="index.jsp">Homepage</a><span>Test Text Here</span></li>
@@ -86,7 +106,7 @@
 </div>
 <div class="wrapper col5">
   <div id="footer">
-    <div id="newsletter">
+   	 <div id="newsletter">
       <h2>Stay In The Know !</h2>
       <p>Please enter your email to join our mailing list</p>
       <form action="#" method="post">
