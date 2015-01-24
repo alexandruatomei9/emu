@@ -53,8 +53,14 @@
 			<version>20140107</version>
 		</dependency>
 
-
-
+		<!-- Apache JENA -->
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>apache-jena-libs</artifactId>
+			<type>pom</type>
+			<version>2.12.0</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

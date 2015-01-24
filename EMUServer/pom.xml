@@ -29,13 +29,6 @@
 			<version>2.14</version>
 		</dependency>
 
-
-		<!-- <dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-json</artifactId>
-			<version>1.9</version>
-		</dependency> -->
-
 		<!-- APACHE JENA -->
 		<dependency>
 			<groupId>org.apache.jena</groupId>

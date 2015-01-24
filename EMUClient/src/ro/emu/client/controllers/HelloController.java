@@ -1,33 +1,35 @@
 package ro.emu.client.controllers;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import ro.emu.client.utils.Request;
+import ro.emu.client.dbpedia.DBPediaClient;
+import ro.emu.client.dbpedia.DBPediaExtractor;
+import ro.emu.client.models.MuseumDictionary;
+
+import com.hp.hpl.jena.rdf.model.Model;
 
 @Controller
 @RequestMapping("/welcome")
 public class HelloController {
-
-	@RequestMapping(method = RequestMethod.GET)
-	public String printWelcome(ModelMap model) {
-		String resp = "blabla";
+	@RequestMapping("/rdf")
+	public void getRdfForMuseum(
+			@RequestParam("dbpediaURI") String dbpediaResourceURL) {
+		Model model = null;
 		try {
-			Map<String, String> params = new HashMap<String,String>();
-			params.put("resourceUri", "http://dbpedia.org/resource/Whitechapel_Gallery");
-			resp = Request.sendGet("/museums/getRdfForMuseum", null);
+			model = DBPediaClient
+					.retrieveRDFModelForResource(dbpediaResourceURL);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		model.addAttribute("message", resp);
-		return "hello";
+		if (model != null) {
+			MuseumDictionary museumInfos = DBPediaExtractor
+					.generateDictionaryFromModel(model);
+			System.out.println(museumInfos);
+		}
+		System.out.println(model);
+		System.out.println(model.getGraph());
 
 	}
 }
