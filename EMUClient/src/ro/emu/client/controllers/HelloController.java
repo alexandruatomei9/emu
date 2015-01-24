@@ -5,8 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ro.emu.client.dbpedia.DBPediaClient;
-import ro.emu.client.dbpedia.DBPediaExtractor;
-import ro.emu.client.models.MuseumDictionary;
+import ro.emu.client.models.MuseumRDF;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
@@ -24,9 +23,9 @@ public class HelloController {
 			e.printStackTrace();
 		}
 		if (model != null) {
-			MuseumDictionary museumInfos = DBPediaExtractor
-					.generateDictionaryFromModel(model);
-			System.out.println(museumInfos);
+			MuseumRDF museumInfos = new MuseumRDF(model);
+			System.out.println(museumInfos.abstractValue());
+			System.out.println(museumInfos.name());
 		}
 		System.out.println(model);
 		System.out.println(model.getGraph());
