@@ -6,7 +6,9 @@
 <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="keywords" content="content slider, responsive image gallery, responsive image gallery, image slider, image fade, image rotator">
 <link href="<c:url value="/resources/layout/styles/layout.css" />" rel="stylesheet">
+<link href="<c:url value="/resources/layout/styles/jquery-ui.css" />" rel="stylesheet">
 <script src="<c:url value="/resources/js/jquery.min.js" />"></script>
+<script src="<c:url value="/resources/js/jquery-ui.min.js" />"></script>
 <script type="application/javascript">
 function myIP() {
     if (window.XMLHttpRequest) xmlhttp = new XMLHttpRequest();
@@ -32,6 +34,37 @@ function getMap() {
         window.location = 'map?ip=' + theIp;
     }
 }
+</script>
+<script>
+  $(function() {
+    function log( message ) {
+      $( "<div>" ).text( message ).prependTo( "#log" );
+      $( "#log" ).scrollTop( 0 );
+    }
+
+    $( "#museum" ).autocomplete({
+      source: function (request, response) {
+          jQuery.get("search", {
+              q: request.term
+          }, function (data) {
+        	  var array = data.split(',');
+              response(array);
+          });
+      },
+      minLength: 3,
+      select: function( event, ui ) {
+        log( ui.item ?
+          "Selected: " + ui.item.label :
+          "Nothing selected, input was " + this.value);
+      },
+      open: function() {
+        $( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+      },
+      close: function() {
+        $( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+      }
+    });
+  });
 </script>
 </head>
 <body id="top">
@@ -68,6 +101,12 @@ function getMap() {
     	</c:forEach>
     	</ul>
       <br class="clear" />
+      <center>
+      <div class="ui-widget" style="margin-top: 5px;">
+  		<label for="museum">Search a Museum: </label>
+  		<input id="museum" style="witdth: 50%">
+	  </div>
+	  </center>
   	</div>
 </div>
 <div class="wrapper col4">
