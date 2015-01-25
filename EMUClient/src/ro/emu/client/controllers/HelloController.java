@@ -24,6 +24,7 @@ public class HelloController {
 		}
 		if (model != null) {
 			MuseumRDF museumInfos = new MuseumRDF(model);
+			System.out.println(museumInfos.getNsPrefixes());
 			System.out.println(museumInfos.abstractValue());
 			System.out.println(museumInfos.name());
 			System.out.println(museumInfos.latitude());
@@ -33,6 +34,7 @@ public class HelloController {
 			System.out.println(museumInfos.works());
 			System.out.println(museumInfos.subjectsIncludingMuseum());
 			System.out.println(museumInfos.locations());
+			System.out.println(museumInfos.thumbnail());
 		}
 	}
 }

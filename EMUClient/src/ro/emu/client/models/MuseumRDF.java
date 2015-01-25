@@ -203,6 +203,21 @@ public class MuseumRDF {
 	}
 
 	/**
+	 * Get the museum's thumbnail URL
+	 * 
+	 * @return - Pair<String,String>
+	 */
+	public Pair<String, String> thumbnail() {
+		Property thumbnailProperty = rdfModel.createProperty(Constants.dbpedia_owl,
+				Constants.dbpThumbnailKey);
+		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
+				thumbnailProperty, "en");
+		Object value = objectValueFromStatement(stmt);
+		return new Pair<String, String>(rdfModel.shortForm(stmt.getPredicate()
+				.getURI()), value.toString());
+	}
+
+	/**
 	 * Get the art objects from museum
 	 * 
 	 * @return Pair<String, Resource>
