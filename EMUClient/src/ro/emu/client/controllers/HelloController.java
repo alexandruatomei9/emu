@@ -29,9 +29,10 @@ public class HelloController {
 			System.out.println(museumInfos.latitude());
 			System.out.println(museumInfos.longitude());
 			System.out.println(museumInfos.director());
+			System.out.println(museumInfos.website());
+			System.out.println(museumInfos.works());
+			System.out.println(museumInfos.subjectsIncludingMuseum());
+			System.out.println(museumInfos.locations());
 		}
-		System.out.println(model);
-		System.out.println(model.getGraph());
-
 	}
 }
