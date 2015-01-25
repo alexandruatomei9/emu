@@ -27,6 +27,11 @@ public class MapController {
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView homeMuseums(HttpServletRequest request)
 			throws SocketException {
+		if(request.getParameter("ip") == null){
+			return new ModelAndView("redirect:" + "home");
+		}
+		
+		
 		ModelAndView modelAndView = new ModelAndView("map");
 
 		LookupService lookupService = null;
