@@ -1,5 +1,7 @@
 package dbpedia;
 
+import java.util.Random;
+
 import com.hp.hpl.jena.query.ParameterizedSparqlString;
 import com.hp.hpl.jena.query.Query;
 
@@ -14,6 +16,10 @@ public class DBPediaQueryBuilder {
 	 * @return a query
 	 */
 	public static Query homepageMuseumsQuery(Integer limit) {
+		Random rnd = new Random();
+		Integer offset = rnd.nextInt(6);
+		Integer minDate = rnd.nextInt(151) + 1800;
+		Integer maxDate = rnd.nextInt(1990 - (minDate + 3) + 1) + (minDate + 3);
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
 		qs.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 		qs.setNsPrefix("dbpedia-owl", "http://dbpedia.org/ontology/");
@@ -26,13 +32,15 @@ public class DBPediaQueryBuilder {
 		qs.append("dbpprop:established ?date;");
 		qs.append("dbpedia-owl:thumbnail ?thumbnail.");
 		qs.append("FILTER ( datatype(?date) = xsd:integer ).");
-		qs.append("FILTER (?date > 1900 && ?date < 1920).");
+		qs.append("FILTER (?date > " + minDate + " && ?date < " + maxDate
+				+ ").");
 		qs.append("FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label>).");
 		qs.append("FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, <http://schema.org/Museum>)).");
 		qs.append("FILTER ( lang(?label) = 'en')");
 		qs.append("}");
 		qs.append("ORDER BY ASC(?date)");
-		qs.append("LIMIT " + limit);
+		qs.append("OFFSET " + offset);
+		qs.append(" LIMIT " + limit);
 		return qs.asQuery();
 	}
 
@@ -113,7 +121,7 @@ public class DBPediaQueryBuilder {
 				+ "}\r\n" + "LIMIT   100");
 		return qs.asQuery();
 	}
-	
+
 	public static Query retrieveCountryForMuseum(String museumName) {
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
 		qs.setNsPrefix("dbpedia-owl", "http://dbpedia.org/ontology/");
@@ -129,8 +137,9 @@ public class DBPediaQueryBuilder {
 		qs.append("}");
 		qs.append("LIMIT " + 1);
 		return qs.asQuery();
-		
+
 	}
+
 	/**
 	 * This method creates a query for selecting the works(pictures, sculptures,
 	 * etc) from museum. The <b>dbPediaMuseumName</b> should be the name which
