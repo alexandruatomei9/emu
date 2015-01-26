@@ -120,6 +120,28 @@ public class DBPediaClient {
 
 		return list;
 	}
+	public static List<Museum> retrieveCountryForMuseums(String musemus)
+			throws Exception {
+		Query query = DBPediaQueryBuilder.retrieveCountryForMuseum(musemus);
+		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
+		List<Museum> list = new ArrayList<Museum>();
+
+		ResultSet result = qe.execSelect();
+		while (result.hasNext()) {
+			QuerySolution solution = result.next();
+			if (solution != null) {
+				String resourceUri = solution.getResource("?locationCountry").toString();
+				Literal lit = solution.getLiteral("?label");
+				String thumbnail = solution.getResource("?thumbnail")
+						.toString();
+				/*list.add((lit.getValue().toString(), resourceUri,
+						thumbnail));
+*/			}
+		}
+
+		return list;
+	}
+	
 
 	public static List<Work> retrieveWorksForMuseum(String museumName,
 			Integer limit) throws Exception {

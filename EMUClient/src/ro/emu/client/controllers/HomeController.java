@@ -53,7 +53,7 @@ public class HomeController {
 
 		// for the 5th museum display the image and some details
 		Museum museum = new Museum(
-				"New_Walk_Museum",
+ 				"New_Walk_Museum",
 				"http://commons.wikimedia.org/wiki/Special:FilePath/New_Walk_Museum_main_entrance.jpg?width=300",
 				"http://www.leicester.gov.uk/your-council-services/lc/leicester-city-museums/museums/nwm-art-gallery/",
 				"The New Walk Museum and Art Gallery is a museum on New Walk in Leicester, England, not far from the city centre. The original building was designed by Joseph Hansom, designer of the hansom cab. Two dinosaur skeletons are permanently installed in the museum — a cetiosaur found in Rutland (affectionately named George), and a plesiosaur from Barrow upon Soar.Other permanent exhibits include an Egyptian area, minerals of Leicestershire, the first Charnia fossil identified nearby, and a wildspace area featuring stuffed animals from around the world.The museum opened in 1849 as one of the first public museums established within the United KingdomIn September 2011, the New Walk Museum expanded its Dinosaur Gallery, reorganizing fossils, adding a new room, and modifying the gallery itself. The opening of the new Dinosaur Gallery was launched by David Attenborough. The \"star attractions\" of the new gallery include the aforementioned Rutland cetiosaur, Charnia and plesiosaur fossils, as well as a Leedsichthys fossil and a piece of the Barwell Meteorite. The new gallery predominantly features on extinct marine reptiles.");

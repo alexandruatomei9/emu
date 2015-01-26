@@ -71,6 +71,7 @@ public class Hello {
 		// List<Museum> museums = DBPediaClient
 		// .retrieveMuseumsInCountry("Romania");
 		// System.out.println(museums);
+		
 		return "Ceva";
 	}
 

@@ -109,7 +109,24 @@ public class DBPediaQueryBuilder {
 				+ "}\r\n" + "LIMIT   100");
 		return qs.asQuery();
 	}
-
+	
+	public static Query retrieveCountryForMuseum(String museumName) {
+		ParameterizedSparqlString qs = new ParameterizedSparqlString();
+		qs.setNsPrefix("dbpedia-owl", "http://dbpedia.org/ontology/");
+		qs.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+		qs.setNsPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+		qs.setNsPrefix("dbpedia", "http://dbpedia.org/resource/");
+		qs.append("SELECT DISTINCT ?locationCountry ?label ");
+		qs.append("WHERE {");
+		qs.append("?locationCountry  rdf:dbpedia-owl:locationCountry;");
+		qs.append("dbpedia-owl:museum dbpedia:" + museumName + ";");
+		qs.append("rdfs:label ?label.");
+		qs.append(" FILTER(lang(?label) = 'en').");
+		qs.append("}");
+		qs.append("LIMIT " + 1);
+		return qs.asQuery();
+		
+	}
 	/**
 	 * This method creates a query for selecting the works(pictures, sculptures,
 	 * etc) from museum. The <b>dbPediaMuseumName</b> should be the name which

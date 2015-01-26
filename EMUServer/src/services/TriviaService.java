@@ -73,10 +73,13 @@ public class TriviaService {
 				.getResourceAsStream("categories.properties");
 		Properties prop = new Properties();
 		Question question = new Question();
-
+		
+		Answer correctAnswer = new Answer();
+		List<Answer> answers = new ArrayList<Answer>();
 		prop.load(is);
 		String[] values = prop.getProperty(category).split(",");
 		ArrayList<String> options = new ArrayList<String>();
+		
 		for (String value : values) {
 			options.add(value);
 		}
@@ -86,8 +89,6 @@ public class TriviaService {
 			List<Museum> museumsInCountry = DBPediaClient
 					.retrieveMuseumsInCountry(correct);
 			question.setText(museumsInCountry.get(0) + " will be found in :");
-			List<Answer> answers = new ArrayList<Answer>();
-			Answer correctAnswer = new Answer();
 			correctAnswer.setId(1);
 			correctAnswer.setValue(correct);
 			answers.add(correctAnswer);
@@ -104,8 +105,26 @@ public class TriviaService {
 			Collections.shuffle(answers);
 			question.setAnswers(answers);
 			break;
-		case "category":
-			break;
+			
+		case "museum": 
+			/*List<Museum> countryForMuseums = DBPediaClient.(correct);
+			question.setText("Which of these museums is in "+ countryForMuseums.get(0) + "?");
+			correctAnswer.setId(1);
+			correctAnswer.setValue(correct);
+			answers.add(correctAnswer);
+			options.remove(correct);
+			
+			for(int i = 0; i<3; i++){
+				Answer answer = new Answer();
+				String incorrect = anyItem(options);
+				answer.setId(i+2);
+				answer.setValue(incorrect);
+				options.remove(incorrect);
+				answers.add(answer);
+			}
+			Collections.shuffle(answers);
+			question.setAnswers(answers);
+			break;*/
 		default:
 			break;
 		}
