@@ -3,6 +3,7 @@ package models.responses;
 public class Answer {
 	private int id;
 	private String value;
+	private boolean correctAnswer;
 	
 	
 	public int getId() {
@@ -17,4 +18,12 @@ public class Answer {
 	public void setValue(String value) {
 		this.value = value;
 	}
+	public boolean isCorrectAnswer() {
+		return correctAnswer;
+	}
+	public void setCorrectAnswer(boolean correctAnswer) {
+		this.correctAnswer = correctAnswer;
+	}
+	
+	
 }

@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import ro.emu.client.models.QuizAnswer;
@@ -20,8 +21,9 @@ import ro.emu.client.utils.Request;
 @RequestMapping("/quiz")
 public class QuizController {
 	
-	List<QuizQuestion> quizQuestion = new ArrayList<>();
-	JSONArray items;
+	 List<QuizQuestion> quizQuestion = new ArrayList<>();
+	 Long score = 0L;
+	 JSONArray items;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView quizRequest() {
@@ -56,16 +58,29 @@ public class QuizController {
 		return modelAndView;
 	}
 	
-	@RequestMapping(value="/question", method = RequestMethod.GET)
-	public ModelAndView sendQuiz(HttpServletRequest request) {
-		int id = Integer.parseInt(request.getParameter("id"));
-		ModelAndView model = new ModelAndView("quiz");
-		QuizQuestion question = parseResponse(id+1, "a doua intrebare");
+	@RequestMapping(value="/question/", method = RequestMethod.GET)
+	public ModelAndView sendQuiz(@RequestParam(value="id") String id, @RequestParam(value="answerId") String answer, 
+			HttpServletRequest request) {
+		Integer questionId = Integer.parseInt(id);
+		Integer answerId = Integer.parseInt(answer);
+		verifiedAnswer(questionId,answerId);
+		if(questionId.equals(9)){
+		}
+		ModelAndView model = new ModelAndView("question");
+		QuizQuestion question = parseResponse(questionId+1, "a doua intrebare");
 		model.addObject("question", question);
 
 		return model;
 	}
 	
+	private void verifiedAnswer(Integer questionId, Integer answerId){
+		QuizQuestion question = new QuizQuestion();
+		question = quizQuestion.get(questionId);
+		QuizAnswer answer = question.getAnswers().get(answerId);
+		if(answer.isCorrectAnswer()){
+			score = score + 10;
+		}
+	}
 	
 	private QuizQuestion parseResponse( int id, String text){
 			/*QuizQuestion question =  new QuizQuestion();
@@ -86,15 +101,17 @@ public class QuizController {
 		
 		List<QuizAnswer> quizAnswer = new ArrayList<>();
 		QuizAnswer answer = new QuizAnswer();
-		answer.setId(id);
+		answer.setId(0);
 		answer.setValue("primul raspuns");
+		answer.setCorrectAnswer(false);
 		QuizAnswer answer1 = new QuizAnswer();
-		answer1.setId(id);
+		answer1.setId(1);
 		answer1.setValue("al doilea raspuns");
-		
+		answer1.setCorrectAnswer(true);
 		quizAnswer.add(answer);
 		quizAnswer.add(answer1);
 		question.setAnswers(quizAnswer);
+		quizQuestion.add(question);
 			return question;
 		}
 }

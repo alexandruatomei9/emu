@@ -4,7 +4,7 @@ public class QuizAnswer {
 	
 	private int id;
 	private String value;
-	
+	private boolean correctAnswer;
 	
 	public int getId() {
 		return id;
@@ -18,5 +18,12 @@ public class QuizAnswer {
 	public void setValue(String value) {
 		this.value = value;
 	}
+	public boolean isCorrectAnswer() {
+		return correctAnswer;
+	}
+	public void setCorrectAnswer(boolean correctAnswer) {
+		this.correctAnswer = correctAnswer;
+	}
+	
 
 }
