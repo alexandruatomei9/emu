@@ -35,6 +35,8 @@ public class HelloController {
 			System.out.println(museumInfos.subjectsIncludingMuseum());
 			System.out.println(museumInfos.locations());
 			System.out.println(museumInfos.thumbnail());
+			System.out.println(museumInfos.deadPeople());
+			System.out.println(museumInfos.bornPeople());
 		}
 	}
 }
