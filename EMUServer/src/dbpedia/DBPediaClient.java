@@ -77,11 +77,13 @@ public class DBPediaClient {
 			QuerySolution solution = result.next();
 			Literal litLat = solution.getLiteral("?maxlatitude");
 			Literal litLong = solution.getLiteral("?maxlongitude");
+			Literal litName = solution.getLiteral("?minLabel");
 			if (GeoLocationHelper.locationIsWithinRange(currLatitude,
 					currLongitude, litLat.getFloat(), litLong.getFloat(),
 					radius)) {
 				list.add(new GeoMuseum(litLat.getFloat(), litLong.getFloat(),
-						solution.getResource("?Museum").toString()));
+						solution.getResource("?Museum").toString(), litName
+								.getString()));
 			}
 		}
 		return list;

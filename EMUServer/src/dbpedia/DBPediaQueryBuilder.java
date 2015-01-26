@@ -63,13 +63,15 @@ public class DBPediaQueryBuilder {
 
 	public static Query museumsWithCoordinatesQuery() {
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
+		qs.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 		qs.setNsPrefix("dbpedia-owl", "http://dbpedia.org/ontology/");
 		qs.setNsPrefix("dbpprop", "http://dbpedia.org/property/");
 		qs.setNsPrefix("geo", "http://www.w3.org/2003/01/geo/wgs84_pos#");
 		qs.setNsPrefix("foaf", "http://xmlns.com/foaf/0.1/");
-		qs.append("SELECT ?Museum ?maxlongitude ?maxlatitude WHERE { ");
+		qs.append("SELECT ?Museum ?minLabel ?maxlongitude ?maxlatitude WHERE { ");
 		qs.append("{");
 		qs.append("SELECT ?Museum");
+		qs.append("(MIN(?label) as ?minLabel)");
 		qs.append("(MIN(?name) as ?maxname)");
 		qs.append("(MAX(?longitude) as ?maxlongitude)");
 		qs.append("(MAX(?latitude) as ?maxlatitude)");
@@ -77,8 +79,10 @@ public class DBPediaQueryBuilder {
 		qs.append("?Museum a ?type ;");
 		qs.append("dbpprop:name ?name ;");
 		qs.append("geo:lat ?latitude ;");
+		qs.append("rdfs:label ?label ;");
 		qs.append("geo:long ?longitude .");
 		qs.append("FILTER (langMatches(lang(?name),\"EN\"))");
+		qs.append("FILTER (langMatches(lang(?label),\"EN\"))");
 		qs.append("FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, <http://schema.org/Museum>)).");
 		qs.append("}");
 		qs.append("GROUP BY ?Museum");
