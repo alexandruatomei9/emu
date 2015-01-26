@@ -1,6 +1,7 @@
 package ro.emu.client.controllers;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -9,8 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.hp.hpl.jena.rdf.model.Model;
+
+import ro.emu.client.dbpedia.DBPediaClient;
 import ro.emu.client.models.Detail;
 import ro.emu.client.models.Museum;
+import ro.emu.client.models.MuseumRDF;
 import ro.emu.client.models.MuseumThumbnail;
 import ro.emu.client.utils.Request;
 
@@ -52,12 +57,27 @@ public class HomeController {
 		modelAndView.addObject("museumThumbs", museumsThumbs);
 
 		// for the 5th museum display the image and some details
+		
+		
+		
+		Model model = null;
+		try {
+			model = DBPediaClient
+					.retrieveRDFModelForResource("http://dbpedia.org/data/The_Louvre.rdf");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		MuseumRDF museumRDF = new MuseumRDF(model);
+		Map<String,String> ns = museumRDF.getNsPrefixes();
+		
+		modelAndView.addObject("namespaces", ns);
+		
 		Museum museum = new Museum(
-				"New_Walk_Museum",
+				museumRDF.name().getSecond(),
 				"http://commons.wikimedia.org/wiki/Special:FilePath/New_Walk_Museum_main_entrance.jpg?width=300",
-				"http://www.leicester.gov.uk/your-council-services/lc/leicester-city-museums/museums/nwm-art-gallery/",
-				"The New Walk Museum and Art Gallery is a museum on New Walk in Leicester, England, not far from the city centre. The original building was designed by Joseph Hansom, designer of the hansom cab. Two dinosaur skeletons are permanently installed in the museum — a cetiosaur found in Rutland (affectionately named George), and a plesiosaur from Barrow upon Soar.Other permanent exhibits include an Egyptian area, minerals of Leicestershire, the first Charnia fossil identified nearby, and a wildspace area featuring stuffed animals from around the world.The museum opened in 1849 as one of the first public museums established within the United KingdomIn September 2011, the New Walk Museum expanded its Dinosaur Gallery, reorganizing fossils, adding a new room, and modifying the gallery itself. The opening of the new Dinosaur Gallery was launched by David Attenborough. The \"star attractions\" of the new gallery include the aforementioned Rutland cetiosaur, Charnia and plesiosaur fossils, as well as a Leedsichthys fossil and a piece of the Barwell Meteorite. The new gallery predominantly features on extinct marine reptiles.");
-
+				museumRDF.website().getSecond(),
+				museumRDF.abstractValue().getSecond());
 		ArrayList<Detail> museumDetails = new ArrayList<Detail>();
 		museumDetails.add(new Detail("City", "Leicester"));
 		museumDetails.add(new Detail("Country", "United_Kingdom"));
