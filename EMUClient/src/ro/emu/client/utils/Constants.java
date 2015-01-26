@@ -38,6 +38,7 @@ public class Constants {
 	public static final String dbpGeoCreatorKey = "creator";
 	public static final String dbpWebsiteKey = "website";
 	public static final String dbpEstablishedKey = "established";
-	public static final String dbpPrimaryTopicKey = "primaryTopic";
+	public static final String dbpPrimaryTopicKey = "isPrimaryTopicOf";
 	public static final String dbpCuratorKey = "curator";
+	public static final String dbpAuthorKey = "author";
 }

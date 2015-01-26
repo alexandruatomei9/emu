@@ -2,16 +2,12 @@ package ro.emu.client.models;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import ro.emu.client.dbpedia.DBPediaExtractor;
 import ro.emu.client.utils.Constants;
 import ro.emu.client.utils.Pair;
 
-import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
@@ -23,71 +19,13 @@ import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
  * @author claudiu
  *
  */
-public class MuseumRDF {
-	private static final String lang = "en";
-	private Model rdfModel;
-
+public class MuseumRDF extends RDFObject {
+	
 	public MuseumRDF() {
-
 	}
 
 	public MuseumRDF(Model model) {
-		this.rdfModel = model;
-	}
-
-	public Model getRdfModel() {
-		return rdfModel;
-	}
-
-	public void setRdfModel(Model rdfModel) {
-		this.rdfModel = rdfModel;
-	}
-
-	public Map<String, String> getNsPrefixes() {
-		return rdfModel.getNsPrefixMap();
-	}
-
-	/**
-	 * Get the abstract description about a museum
-	 * 
-	 * @return Pair<String,String>
-	 */
-	public Pair<String, String> abstractValue() {
-		Property abstractProperty = rdfModel.createProperty(
-				Constants.dbpedia_owl, Constants.dbpAbstractKey);
-		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
-				abstractProperty, lang);
-		System.out.println(rdfModel.shortForm(stmt.getPredicate().getURI()));
-		Object value = objectValueFromStatement(stmt);
-		if (value != null) {
-			String prefixNS = rdfModel.shortForm(stmt.getPredicate().getURI());
-			return new Pair<String, String>(prefixNS, (String) value);
-		}
-		return null;
-	}
-
-	/**
-	 * Get the museum's name
-	 * 
-	 * @return Pair<String, String>
-	 */
-	public Pair<String, String> name() {
-		Property foafName = rdfModel.createProperty(Constants.foaf,
-				Constants.dbpNameKey);
-		Property rdfsName = rdfModel.createProperty(Constants.rdfs,
-				Constants.dbpLabelKey);
-		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
-				rdfsName, lang);
-		String nameValue = (String) objectValueFromStatement(stmt);
-		if (nameValue == null) {
-			stmt = DBPediaExtractor.statementWithProperties(rdfModel, foafName,
-					lang);
-			return new Pair<String, String>(rdfModel.shortForm(stmt
-					.getPredicate().getURI()),
-					(String) objectValueFromStatement(stmt));
-		}
-		return new Pair<String, String>(rdfModel.shortForm(stmt.getPredicate()
-				.getURI()), nameValue);
+		super(model);
 	}
 
 	/**
@@ -330,39 +268,4 @@ public class MuseumRDF {
 		return bornPeople;
 	}
 
-	private Object objectValueFromStatement(Statement stmt) {
-		if (stmt != null) {
-			RDFNode node = stmt.getObject();
-			if (node.isResource()) {
-				Resource res = (Resource) node;
-				return res;
-			} else if (node.isLiteral()) {
-				Literal lit = (Literal) node;
-				if (lit.getLanguage().length() == 0)
-					return lit.getValue();
-				if (lit.getLanguage().equalsIgnoreCase("en")) {
-					return lit.getValue();
-				}
-			}
-		}
-		return null;
-	}
-
-	private Object subjectValueFromStatement(Statement stmt) {
-		if (stmt != null) {
-			RDFNode node = stmt.getSubject();
-			if (node.isResource()) {
-				Resource res = (Resource) node;
-				return res;
-			} else if (node.isLiteral()) {
-				Literal lit = (Literal) node;
-				if (lit.getLanguage().length() == 0)
-					return lit.getValue();
-				if (lit.getLanguage().equalsIgnoreCase("en")) {
-					return lit.getValue();
-				}
-			}
-		}
-		return null;
-	}
 }

@@ -24,6 +24,7 @@ public class HelloController {
 		}
 		if (model != null) {
 			MuseumRDF museumInfos = new MuseumRDF(model);
+			System.out.println(museumInfos.wikiPageURL());
 			System.out.println(museumInfos.getNsPrefixes());
 			System.out.println(museumInfos.abstractValue());
 			System.out.println(museumInfos.name());
