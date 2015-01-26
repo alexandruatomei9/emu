@@ -24,14 +24,19 @@ public class HelloController {
 		}
 		if (model != null) {
 			MuseumRDF museumInfos = new MuseumRDF(model);
+			System.out.println(museumInfos.getNsPrefixes());
 			System.out.println(museumInfos.abstractValue());
 			System.out.println(museumInfos.name());
 			System.out.println(museumInfos.latitude());
 			System.out.println(museumInfos.longitude());
 			System.out.println(museumInfos.director());
+			System.out.println(museumInfos.website());
+			System.out.println(museumInfos.works());
+			System.out.println(museumInfos.subjectsIncludingMuseum());
+			System.out.println(museumInfos.locations());
+			System.out.println(museumInfos.thumbnail());
+			System.out.println(museumInfos.deadPeople());
+			System.out.println(museumInfos.bornPeople());
 		}
-		System.out.println(model);
-		System.out.println(model.getGraph());
-
 	}
 }

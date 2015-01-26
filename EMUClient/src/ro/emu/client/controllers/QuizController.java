@@ -88,8 +88,12 @@ public class QuizController {
 		QuizAnswer answer = new QuizAnswer();
 		answer.setId(id);
 		answer.setValue("primul raspuns");
+		QuizAnswer answer1 = new QuizAnswer();
+		answer1.setId(id);
+		answer1.setValue("al doilea raspuns");
 		
 		quizAnswer.add(answer);
+		quizAnswer.add(answer1);
 		question.setAnswers(quizAnswer);
 			return question;
 		}
