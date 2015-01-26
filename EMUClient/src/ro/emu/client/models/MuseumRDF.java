@@ -203,6 +203,21 @@ public class MuseumRDF {
 	}
 
 	/**
+	 * Get the museum's thumbnail URL
+	 * 
+	 * @return - Pair<String,String>
+	 */
+	public Pair<String, String> thumbnail() {
+		Property thumbnailProperty = rdfModel.createProperty(
+				Constants.dbpedia_owl, Constants.dbpThumbnailKey);
+		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
+				thumbnailProperty, "en");
+		Object value = objectValueFromStatement(stmt);
+		return new Pair<String, String>(rdfModel.shortForm(stmt.getPredicate()
+				.getURI()), value.toString());
+	}
+
+	/**
 	 * Get the art objects from museum
 	 * 
 	 * @return Pair<String, Resource>
@@ -264,6 +279,55 @@ public class MuseumRDF {
 			}
 		}
 		return locations;
+	}
+
+	/**
+	 * Get the list of persons which died in the museum
+	 * 
+	 * @return
+	 */
+	public List<Pair<String, Resource>> deadPeople() {
+		ArrayList<Pair<String, Resource>> deadPeople = new ArrayList<Pair<String, Resource>>();
+		Property deathPlaceProperty = rdfModel.createProperty(
+				Constants.dbpedia_owl, Constants.dbpDeathPlaceOfKey);
+		List<Statement> list = DBPediaExtractor.statementsWithProperties(
+				rdfModel, deathPlaceProperty, "en");
+		if (list != null) {
+			for (Statement stmt : list) {
+				Object deathPersonValue = stmt.getSubject();
+				if (deathPersonValue.getClass() == ResourceImpl.class) {
+					deadPeople.add(new Pair<String, Resource>(rdfModel
+							.shortForm(stmt.getPredicate().getURI()),
+							(Resource) deathPersonValue));
+				}
+			}
+		}
+		return deadPeople;
+	}
+
+	/**
+	 * Get the list of persons which were born in the museum
+	 * 
+	 * @return
+	 */
+	public List<Pair<String, Resource>> bornPeople() {
+		ArrayList<Pair<String, Resource>> bornPeople = new ArrayList<Pair<String, Resource>>();
+
+		Property birthPlaceProperty = rdfModel.createProperty(
+				Constants.dbpedia_owl, Constants.dbpBirthPlaceOfKey);
+		List<Statement> list = DBPediaExtractor.statementsWithProperties(
+				rdfModel, birthPlaceProperty, "en");
+		if (list != null) {
+			for (Statement stmt : list) {
+				Object bornPersonValue = stmt.getSubject();
+				if (bornPersonValue.getClass() == ResourceImpl.class) {
+					bornPeople.add(new Pair<String, Resource>(rdfModel
+							.shortForm(stmt.getPredicate().getURI()),
+							(Resource) bornPersonValue));
+				}
+			}
+		}
+		return bornPeople;
 	}
 
 	private Object objectValueFromStatement(Statement stmt) {
