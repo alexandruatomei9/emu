@@ -44,7 +44,7 @@
 			var newmarker = new google.maps.Marker({
 				position : myNewLatlng,
 				map : map,
-				title : obj.name,
+				titlome : obj.name,
 			});
 			google.maps.event.addListener(newmarker, 'click', function() {
 				  window.location.href = obj.resourceURI;
