@@ -14,12 +14,7 @@
 <h1 id="quizH1">Quiz</h1>
 <br>
 <br>
-<div id ="quizQuestion"> 
-<h2 style="margin-bottom: 2%;">Question</h2>
-	<p>${question.id + 1}. ${question.text}</p>
-		<c:forEach var="answer" items="${question.answers}" varStatus="myIndex">
-			<input id="answer${answer.id}" type="radio" name="answer" value="${answer.value}"> ${answer.value} ${answer.correctAnswer} <br><p>
-    	</c:forEach>
-		<button id="responseQuiz" type="button" onclick="takeValue(${question.id});">Response</button>
+<div id ="quizResponse"> 
+<h2 style="margin-bottom: 2%;">Your result: ${score}</h2>
 </div>
 </div>

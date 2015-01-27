@@ -64,11 +64,18 @@ public class QuizController {
 		Integer questionId = Integer.parseInt(id);
 		Integer answerId = Integer.parseInt(answer);
 		verifiedAnswer(questionId,answerId);
+		ModelAndView model =null;
 		if(questionId.equals(9)){
+		    model = new ModelAndView("showResponses");
+			model.addObject("score", score);
+			score = 0L;
+			
 		}
-		ModelAndView model = new ModelAndView("question");
-		QuizQuestion question = parseResponse(questionId+1, "a doua intrebare");
-		model.addObject("question", question);
+		else{
+			model = new ModelAndView("question");
+			QuizQuestion question = parseResponse(questionId+1, "a doua intrebare");
+			model.addObject("question", question);
+			}
 
 		return model;
 	}

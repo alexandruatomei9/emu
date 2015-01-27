@@ -46,7 +46,7 @@
 <br>
 <div id ="quizQuestion"> 
 <h2 style="margin-bottom: 2%;">Question</h2>
-<p>${question.id}. ${question.text}</p>
+<p>${question.id + 1}. ${question.text}</p>
 	<c:forEach var="answer" items="${question.answers}" varStatus="myIndex">
 		<input id="answer${answer.id}" type="radio" name="answer" value="${answer.value}"> ${answer.value} ${answer.correctAnswer} <br><p>
     	</c:forEach>

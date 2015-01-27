@@ -216,3 +216,9 @@ div.wrapper h1, div.wrapper h2, div.wrapper h3, div.wrapper h4, div.wrapper h5, 
 #quizBody{
 	background-color:white;
 }
+
+#quizResponse{
+	width:70%;
+	margin:0 auto;
+    padding:25px;
+}
