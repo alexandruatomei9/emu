@@ -13,10 +13,16 @@
 <meta name="keywords"
 	content="content slider, responsive image gallery, responsive image gallery, image slider, image fade, image rotator">
 <meta property="dc:date dc:created" content="2014-29-02T13:00:00">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="EMU">
+<meta property="og:description" content="Semantic Web-Enhanced Museum">
+
 <meta rel="dc:subject" href="http://dbpedia.org/resource/Semantic_Web" />
 <meta rel="dc:subject" href="http://dbpedia.org/resource/RDFa" />
 <meta rel="dc:subject" href="http://dbpedia.org/resource/HTML5" />
 <meta rel="dc:subject" href="http://dbpedia.org/resource/SPARQL" />
+
+
 <link href="<c:url value="/resources/layout/styles/layout.css" />"
 	rel="stylesheet">
 <link href="<c:url value="/resources/layout/styles/jquery-ui.css" />"
@@ -24,6 +30,12 @@
 <script src="<c:url value="/resources/js/jquery.min.js" />"></script>
 <script src="<c:url value="/resources/js/jquery-ui.min.js" />"></script>
 <script type="application/javascript">
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -42,6 +54,12 @@ function myIP() {
 
     return false;
 }
+
+
+
+
+
+
 
 
 
@@ -109,7 +127,7 @@ function myIP() {
 				<h1>
 					<a href="index.jsp">Emu</a>
 				</h1>
-				<p property="dbpedia-owl:subtitle">Semantic Web-Enhanced Museum</p>
+				<p>Semantic Web-Enhanced Museum</p>
 			</div>
 			<br class="clear" />
 		</div>
@@ -124,10 +142,9 @@ function myIP() {
 							<li resource="${museumThumb.getDetailsUrl}"
 								typeof="dbpedia-owl:Museum"><img class="gal"
 								src="${museumThumb.imageUrl}" alt=""
-								rel="${hashtag}${museumThumb.museumName}"
-								property="dbpedia-owl:thumbnail foaf:thumbnail" /> <a
-								href="${museumThumb.getDetailsUrl}" 
-								"><span property="rdfs:label foaf:name">${museumThumb.museumName}</span>
+								rel="dbpedia-owl:thumbnail foaf:thumbnail" /> <a
+								href="${museumThumb.getDetailsUrl}""><span
+									rel="rdfs:label foaf:name">${museumThumb.museumName}</span>
 									&raquo;</a></li>
 						</c:when>
 
@@ -148,42 +165,31 @@ function myIP() {
 			</center>
 		</div>
 	</div>
-	<div class="wrapper col4">
+	<div class="wrapper col4" resource="#current" typeof="dbpedia-owl:Museum">
 		<div id="container">
 			<div id="content">
 				<h2>
-					<a href="${museum.url}">${museum.name}</a>
+					<a href="${museumRDF.website().getSecond()}">${museumRDF.name().getSecond()}</a>
 				</h2>
-				<img class="imgl" src="<c:url value="${museum.image}" />" alt=""
+				<img class="imgl"
+					rel="dbpedia-owl:thumbnail foaf:thumbnail"
+					src="<c:url value="${museumRDF.thumbnail().getSecond()}" />" alt=""
 					width="125" height="125" />
-				<p class="justify">${museum.description}</p>
+				<p class="justify">${museumRDF.abstractValue().getSecond()}</p>
 			</div>
 			<div id="column">
 				<h2>Details</h2>
 				<div class="scrollbar">
 					<ul id="latestnews">
-						<c:forEach var="detail" items="${museum.details}"
-							varStatus="myIndex">
-							<c:choose>
-								<c:when test="${myIndex.index != museum.details.size()}">
-									<li>
-										<p>
-											<strong>${detail.name}</strong>
-										</p>
-										<p>${detail.value}</p>
-									</li>
-								</c:when>
-
-								<c:otherwise>
-									<li class="last">
-										<p>
-											<strong>${detail.name}</strong>
-										</p>
-										<p>${detail.value}</p>
-									</li>
-								</c:otherwise>
-							</c:choose>
-						</c:forEach>
+						<c:if
+							test="${not empty museumRDF.latitude() && not empty museumRDF.longitude()}">
+							<p>
+								<strong>Location</strong>
+							</p>
+							<p>
+								(<span property="${museumRDF.latitude().getFirst()}" datatype="xsd:float">${museumRDF.latitude().getSecond()}</span>,<span property="${museumRDF.longitude().getFirst()}" datatype="xsd:float">${museumRDF.longitude().getSecond()}</span>)
+							</p>
+						</c:if>
 					</ul>
 				</div>
 			</div>

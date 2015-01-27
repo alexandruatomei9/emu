@@ -17,6 +17,7 @@ public class Pair<A, B> {
 		return (hashFirst + hashSecond) * hashSecond + hashFirst;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public boolean equals(Object other) {
 		if (other instanceof Pair) {
 			Pair otherPair = (Pair) other;
@@ -48,5 +49,9 @@ public class Pair<A, B> {
 
 	public void setSecond(B second) {
 		this.second = second;
+	}
+
+	public boolean isValid() {
+		return (first != null && second != null);
 	}
 }

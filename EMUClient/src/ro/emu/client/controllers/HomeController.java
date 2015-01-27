@@ -13,8 +13,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.hp.hpl.jena.rdf.model.Model;
 
 import ro.emu.client.dbpedia.DBPediaClient;
-import ro.emu.client.models.Detail;
-import ro.emu.client.models.Museum;
 import ro.emu.client.models.MuseumRDF;
 import ro.emu.client.models.MuseumThumbnail;
 import ro.emu.client.utils.Request;
@@ -26,10 +24,10 @@ public class HomeController {
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView homeMuseums() {
 		ModelAndView modelAndView = new ModelAndView("index");
-		
+
 		String resp = null;
 		try {
-			//get 4 museums from the api
+			// get 4 museums from the api
 			resp = Request.sendGet("/museums/getMuseums", null);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -57,38 +55,21 @@ public class HomeController {
 		modelAndView.addObject("museumThumbs", museumsThumbs);
 
 		// for the 5th museum display the image and some details
-		
-		
-		
+
 		Model model = null;
 		try {
 			model = DBPediaClient
-					.retrieveRDFModelForResource("http://dbpedia.org/data/The_Louvre.rdf");
+					.retrieveRDFModelForResource("http://dbpedia.org/data/British_Museum.rdf");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		MuseumRDF museumRDF = new MuseumRDF(model);
-		Map<String,String> ns = museumRDF.getNsPrefixes();
-		
+		Map<String, String> ns = museumRDF.getNsPrefixes();
+
 		modelAndView.addObject("namespaces", ns);
-		
-		Museum museum = new Museum(
-				museumRDF.name().getSecond(),
-				"http://commons.wikimedia.org/wiki/Special:FilePath/New_Walk_Museum_main_entrance.jpg?width=300",
-				museumRDF.website().getSecond(),
-				museumRDF.abstractValue().getSecond());
-		ArrayList<Detail> museumDetails = new ArrayList<Detail>();
-		museumDetails.add(new Detail("City", "Leicester"));
-		museumDetails.add(new Detail("Country", "United_Kingdom"));
-		museumDetails.add(new Detail("Latitude", "52.628954"));
-		museumDetails.add(new Detail("Longitude", "-1.127765"));
-		museumDetails.add(new Detail("Wiki Page",
-				"http://en.wikipedia.org/wiki/New_Walk_Museum"));
 
-		museum.setDetails(museumDetails);
-
-		modelAndView.addObject("museum", museum);
+		modelAndView.addObject("museumRDF", museumRDF);
 
 		return modelAndView;
 
