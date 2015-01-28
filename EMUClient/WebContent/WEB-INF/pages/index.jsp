@@ -9,7 +9,7 @@
 <title property="dc:title">EMU</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta name="viewport"
-	content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="keywords"
 	content="content slider, responsive image gallery, responsive image gallery, image slider, image fade, image rotator">
 <meta property="dc:date dc:created" content="2014-29-02T13:00:00">
@@ -22,124 +22,49 @@
 <meta rel="dc:subject" href="http://dbpedia.org/resource/HTML5" />
 <meta rel="dc:subject" href="http://dbpedia.org/resource/SPARQL" />
 
-
+<link href="<c:url value="/resources/layout/styles/bootstrap.min.css" />"
+	rel="stylesheet">
 <link href="<c:url value="/resources/layout/styles/layout.css" />"
 	rel="stylesheet">
 <link href="<c:url value="/resources/layout/styles/jquery-ui.css" />"
 	rel="stylesheet">
 <script src="<c:url value="/resources/js/jquery.min.js" />"></script>
 <script src="<c:url value="/resources/js/jquery-ui.min.js" />"></script>
-<script type="application/javascript">
-	
-	
-	
-	
-	
-	
-	
-	
-	
-function myIP() {
-    if (window.XMLHttpRequest) xmlhttp = new XMLHttpRequest();
-    else xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-
-    xmlhttp.open("GET","http://api.hostip.info/get_html.php",false);
-    xmlhttp.send();
-
-    hostipInfo = xmlhttp.responseText.split("\n");
-    for (i=0; hostipInfo.length >= i; i++) {
-        ipAddress = hostipInfo[i].split(":");
-        if ( ipAddress[0] == "IP" ) return ipAddress[1];
-    }
-
-    return false;
-}
-
-
-
-
-
-
-
-
-
-</script>
-<script type="text/javascript">
-	function getMap() {
-		var theIp = myIP();
-
-		if (name != undefined || name != null) {
-			window.location = 'map?ip=' + theIp;
-		}
-	}
-</script>
-<script>
-	$(function() {
-		function log(message) {
-			$("<div>").text(message).prependTo("#log");
-			$("#log").scrollTop(0);
-		}
-
-		$("#museum").autocomplete(
-				{
-					source : function(request, response) {
-						jQuery.get("search", {
-							q : request.term
-						}, function(data) {
-							var array = data.split(',');
-							response(array);
-						});
-					},
-					minLength : 3,
-					select : function(event, ui) {
-						log(ui.item ? "Selected: " + ui.item.label
-								: "Nothing selected, input was " + this.value);
-					},
-					open : function() {
-						$(this).removeClass("ui-corner-all").addClass(
-								"ui-corner-top");
-					},
-					close : function() {
-						$(this).removeClass("ui-corner-top").addClass(
-								"ui-corner-all");
-					}
-				});
-	});
-</script>
+<script src="<c:url value="/resources/js/bootstrap.min.js" />"></script>
+<script src="<c:url value="/resources/js/index.js" />"></script>
 </head>
 <body id="top">
+<div class="container">
 	<c:set var="hashtag" scope="session" value="#" />
 
-	<div class="wrapper col2">
-		<div id="header">
-			<div id="topnav">
+	<div class="wrapper row col2">
+		<div id="header" class="col-xs-12">
+			<div id="topnav" style="float:right;">
 				<ul>
 					<li class="last"><a href="#" onclick="javascript:getMap()">Map</a><span>Test
 							Text Here</span></li>
-					<li><a href="full-width.jsp">Full Width</a><span>Test
-							Text Here</span></li>
 					<li><a href="quiz">Quiz</a><span>Test Text Here</span></li>
-					<li class="active"><a href="index.jsp">Homepage</a><span>Test
+					<li class="active"><a href="home">Homepage</a><span>Test
 							Text Here</span></li>
 				</ul>
 			</div>
 			<div id="logo">
 				<h1>
-					<a href="index.jsp">Emu</a>
+					<a href="home">Emu</a>
 				</h1>
 				<p>Semantic Web-Enhanced Museum</p>
 			</div>
 			<br class="clear" />
 		</div>
 	</div>
-	<div class="wrapper col3">
-		<div id="intro">
+	
+		<div id="intro" class="wrapper row col3">
 			<ul>
 				<c:forEach var="museumThumb" items="${museumThumbs}"
 					varStatus="myIndex">
 					<c:choose>
 						<c:when test="${myIndex.index != museumThumbs.size()}">
-							<li resource="${museumThumb.getDetailsUrl}"
+							<li class="col-xs-12" resource="${museumThumb.getDetailsUrl}"
 								typeof="dbpedia-owl:Museum"><img class="gal"
 								src="${museumThumb.imageUrl}" alt=""
 								rel="dbpedia-owl:thumbnail foaf:thumbnail" /> <a
@@ -149,7 +74,7 @@ function myIP() {
 						</c:when>
 
 						<c:otherwise>
-							<li class="last"><img class="gal"
+							<li class="col-xs-12"><img class="gal"
 								src="${museumThumb.imageUrl}" alt="" /> <a href="#">${museumThumb.museumName}
 									&raquo;</a></li>
 						</c:otherwise>
@@ -164,8 +89,8 @@ function myIP() {
 				</div>
 			</center>
 		</div>
-	</div>
-	<div class="wrapper col4" resource="#current" typeof="dbpedia-owl:Museum">
+	
+	<div class="wrapper row col4" resource="#current" typeof="dbpedia-owl:Museum">
 		<div id="container">
 			<div id="content">
 				<h2>
@@ -175,7 +100,7 @@ function myIP() {
 					rel="dbpedia-owl:thumbnail foaf:thumbnail"
 					src="<c:url value="${museumRDF.thumbnail().getSecond()}" />" alt=""
 					width="125" height="125" />
-				<p class="justify">${museumRDF.abstractValue().getSecond()}</p>
+				<p class="justify" rel="${museumRDF.abstractValue().getFirst()}">${museumRDF.abstractValue().getSecond()}</p>
 			</div>
 			<div id="column">
 				<h2>Details</h2>
@@ -196,7 +121,7 @@ function myIP() {
 			<br class="clear" />
 		</div>
 	</div>
-	<div class="wrapper col5">
+	<div class="wrapper row col5">
 		<div id="footer">
 			<div id="newsletter">
 				<h2>Stay In The Know !</h2>
@@ -246,7 +171,7 @@ function myIP() {
 			<br class="clear" />
 		</div>
 	</div>
-	<div class="wrapper col6">
+	<div class="wrapper row col6">
 		<div id="copyright">
 			<p class="fl_left">
 				Copyright &copy; 2014 - All Rights Reserved - <a href="#">Domain
@@ -259,5 +184,6 @@ function myIP() {
 			<br class="clear" />
 		</div>
 	</div>
+</div>
 </body>
 </html>

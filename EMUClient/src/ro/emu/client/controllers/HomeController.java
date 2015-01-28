@@ -37,17 +37,19 @@ public class HomeController {
 		ArrayList<MuseumThumbnail> museumsThumbs = new ArrayList<MuseumThumbnail>();
 		if (resp != null) {
 			JSONObject jsonResponse = new JSONObject(resp);
-			if (!jsonResponse.getString("code").equals("OK")) {
-				// server error
-			} else {
-				JSONArray items = jsonResponse.getJSONArray("response");
-				for (int i = 0; i < items.length(); i++) {
-					JSONObject item = items.getJSONObject(i);
-					MuseumThumbnail thumb = new MuseumThumbnail();
-					thumb.setMuseumName(item.getString("name"));
-					thumb.setImageUrl(item.getString("thumbUri"));
-					thumb.setGetDetailsUrl(item.getString("uri"));
-					museumsThumbs.add(thumb);
+			if(jsonResponse.has("code") && !jsonResponse.isNull("code")){
+				if (!jsonResponse.getString("code").equals("OK")) {
+					// server error
+				} else {
+					JSONArray items = jsonResponse.getJSONArray("response");
+					for (int i = 0; i < items.length(); i++) {
+						JSONObject item = items.getJSONObject(i);
+						MuseumThumbnail thumb = new MuseumThumbnail();
+						thumb.setMuseumName(item.getString("name"));
+						thumb.setImageUrl(item.getString("thumbUri"));
+						thumb.setGetDetailsUrl(item.getString("uri"));
+						museumsThumbs.add(thumb);
+					}
 				}
 			}
 		}

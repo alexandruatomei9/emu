@@ -5,7 +5,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
-<title>Insert title here</title>
+<title>EMU</title>
+<link href="<c:url value="/resources/layout/styles/layout.css" />"
+	rel="stylesheet">
 <script
 	src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 <script src="<c:url value="/resources/js/jquery.min.js" />"></script>
@@ -44,7 +46,7 @@
 			var newmarker = new google.maps.Marker({
 				position : myNewLatlng,
 				map : map,
-				titlome : obj.name,
+				title : obj.name,
 			});
 			google.maps.event.addListener(newmarker, 'click', function() {
 				  window.location.href = obj.resourceURI;
@@ -59,9 +61,96 @@
 </script>
 </head>
 <body>
+	<div class="wrapper col2">
+		<div id="header">
+			<div id="topnav">
+				<ul>
+					<li class="active last"><a href="#">Map</a><span>Nearby museums</span></li>
+					<li><a href="quiz">Quiz</a><span>Test Your Knowledge</span></li>
+					<li><a href="home">Homepage</a><span>Find out more</span></li>
+				</ul>
+			</div>
+			<div id="logo">
+				<h1>
+					<a href="home">Emu</a>
+				</h1>
+				<p>Semantic Web-Enhanced Museum</p>
+			</div>
+			<br class="clear" />
+		</div>
+	</div>
+	<div class="wrapper col3">
 	<center>
-		<div id="map-canvas" style="height: 500px; width: 700px"></div>
-		<p>Your city: ${city}</p>
+	<p>Your city: ${city}</p>
 	</center>
+	</div>
+	<div class="wrapper col4">
+	<center>
+		<div id="map-canvas" style="height: 500px; width: 700px; padding-top:20px; padding-bottom:20px;"></div>
+	</center>
+	</div>
+	<div class="wrapper col5">
+		<div id="footer">
+			<div id="newsletter">
+				<h2>Stay In The Know !</h2>
+				<p>Please enter your email to join our mailing list</p>
+				<form action="#" method="post">
+					<fieldset>
+						<legend>News Letter</legend>
+						<input type="text" value="Enter Email Here&hellip;"
+							onfocus="this.value=(this.value=='Enter Email Here&hellip;')? '' : this.value ;" />
+						<input type="submit" name="news_go" id="news_go" value="GO" />
+					</fieldset>
+				</form>
+				<p>
+					To unsubscribe please <a href="#">click here &raquo;</a>
+				</p>
+			</div>
+			<div class="footbox">
+				<h2>Lacus interdum</h2>
+				<ul>
+					<li><a href="#">Praesent et eros</a></li>
+					<li><a href="#">Praesent et eros</a></li>
+					<li><a href="#">Lorem ipsum dolor</a></li>
+					<li><a href="#">Suspendisse in neque</a></li>
+					<li class="last"><a href="#">Praesent et eros</a></li>
+				</ul>
+			</div>
+			<div class="footbox">
+				<h2>Lacus interdum</h2>
+				<ul>
+					<li><a href="#">Praesent et eros</a></li>
+					<li><a href="#">Praesent et eros</a></li>
+					<li><a href="#">Lorem ipsum dolor</a></li>
+					<li><a href="#">Suspendisse in neque</a></li>
+					<li class="last"><a href="#">Praesent et eros</a></li>
+				</ul>
+			</div>
+			<div class="footbox">
+				<h2>Lacus interdum</h2>
+				<ul>
+					<li><a href="#">Praesent et eros</a></li>
+					<li><a href="#">Praesent et eros</a></li>
+					<li><a href="#">Lorem ipsum dolor</a></li>
+					<li><a href="#">Suspendisse in neque</a></li>
+					<li class="last"><a href="#">Praesent et eros</a></li>
+				</ul>
+			</div>
+			<br class="clear" />
+		</div>
+	</div>
+	<div class="wrapper col6">
+		<div id="copyright">
+			<p class="fl_left">
+				Copyright &copy; 2014 - All Rights Reserved - <a href="#">Domain
+					Name</a>
+			</p>
+			<p class="fl_right">
+				Template by <a target="_blank" href="http://www.os-templates.com/"
+					title="Free Website Templates">OS Templates</a>
+			</p>
+			<br class="clear" />
+		</div>
+	</div>
 </body>
 </html>
