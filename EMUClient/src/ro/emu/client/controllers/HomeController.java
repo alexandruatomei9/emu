@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.hp.hpl.jena.rdf.model.Model;
-
 import ro.emu.client.dbpedia.DBPediaClient;
 import ro.emu.client.models.MuseumRDF;
 import ro.emu.client.models.MuseumThumbnail;
@@ -37,7 +36,7 @@ public class HomeController {
 		ArrayList<MuseumThumbnail> museumsThumbs = new ArrayList<MuseumThumbnail>();
 		if (resp != null) {
 			JSONObject jsonResponse = new JSONObject(resp);
-			if(jsonResponse.has("code") && !jsonResponse.isNull("code")){
+			if (jsonResponse.has("code") && !jsonResponse.isNull("code")) {
 				if (!jsonResponse.getString("code").equals("OK")) {
 					// server error
 				} else {
@@ -57,21 +56,18 @@ public class HomeController {
 		modelAndView.addObject("museumThumbs", museumsThumbs);
 
 		// for the 5th museum display the image and some details
-
 		Model model = null;
 		try {
+			
 			model = DBPediaClient
-					.retrieveRDFModelForResource("http://dbpedia.org/data/British_Museum.rdf");
+					.retrieveRDFModelForResource("http://dbpedia.org/page/British_Museum");
+			MuseumRDF museumRDF = new MuseumRDF(model);
+			Map<String, String> ns = museumRDF.getNsPrefixes();
+			modelAndView.addObject("namespaces", ns);
+			modelAndView.addObject("museumRDF", museumRDF);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		MuseumRDF museumRDF = new MuseumRDF(model);
-		Map<String, String> ns = museumRDF.getNsPrefixes();
-
-		modelAndView.addObject("namespaces", ns);
-
-		modelAndView.addObject("museumRDF", museumRDF);
 
 		return modelAndView;
 

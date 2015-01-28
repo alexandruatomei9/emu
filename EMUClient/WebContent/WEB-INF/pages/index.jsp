@@ -94,25 +94,25 @@
 		<div id="container">
 			<div id="content">
 				<h2>
-					<a href="${museumRDF.website().getSecond()}">${museumRDF.name().getSecond()}</a>
+					<a href="${museumRDF.getWebsite().getSecond()}">${museumRDF.getName().getSecond()}</a>
 				</h2>
 				<img class="imgl"
 					rel="dbpedia-owl:thumbnail foaf:thumbnail"
-					src="<c:url value="${museumRDF.thumbnail().getSecond()}" />" alt=""
+					src="<c:url value="${museumRDF.getThumbnail().getSecond()}" />" alt=""
 					width="125" height="125" />
-				<p class="justify" rel="${museumRDF.abstractValue().getFirst()}">${museumRDF.abstractValue().getSecond()}</p>
+				<p class="justify" rel="${museumRDF.getAbstract().getFirst()}">${museumRDF.getAbstract().getSecond()}</p>
 			</div>
 			<div id="column">
 				<h2>Details</h2>
 				<div class="scrollbar">
 					<ul id="latestnews">
 						<c:if
-							test="${not empty museumRDF.latitude() && not empty museumRDF.longitude()}">
+							test="${not empty museumRDF.getLatitude() && not empty museumRDF.getLongitude()}">
 							<p>
 								<strong>Location</strong>
 							</p>
 							<p>
-								(<span property="${museumRDF.latitude().getFirst()}" datatype="xsd:float">${museumRDF.latitude().getSecond()}</span>,<span property="${museumRDF.longitude().getFirst()}" datatype="xsd:float">${museumRDF.longitude().getSecond()}</span>)
+								(<span property="${museumRDF.getLatitude().getFirst()}" datatype="xsd:float">${museumRDF.getLatitude().getSecond()}</span>,<span property="${museumRDF.getLongitude().getFirst()}" datatype="xsd:float">${museumRDF.getLongitude().getSecond()}</span>)
 							</p>
 						</c:if>
 					</ul>

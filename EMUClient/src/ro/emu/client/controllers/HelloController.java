@@ -24,20 +24,19 @@ public class HelloController {
 		}
 		if (model != null) {
 			MuseumRDF museumInfos = new MuseumRDF(model);
-			System.out.println(museumInfos.wikiPageURL());
+			System.out.println(museumInfos.getWikiPageURL());
 			System.out.println(museumInfos.getNsPrefixes());
-			System.out.println(museumInfos.abstractValue());
-			System.out.println(museumInfos.name());
-			System.out.println(museumInfos.latitude());
-			System.out.println(museumInfos.longitude());
-			System.out.println(museumInfos.director());
-			System.out.println(museumInfos.website());
-			System.out.println(museumInfos.works());
-			System.out.println(museumInfos.subjectsIncludingMuseum());
-			System.out.println(museumInfos.locations());
-			System.out.println(museumInfos.thumbnail());
-			System.out.println(museumInfos.deadPeople());
-			System.out.println(museumInfos.bornPeople());
+			System.out.println(museumInfos.getAbstract());
+			System.out.println(museumInfos.getName());
+			System.out.println(museumInfos.getLatitude());
+			System.out.println(museumInfos.getDirector());
+			System.out.println(museumInfos.getWebsite());
+			System.out.println(museumInfos.getWorks());
+			System.out.println(museumInfos.getSubjectsIncludingMuseum());
+			System.out.println(museumInfos.getLocations());
+			System.out.println(museumInfos.getThumbnail());
+			System.out.println(museumInfos.getDeadPeople());
+			System.out.println(museumInfos.getBornPeople());
 		}
 	}
 }

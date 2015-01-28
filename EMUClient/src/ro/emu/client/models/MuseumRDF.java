@@ -33,7 +33,7 @@ public class MuseumRDF extends RDFObject {
 	 * 
 	 * @return Pair<String, Float>
 	 */
-	public Pair<String, Float> latitude() {
+	public Pair<String, Float> getLatitude() {
 		Property geoProperty = rdfModel.createProperty(Constants.geo,
 				Constants.dbpGeoLatKey);
 		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
@@ -57,7 +57,7 @@ public class MuseumRDF extends RDFObject {
 	 * 
 	 * @return Pair<String, Float>
 	 */
-	public Pair<String, Float> longitude() {
+	public Pair<String, Float> getLongitude() {
 		Property geoProperty = rdfModel.createProperty(Constants.geo,
 				Constants.dbpGeoLongKey);
 
@@ -82,7 +82,7 @@ public class MuseumRDF extends RDFObject {
 	 * 
 	 * @return Pair<String, Resource>
 	 */
-	public Pair<String, Resource> director() {
+	public Pair<String, Resource> getDirector() {
 		Property directorProperty = rdfModel.createProperty(
 				Constants.dbpedia_owl, Constants.dbpDirectorKey);
 		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
@@ -107,7 +107,7 @@ public class MuseumRDF extends RDFObject {
 	 * 
 	 * @return - Integer
 	 */
-	public Pair<String, Integer> establishedYear() {
+	public Pair<String, Integer> getEstablishedYear() {
 		Property establishedProp = rdfModel.createProperty(Constants.dbpprop,
 				Constants.dbpEstablishedKey);
 		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
@@ -121,7 +121,7 @@ public class MuseumRDF extends RDFObject {
 	 * 
 	 * @return Pair<String, String>
 	 */
-	public Pair<String, String> website() {
+	public Pair<String, String> getWebsite() {
 		Property websiteProperty = rdfModel.createProperty(Constants.dbpprop,
 				Constants.dbpWebsiteKey);
 		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
@@ -145,7 +145,7 @@ public class MuseumRDF extends RDFObject {
 	 * 
 	 * @return - Pair<String,String>
 	 */
-	public Pair<String, String> thumbnail() {
+	public Pair<String, String> getThumbnail() {
 		Property thumbnailProperty = rdfModel.createProperty(
 				Constants.dbpedia_owl, Constants.dbpThumbnailKey);
 		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
@@ -160,7 +160,7 @@ public class MuseumRDF extends RDFObject {
 	 * 
 	 * @return Pair<String, Resource>
 	 */
-	public List<Pair<String, Resource>> works() {
+	public List<Pair<String, Resource>> getWorks() {
 		ArrayList<Pair<String, Resource>> works = new ArrayList<Pair<String, Resource>>();
 		Property worksProperty = rdfModel.createProperty(Constants.dbpedia_owl,
 				Constants.dbpMuseumKey);
@@ -181,7 +181,7 @@ public class MuseumRDF extends RDFObject {
 	 * 
 	 * @return List<Pair<String, Resource>>
 	 */
-	public List<Pair<String, Resource>> subjectsIncludingMuseum() {
+	public List<Pair<String, Resource>> getSubjectsIncludingMuseum() {
 		ArrayList<Pair<String, Resource>> subjects = new ArrayList<Pair<String, Resource>>();
 		Property subjectProperty = rdfModel.createProperty(Constants.dcterms,
 				Constants.dbpSubjectKey);
@@ -201,7 +201,7 @@ public class MuseumRDF extends RDFObject {
 	 * 
 	 * @return
 	 */
-	public List<Pair<String, Resource>> locations() {
+	public List<Pair<String, Resource>> getLocations() {
 		ArrayList<Pair<String, Resource>> locations = new ArrayList<Pair<String, Resource>>();
 		Property locationProperty = rdfModel.createProperty(
 				Constants.dbpedia_owl, Constants.dbpLocationKey);
@@ -224,7 +224,7 @@ public class MuseumRDF extends RDFObject {
 	 * 
 	 * @return
 	 */
-	public List<Pair<String, Resource>> deadPeople() {
+	public List<Pair<String, Resource>> getDeadPeople() {
 		ArrayList<Pair<String, Resource>> deadPeople = new ArrayList<Pair<String, Resource>>();
 		Property deathPlaceProperty = rdfModel.createProperty(
 				Constants.dbpedia_owl, Constants.dbpDeathPlaceOfKey);
@@ -248,7 +248,7 @@ public class MuseumRDF extends RDFObject {
 	 * 
 	 * @return
 	 */
-	public List<Pair<String, Resource>> bornPeople() {
+	public List<Pair<String, Resource>> getBornPeople() {
 		ArrayList<Pair<String, Resource>> bornPeople = new ArrayList<Pair<String, Resource>>();
 
 		Property birthPlaceProperty = rdfModel.createProperty(
@@ -267,5 +267,4 @@ public class MuseumRDF extends RDFObject {
 		}
 		return bornPeople;
 	}
-
 }

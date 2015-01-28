@@ -78,7 +78,7 @@ public class RDFObject {
 	 * 
 	 * @return Pair<String,String>
 	 */
-	public Pair<String, String> abstractValue() {
+	public Pair<String, String> getAbstract() {
 		Property abstractProperty = rdfModel.createProperty(
 				Constants.dbpedia_owl, Constants.dbpAbstractKey);
 		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
@@ -97,7 +97,7 @@ public class RDFObject {
 	 * 
 	 * @return Pair<String, String>
 	 */
-	public Pair<String, String> name() {
+	public Pair<String, String> getName() {
 		Property foafName = rdfModel.createProperty(Constants.foaf,
 				Constants.dbpNameKey);
 		Property rdfsName = rdfModel.createProperty(Constants.rdfs,
@@ -121,7 +121,7 @@ public class RDFObject {
 	 * 
 	 * @return
 	 */
-	public Pair<String, String> wikiPageURL() {
+	public Pair<String, String> getWikiPageURL() {
 		Property primaryTopicOfProperty = rdfModel.createProperty(
 				Constants.foaf, Constants.dbpPrimaryTopicKey);
 		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
