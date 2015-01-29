@@ -3,14 +3,18 @@ package ro.emu.client.controllers;
 import java.util.ArrayList;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.hp.hpl.jena.rdf.model.Model;
+
 import ro.emu.client.dbpedia.DBPediaClient;
 import ro.emu.client.models.MuseumRDF;
 import ro.emu.client.models.MuseumThumbnail;
@@ -20,6 +24,8 @@ import ro.emu.client.utils.Request;
 @RequestMapping("/home")
 public class HomeController {
 
+	@Autowired ServletContext servletContext;
+	
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView homeMuseums() {
 		ModelAndView modelAndView = new ModelAndView("index");
@@ -60,7 +66,7 @@ public class HomeController {
 		try {
 			
 			model = DBPediaClient
-					.retrieveRDFModelForResource("http://dbpedia.org/page/British_Museum");
+					.retrieveRDFModelForResource("http://dbpedia.org/page/British_Museum", servletContext);
 			MuseumRDF museumRDF = new MuseumRDF(model);
 			Map<String, String> ns = museumRDF.getNsPrefixes();
 			modelAndView.addObject("namespaces", ns);

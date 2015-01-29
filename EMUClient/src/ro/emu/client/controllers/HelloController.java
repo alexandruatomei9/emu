@@ -1,5 +1,8 @@
 package ro.emu.client.controllers;
 
+import javax.servlet.ServletContext;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,13 +15,15 @@ import com.hp.hpl.jena.rdf.model.Model;
 @Controller
 @RequestMapping("/welcome")
 public class HelloController {
+	@Autowired ServletContext servletContext;
+	
 	@RequestMapping("/rdf")
 	public void getRdfForMuseum(
 			@RequestParam("dbpediaURI") String dbpediaResourceURL) {
 		Model model = null;
 		try {
 			model = DBPediaClient
-					.retrieveRDFModelForResource(dbpediaResourceURL);
+					.retrieveRDFModelForResource(dbpediaResourceURL, servletContext);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
