@@ -105,7 +105,7 @@
 		</div>
 
 		<div id="container" class="wrapper row col4"
-			resource="${museumRDF.getResourceName()} "
+			about="${museumRDF.getResourceName()} "
 			typeof="dbpedia-owl:Museum">
 			<div id="content" class="col-sm-7">
 				<h2>
@@ -145,7 +145,7 @@
 						</c:if>
 						<!-- Test for Number of Visitors -->
 						<c:if test="${not empty museumRDF.getNumberOfVisitors()}">
-							<h3>Number of visitors</h3>
+							<h3>Number of Visitors</h3>
 							<div>
 								<p property="${museumRDF.getNumberOfVisitors().getFirst()}"
 									datatype="xsd:integer">
@@ -161,8 +161,11 @@
 						<c:if test="${not empty museumRDF.getWebsite()}">
 							<h3>Website</h3>
 							<div>
-								<p property="${museumRDF.getWebsite().getFirst()}">
-									${museumRDF.getWebsite().getSecond()}</p>
+								<p property="${museumRDF.getWebsite().getFirst()} dc:URI"
+									datatype="xsd:anyURI">
+									<a href="${museumRDF.getWebsite().getSecond()}">${museumRDF.getWebsite().getSecond()}
+									</a>
+								</p>
 							</div>
 						</c:if>
 
