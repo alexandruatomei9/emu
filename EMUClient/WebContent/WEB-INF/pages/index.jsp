@@ -4,8 +4,8 @@
 	xmlns:dc="http://purl.org/dc/elements/1.1/"
 	<c:forEach var="ns" items="${namespaces}">
     	xmlns:${ns.key}="${ns.value}"	
-</c:forEach>>
-<head>
+	</c:forEach>>
+	<head>
 <title property="dc:title">EMU</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta name="viewport"
@@ -24,75 +24,83 @@
 
 <link href="<c:url value="/resources/layout/styles/bootstrap.min.css" />"
 	rel="stylesheet">
-<link href="<c:url value="/resources/layout/styles/layout.css" />"
-	rel="stylesheet">
 <link href="<c:url value="/resources/layout/styles/jquery-ui.css" />"
+	rel="stylesheet">
+<link href="<c:url value="/resources/layout/styles/jquery.bxslider.css" />"
+	rel="stylesheet">
+<link href="<c:url value="/resources/layout/styles/layout.css" />"
 	rel="stylesheet">
 <script src="<c:url value="/resources/js/jquery.min.js" />"></script>
 <script src="<c:url value="/resources/js/jquery-ui.min.js" />"></script>
 <script src="<c:url value="/resources/js/bootstrap.min.js" />"></script>
 <script src="<c:url value="/resources/js/index.js" />"></script>
+<script src="<c:url value="/resources/js/jquery.bxslider.min.js" />"></script>
+
+<script type="text/javascript">
+    $(function(){
+        $('#accordion').accordion({ speed: 'slow'});
+    });
+    
+    
+    $(document).ready(function(){
+  		$('.bxslider').bxSlider({
+  			mode: 'fade',
+  			captions: true
+		});
+	});
+</script>
+
 </head>
-<body id="top">
+	<body id="top">
 <div class="container">
 	<c:set var="hashtag" scope="session" value="#" />
 
-	<div class="wrapper row col2">
-		<div id="header" class="col-xs-12">
-			<div id="topnav" style="float:right;">
-				<ul>
-					<li class="last"><a href="#" onclick="javascript:getMap()">Map</a><span>Test
-							Text Here</span></li>
-					<li><a href="quiz">Quiz</a><span>Test Text Here</span></li>
-					<li class="active"><a href="home">Homepage</a><span>Test
-							Text Here</span></li>
-				</ul>
-			</div>
-			<div id="logo">
+	<div id="header" class="wrapper row col2">
+			<div class="col-sm-6" id="logo">
 				<h1>
 					<a href="home">Emu</a>
 				</h1>
 				<p>Semantic Web-Enhanced Museum</p>
 			</div>
+
+			
+			<div class="col-sm-6" id="topnav">
+				<ul>
+					<li class="active"><a href="home">Homepage</a><span>Find out more</span></li>
+					<li><a href="#" onclick="javascript:getMap()">Map</a><span>Nearby Museums</span></li>
+					<li><a href="quiz">Quiz</a><span>Test Your Knowledge</span></li>
+				</ul>
+			</div>
+			
 			<br class="clear" />
-		</div>
 	</div>
 	
-		<div id="intro" class="wrapper row col3">
-			<ul>
-				<c:forEach var="museumThumb" items="${museumThumbs}"
-					varStatus="myIndex">
-					<c:choose>
-						<c:when test="${myIndex.index != museumThumbs.size()}">
-							<li class="col-xs-12" resource="${museumThumb.getDetailsUrl}"
+		<div id="intro" class="wrapper col3">
+		
+			<ul class="row">	
+				<c:forEach var="museumThumb" items="${museumThumbs}">
+							<li class="col-sm-12" resource="${museumThumb.getDetailsUrl}"
 								typeof="dbpedia-owl:Museum"><img class="gal"
 								src="${museumThumb.imageUrl}" alt=""
 								rel="dbpedia-owl:thumbnail foaf:thumbnail" /> <a
-								href="${museumThumb.getDetailsUrl}""><span
+								href="${museumThumb.getDetailsUrl}"><span
 									rel="rdfs:label foaf:name">${museumThumb.museumName}</span>
-									&raquo;</a></li>
-						</c:when>
-
-						<c:otherwise>
-							<li class="col-xs-12"><img class="gal"
-								src="${museumThumb.imageUrl}" alt="" /> <a href="#">${museumThumb.museumName}
-									&raquo;</a></li>
-						</c:otherwise>
-					</c:choose>
+									&raquo;</a>
+							</li>
 				</c:forEach>
 			</ul>
+			
 			<br class="clear" />
 			<center>
 				<div class="ui-widget" style="margin-top: 5px;">
 					<label for="museum">Search a Museum: </label> <input id="museum"
-						style="witdth: 50%">
+						style="width: 50%">
 				</div>
 			</center>
 		</div>
 	
-	<div class="wrapper row col4" resource="#current" typeof="dbpedia-owl:Museum">
-		<div id="container">
-			<div id="content">
+	<div id="container" class="wrapper row col4" resource="#current" typeof="dbpedia-owl:Museum">
+			<div id="content" class="col-sm-7">
 				<h2>
 					<a href="${museumRDF.getWebsite().getSecond()}">${museumRDF.getName().getSecond()}</a>
 				</h2>
@@ -102,74 +110,79 @@
 					width="125" height="125" />
 				<p class="justify" rel="${museumRDF.getAbstract().getFirst()}">${museumRDF.getAbstract().getSecond()}</p>
 			</div>
-			<div id="column">
+			<div id="column" class="col-sm-5">
 				<h2>Details</h2>
 				<div class="scrollbar">
-					<ul id="latestnews">
+					<div id="accordion">
 						<c:if
 							test="${not empty museumRDF.getLatitude() && not empty museumRDF.getLongitude()}">
-							<p>
-								<strong>Location</strong>
-							</p>
-							<p>
-								(<span property="${museumRDF.getLatitude().getFirst()}" datatype="xsd:float">${museumRDF.getLatitude().getSecond()}</span>,<span property="${museumRDF.getLongitude().getFirst()}" datatype="xsd:float">${museumRDF.getLongitude().getSecond()}</span>)
-							</p>
+							<h3>Location</h3>
+							<div>
+								<p>
+									(<span property="${museumRDF.getLatitude().getFirst()}"
+										datatype="xsd:float">${museumRDF.getLatitude().getSecond()}</span>,<span
+										property="${museumRDF.getLongitude().getFirst()}"
+										datatype="xsd:float">${museumRDF.getLongitude().getSecond()}</span>)
+								</p>
+							</div>
 						</c:if>
-					</ul>
+
+						<h3>Section 2</h3>
+						<div>
+							<p>Sed non urna. Donec et ante. Phasellus eu ligula.
+								Vestibulum sit amet purus. Vivamus hendrerit, dolor at aliquet
+								laoreet, mauris turpis porttitor velit, faucibus interdum tellus
+								libero ac justo. Vivamus non quam. In suscipit faucibus urna.</p>
+						</div>
+						<h3>Section 2</h3>
+						<div>
+							<p>Sed non urna. Donec et ante. Phasellus eu ligula.
+								Vestibulum sit amet purus. Vivamus hendrerit, dolor at aliquet
+								laoreet, mauris turpis porttitor velit, faucibus interdum tellus
+								libero ac justo. Vivamus non quam. In suscipit faucibus urna.</p>
+						</div>
+					</div>
 				</div>
 			</div>
 			<br class="clear" />
-		</div>
+			<br class="clear" />
+			<br class="clear" />
 	</div>
 	<div class="wrapper row col5">
 		<div id="footer">
-			<div id="newsletter">
-				<h2>Stay In The Know !</h2>
-				<p>Please enter your email to join our mailing list</p>
-				<form action="#" method="post">
-					<fieldset>
-						<legend>News Letter</legend>
-						<input type="text" value="Enter Email Here&hellip;"
-							onfocus="this.value=(this.value=='Enter Email Here&hellip;')? '' : this.value ;" />
-						<input type="submit" name="news_go" id="news_go" value="GO" />
-					</fieldset>
-				</form>
-				<p>
-					To unsubscribe please <a href="#">click here &raquo;</a>
-				</p>
+				<div class="bxslider">
+					<div class="row collapse slide-pane">
+						<div class="small-6 medium-6 large-6 columns">
+							<img
+								src="http://www.cruzine.com/wp-content/uploads/2013/06/001-original-artworks-shichigoroshingo.jpg" />
+						</div>
+						<div class="small-6 medium-6 large-6 columns text-pane">
+							<h1>Titlu opera de arta</h1>
+							<p>Descriere</p>
+						</div>
+					</div>
+					<div class="row collapse slide-pane">
+						<div class="small-6 medium-6 large-6 columns">
+							<img
+								src="http://behance.vo.llnwd.net/profiles4/113797/projects/731401/d9eb81ec157108a81bf1caafc61708dd.jpg" />
+						</div>
+						<div class="small-6 medium-6 large-6 columns text-pane">
+							<h1>Titlu opera de arta</h1>
+							<p>Descriere</p>
+						</div>
+					</div>
+					<div class="row collapse slide-pane">
+						<div class="small-6 medium-6 large-6 columns">
+							<img
+								src="http://behance.vo.llnwd.net/profiles4/113797/projects/731401/5dd0d4f20523e9ad2d51d97e9af3ef64.jpg" />
+						</div>
+						<div class="small-6 medium-6 large-6 columns text-pane">
+							<h1>Titlu opera de arta</h1>
+							<p>Descriere</p>
+						</div>
+					</div>
+				</div>
 			</div>
-			<div class="footbox">
-				<h2>Lacus interdum</h2>
-				<ul>
-					<li><a href="#">Praesent et eros</a></li>
-					<li><a href="#">Praesent et eros</a></li>
-					<li><a href="#">Lorem ipsum dolor</a></li>
-					<li><a href="#">Suspendisse in neque</a></li>
-					<li class="last"><a href="#">Praesent et eros</a></li>
-				</ul>
-			</div>
-			<div class="footbox">
-				<h2>Lacus interdum</h2>
-				<ul>
-					<li><a href="#">Praesent et eros</a></li>
-					<li><a href="#">Praesent et eros</a></li>
-					<li><a href="#">Lorem ipsum dolor</a></li>
-					<li><a href="#">Suspendisse in neque</a></li>
-					<li class="last"><a href="#">Praesent et eros</a></li>
-				</ul>
-			</div>
-			<div class="footbox">
-				<h2>Lacus interdum</h2>
-				<ul>
-					<li><a href="#">Praesent et eros</a></li>
-					<li><a href="#">Praesent et eros</a></li>
-					<li><a href="#">Lorem ipsum dolor</a></li>
-					<li><a href="#">Suspendisse in neque</a></li>
-					<li class="last"><a href="#">Praesent et eros</a></li>
-				</ul>
-			</div>
-			<br class="clear" />
-		</div>
 	</div>
 	<div class="wrapper row col6">
 		<div id="copyright">
@@ -185,5 +198,4 @@
 		</div>
 	</div>
 </div>
-</body>
-</html>
+</body></html>
