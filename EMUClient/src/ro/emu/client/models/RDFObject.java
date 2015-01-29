@@ -73,6 +73,24 @@ public class RDFObject {
 		return null;
 	}
 
+	public String getResourceName() {
+		Property abstractProperty = rdfModel.createProperty(
+				Constants.dbpedia_owl, Constants.dbpAbstractKey);
+		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
+				abstractProperty, lang);
+		if (stmt != null) {
+			return stmt.getSubject().getURI();
+		}
+		Property foafName = rdfModel.createProperty(Constants.foaf,
+				Constants.dbpNameKey);
+		stmt = DBPediaExtractor.statementWithProperties(rdfModel, foafName,
+				lang);
+		if (stmt != null) {
+			return stmt.getSubject().getURI();
+		}
+		return null;
+	}
+
 	/**
 	 * Get the abstract description about a entity
 	 * 

@@ -20,7 +20,7 @@ import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
  *
  */
 public class MuseumRDF extends RDFObject {
-	
+
 	public MuseumRDF() {
 	}
 
@@ -112,8 +112,12 @@ public class MuseumRDF extends RDFObject {
 				Constants.dbpEstablishedKey);
 		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
 				establishedProp, "en");
-		return new Pair<String, Integer>(rdfModel.shortForm(stmt.getPredicate()
-				.getURI()), (Integer) objectValueFromStatement(stmt));
+		if (stmt != null) {
+			return new Pair<String, Integer>(rdfModel.shortForm(stmt
+					.getPredicate().getURI()),
+					(Integer) objectValueFromStatement(stmt));
+		}
+		return null;
 	}
 
 	/**
@@ -266,5 +270,44 @@ public class MuseumRDF extends RDFObject {
 			}
 		}
 		return bornPeople;
+	}
+
+	/**
+	 * Get the number of visitors
+	 * 
+	 * @return
+	 */
+	public Pair<String, Integer> getNumberOfVisitors() {
+		ArrayList<Pair<String, Integer>> numbers = new ArrayList<Pair<String, Integer>>();
+		Property nrOfVisitorsProperty = rdfModel.createProperty(
+				Constants.dbpedia_owl, Constants.dbpNumberOfVisitorsKey);
+		List<Statement> stmts = DBPediaExtractor.statementsWithProperties(
+				rdfModel, nrOfVisitorsProperty, lang);
+		for (Statement stmt : stmts) {
+			Object nrOfVisitorsObject = objectValueFromStatement(stmt);
+			if (nrOfVisitorsObject.getClass() == Integer.class) {
+				numbers.add(new Pair<String, Integer>(rdfModel.shortForm(stmt
+						.getPredicate().getURI()), (Integer) nrOfVisitorsObject));
+			}
+		}
+		nrOfVisitorsProperty = rdfModel.createProperty(Constants.dbpprop,
+				Constants.dbpVisitorsKey);
+		stmts = DBPediaExtractor.statementsWithProperties(rdfModel,
+				nrOfVisitorsProperty, lang);
+		for (Statement stmt : stmts) {
+			Object nrOfVisitorsObject = objectValueFromStatement(stmt);
+			if (nrOfVisitorsObject.getClass() == Integer.class) {
+				numbers.add(new Pair<String, Integer>(rdfModel.shortForm(stmt
+						.getPredicate().getURI()), (Integer) nrOfVisitorsObject));
+			}
+		}
+		if (numbers.size() == 0)
+			return null;
+		Pair<String, Integer> maxNumberPair = numbers.get(0);
+		for (Pair<String, Integer> pair : numbers) {
+			if (maxNumberPair.getSecond() < pair.getSecond())
+				maxNumberPair = pair;
+		}
+		return maxNumberPair;
 	}
 }

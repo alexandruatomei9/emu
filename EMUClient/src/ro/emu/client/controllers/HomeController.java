@@ -24,8 +24,9 @@ import ro.emu.client.utils.Request;
 @RequestMapping("/home")
 public class HomeController {
 
-	@Autowired ServletContext servletContext;
-	
+	@Autowired
+	ServletContext servletContext;
+
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView homeMuseums() {
 		ModelAndView modelAndView = new ModelAndView("index");
@@ -64,9 +65,9 @@ public class HomeController {
 		// for the 5th museum display the image and some details
 		Model model = null;
 		try {
-			
-			model = DBPediaClient
-					.retrieveRDFModelForResource("http://dbpedia.org/page/British_Museum", servletContext);
+
+			model = DBPediaClient.retrieveRDFModelForResource(
+					"http://dbpedia.org/page/The_Louvre", servletContext);
 			MuseumRDF museumRDF = new MuseumRDF(model);
 			Map<String, String> ns = museumRDF.getNsPrefixes();
 			modelAndView.addObject("namespaces", ns);

@@ -16,6 +16,7 @@ public class DBPediaClient {
 
 		FileManager fManager = FileManager.get();
 		fManager.addLocatorURL();
+		
 		model = fManager.loadModel(DBPediaClient.convertDBpediaURLToResourceURL(dbpediaURL));
 		TBDManager.storeModel(model, dbpediaURL, servletContext);
 		return model;
