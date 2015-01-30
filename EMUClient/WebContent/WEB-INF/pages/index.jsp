@@ -37,19 +37,52 @@
 <script src="<c:url value="/resources/js/bootstrap.min.js" />"></script>
 <script src="<c:url value="/resources/js/index.js" />"></script>
 <script src="<c:url value="/resources/js/jquery.bxslider.min.js" />"></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+<script>
+function initialize() {
+	var map;
+	var myLat = "${museumRDF.getLatitude().getSecond()}";
+	var myLong = "${museumRDF.getLongitude().getSecond()}";
+	var museum = "${museumRDF.getName().getSecond()}";
+	var myLatlng = new google.maps.LatLng(myLat, myLong);
 
+	var mapOptions = {
+		zoom : 10,
+		center : myLatlng
+	};
+	map = new google.maps.Map(document.getElementById('map-canvas'),
+			mapOptions);
+
+	var pinColor = "0099FF";
+	var pinImage = new google.maps.MarkerImage(
+			"http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|"
+					+ pinColor, new google.maps.Size(21, 34),
+			new google.maps.Point(0, 0), new google.maps.Point(10, 34));
+
+	var marker = new google.maps.Marker({
+		position : myLatlng,
+		map : map,
+		title : museum,
+		icon : pinImage
+	});	
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>
 <script type="text/javascript">
 	$(function() {
-		$('#accordion').accordion({
+		$('.accordion').accordion({
 			speed : 'slow',
-			heightStyle : "content"
+			heightStyle : "content",
+			collapsible: true,
 		});
 	});
 
 	$(document).ready(function() {
 		$('.bxslider').bxSlider({
 			mode : 'fade',
-			captions : true
+			captions : true,
+			adaptiveHeight: false
 		});
 	});
 </script>
@@ -119,21 +152,23 @@
 			<div id="column" class="col-sm-5">
 				<h2>Details</h2>
 				<div class="scrollbar">
-					<div id="accordion">
+					<div class="accordion">
 						<!-- Test for Location Detail -->
 						<c:if
 							test="${not empty museumRDF.getLatitude() && not empty museumRDF.getLongitude()}">
 							<h3>Location</h3>
-							<div>
-								<p>
+							<div style="height:250px;">
+								<p style="display:none;">
 									(<span property="${museumRDF.getLatitude().getFirst()}"
 										datatype="xsd:float">${museumRDF.getLatitude().getSecond()}</span>,<span
 										property="${museumRDF.getLongitude().getFirst()}"
 										datatype="xsd:float">${museumRDF.getLongitude().getSecond()}</span>)
 								</p>
+								<div id="map-canvas" style="width: 100%; height:100%; margin:0 auto; padding-top:20px; padding-bottom:20px;"></div>
 							</div>
 						</c:if>
-
+					</div>
+					<div class="accordion">
 						<!-- Test for Established Year -->
 						<c:if test="${not empty museumRDF.getEstablishedYear()}">
 							<h3>Established Year</h3>
@@ -143,6 +178,8 @@
 									${museumRDF.getEstablishedYear().getSecond()}</p>
 							</div>
 						</c:if>
+					</div>
+					<div class="accordion">
 						<!-- Test for Number of Visitors -->
 						<c:if test="${not empty museumRDF.getNumberOfVisitors()}">
 							<h3>Number of Visitors</h3>
@@ -152,12 +189,14 @@
 									${museumRDF.getNumberOfVisitors().getSecond()}</p>
 							</div>
 						</c:if>
+					</div>
 						<!-- Test for Director -->
 
 						<!-- Test for Born People -->
 
 						<!-- Test for Dead People -->
 						<!-- Test for Website -->
+					<div class="accordion">
 						<c:if test="${not empty museumRDF.getWebsite()}">
 							<h3>Website</h3>
 							<div>
@@ -168,46 +207,104 @@
 								</p>
 							</div>
 						</c:if>
-
+					</div>
 
 					</div>
 				</div>
-			</div>
 			<br class="clear" /> <br class="clear" /> <br class="clear" />
 		</div>
-		<div class="wrapper row col5">
+		<div class="wrapper col5">
 			<div id="footer">
 				<div class="bxslider">
-					<div class="row collapse slide-pane">
-						<div class="small-6 medium-6 large-6 columns">
-							<img
-								src="http://www.cruzine.com/wp-content/uploads/2013/06/001-original-artworks-shichigoroshingo.jpg" />
+  					<div class="row">
+  						<div class="col-sm-4">
+  						<img src="http://www.cruzine.com/wp-content/uploads/2013/06/001-original-artworks-shichigoroshingo.jpg" />
+  						</div>
+  						<div class="description col-sm-8">
+  							<h2>Title 1</h2>
+							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+								Ut egestas dapibus nulla, rutrum ornare enim tempus eleifend.
+								Sed eu feugiat augue. Nulla non tristique mauris. Fusce lacus
+								sem, feugiat at rhoncus ac, cursus sit amet tellus. Pellentesque
+								a vulputate urna, nec consequat justo. Mauris ultrices risus
+								vitae diam lobortis, nec malesuada augue dictum. Cras nec
+								hendrerit libero, sit amet tincidunt arcu. Vivamus pulvinar
+								lorem lacus, fringilla consectetur turpis dignissim at.
+								Phasellus viverra, arcu sit amet congue vestibulum, quam leo
+								rutrum ex, ut faucibus nisi nisi ac libero. Praesent arcu
+								turpis, efficitur porta velit sed, porta tristique quam. Nullam
+								eleifend enim ut euismod laoreet. Duis vestibulum nisl ut ipsum
+								cursus malesuada.</p>
+							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+								Ut egestas dapibus nulla, rutrum ornare enim tempus eleifend.
+								Sed eu feugiat augue. Nulla non tristique mauris. Fusce lacus
+								sem, feugiat at rhoncus ac, cursus sit amet tellus. Pellentesque
+								a vulputate urna, nec consequat justo. Mauris ultrices risus
+								vitae diam lobortis, nec malesuada augue dictum. Cras nec
+								hendrerit libero, sit amet tincidunt arcu. Vivamus pulvinar
+								lorem lacus, fringilla consectetur turpis dignissim at.
+								Phasellus viverra, arcu sit amet congue vestibulum, quam leo
+								rutrum ex, ut faucibus nisi nisi ac libero. Praesent arcu
+								turpis, efficitur porta velit sed, porta tristique quam. Nullam
+								eleifend enim ut euismod laoreet. Duis vestibulum nisl ut ipsum
+								cursus malesuada.</p>
+							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+								Ut egestas dapibus nulla, rutrum ornare enim tempus eleifend.
+								Sed eu feugiat augue. Nulla non tristique mauris. Fusce lacus
+								sem, feugiat at rhoncus ac, cursus sit amet tellus. Pellentesque
+								a vulputate urna, nec consequat justo. Mauris ultrices risus
+								vitae diam lobortis, nec malesuada augue dictum. Cras nec
+								hendrerit libero, sit amet tincidunt arcu. Vivamus pulvinar
+								lorem lacus, fringilla consectetur turpis dignissim at.
+								Phasellus viverra, arcu sit amet congue vestibulum, quam leo
+								rutrum ex, ut faucibus nisi nisi ac libero. Praesent arcu
+								turpis, efficitur porta velit sed, porta tristique quam. Nullam
+								eleifend enim ut euismod laoreet. Duis vestibulum nisl ut ipsum
+								cursus malesuada.</p>
 						</div>
-						<div class="small-6 medium-6 large-6 columns text-pane">
-							<h1>Titlu opera de arta</h1>
-							<p>Descriere</p>
+  					</div>
+  					<div class="row">
+  						<div class="col-sm-4">
+  							<img src="http://behance.vo.llnwd.net/profiles4/113797/projects/731401/d9eb81ec157108a81bf1caafc61708dd.jpg" />
+  						</div>
+  						<div class="description col-sm-8">
+  							<h2>Title 2</h2>
+							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+								Ut egestas dapibus nulla, rutrum ornare enim tempus eleifend.
+								Sed eu feugiat augue. Nulla non tristique mauris. Fusce lacus
+								sem, feugiat at rhoncus ac, cursus sit amet tellus. Pellentesque
+								a vulputate urna, nec consequat justo. Mauris ultrices risus
+								vitae diam lobortis, nec malesuada augue dictum. Cras nec
+								hendrerit libero, sit amet tincidunt arcu. Vivamus pulvinar
+								lorem lacus, fringilla consectetur turpis dignissim at.
+								Phasellus viverra, arcu sit amet congue vestibulum, quam leo
+								rutrum ex, ut faucibus nisi nisi ac libero. Praesent arcu
+								turpis, efficitur porta velit sed, porta tristique quam. Nullam
+								eleifend enim ut euismod laoreet. Duis vestibulum nisl ut ipsum
+								cursus malesuada.</p>
 						</div>
-					</div>
-					<div class="row collapse slide-pane">
-						<div class="small-6 medium-6 large-6 columns">
-							<img
-								src="http://behance.vo.llnwd.net/profiles4/113797/projects/731401/d9eb81ec157108a81bf1caafc61708dd.jpg" />
+  					</div>
+  					<div class="row">
+  						<div class="col-sm-4">
+  							<img src="http://behance.vo.llnwd.net/profiles4/113797/projects/731401/5dd0d4f20523e9ad2d51d97e9af3ef64.jpg" />
+  						</div>
+  						<div class="description col-sm-8">
+  							<h2>Title 3</h2>
+							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+								Ut egestas dapibus nulla, rutrum ornare enim tempus eleifend.
+								Sed eu feugiat augue. Nulla non tristique mauris. Fusce lacus
+								sem, feugiat at rhoncus ac, cursus sit amet tellus. Pellentesque
+								a vulputate urna, nec consequat justo. Mauris ultrices risus
+								vitae diam lobortis, nec malesuada augue dictum. Cras nec
+								hendrerit libero, sit amet tincidunt arcu. Vivamus pulvinar
+								lorem lacus, fringilla consectetur turpis dignissim at.
+								Phasellus viverra, arcu sit amet congue vestibulum, quam leo
+								rutrum ex, ut faucibus nisi nisi ac libero. Praesent arcu
+								turpis, efficitur porta velit sed, porta tristique quam. Nullam
+								eleifend enim ut euismod laoreet. Duis vestibulum nisl ut ipsum
+								cursus malesuada.</p>
 						</div>
-						<div class="small-6 medium-6 large-6 columns text-pane">
-							<h1>Titlu opera de arta</h1>
-							<p>Descriere</p>
-						</div>
-					</div>
-					<div class="row collapse slide-pane">
-						<div class="small-6 medium-6 large-6 columns">
-							<img
-								src="http://behance.vo.llnwd.net/profiles4/113797/projects/731401/5dd0d4f20523e9ad2d51d97e9af3ef64.jpg" />
-						</div>
-						<div class="small-6 medium-6 large-6 columns text-pane">
-							<h1>Titlu opera de arta</h1>
-							<p>Descriere</p>
-						</div>
-					</div>
+  					</div>
 				</div>
 			</div>
 		</div>

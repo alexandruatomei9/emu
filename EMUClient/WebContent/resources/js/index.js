@@ -38,7 +38,7 @@ $(function() {
 					jQuery.get("search", {
 						q : request.term
 					}, function(data) {
-						var array = data.split(',');
+						var array = data.split('*');
 						response(array);
 					});
 				},

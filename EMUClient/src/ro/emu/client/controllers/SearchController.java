@@ -57,7 +57,7 @@ public class SearchController {
 				if(i==result.size()-1){
 					res+=result.get(i);
 				}else{
-					res+=result.get(i)+",";
+					res+=result.get(i)+"*";
 				}
 			}
 		}

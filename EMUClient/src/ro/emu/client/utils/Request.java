@@ -46,7 +46,7 @@ public class Request {
 		HttpResponse response = client.execute(request);
 
 		BufferedReader rd = new BufferedReader(new InputStreamReader(response
-				.getEntity().getContent()));
+				.getEntity().getContent(),"UTF8"));
 
 		StringBuffer result = new StringBuffer();
 		String line = "";
@@ -81,7 +81,7 @@ public class Request {
 		HttpResponse response = client.execute(post);
 
 		BufferedReader rd = new BufferedReader(new InputStreamReader(response
-				.getEntity().getContent()));
+				.getEntity().getContent(), "UTF8"));
 
 		StringBuffer result = new StringBuffer();
 		String line = "";

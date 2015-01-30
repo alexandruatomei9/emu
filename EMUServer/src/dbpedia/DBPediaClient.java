@@ -34,8 +34,7 @@ public class DBPediaClient {
 			if (solution != null) {
 				String resourceUri = solution.getResource("?museum").toString();
 				Literal lit = solution.getLiteral("?label");
-				String thumbnail = solution.getResource("?thumbnail")
-						.toString();
+				String thumbnail = solution.getResource("?thumbnail").toString();
 				list.add(new Museum(lit.getValue().toString(), resourceUri,
 						thumbnail));
 			}

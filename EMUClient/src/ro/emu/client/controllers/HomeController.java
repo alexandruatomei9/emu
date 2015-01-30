@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +52,9 @@ public class HomeController {
 					for (int i = 0; i < items.length(); i++) {
 						JSONObject item = items.getJSONObject(i);
 						MuseumThumbnail thumb = new MuseumThumbnail();
-						thumb.setMuseumName(item.getString("name"));
-						thumb.setImageUrl(item.getString("thumbUri"));
-						thumb.setGetDetailsUrl(item.getString("uri"));
+						thumb.setMuseumName(StringEscapeUtils.escapeHtml4(item.getString("name")));
+						thumb.setImageUrl(StringEscapeUtils.escapeHtml4(item.getString("thumbUri")));
+						thumb.setGetDetailsUrl(StringEscapeUtils.escapeHtml4(item.getString("uri")));
 						museumsThumbs.add(thumb);
 					}
 				}

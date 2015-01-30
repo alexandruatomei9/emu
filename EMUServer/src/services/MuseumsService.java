@@ -30,12 +30,17 @@ public class MuseumsService {
 			response.setMessage(e.getMessage());
 			e.printStackTrace();
 		}
-
+		
 		if (!list.isEmpty()) {
 			response.setCode(Code.OK);
 			response.setResponse(list);
 		}
-
+		/*List<Museum> respMus = (ArrayList<Museum>) response.getResponse();
+		for(int i =0; i<respMus.size(); i++){
+			System.out.println(respMus.get(i).getUri());
+		}*/
+		
+		
 		return response;
 	}
 	
