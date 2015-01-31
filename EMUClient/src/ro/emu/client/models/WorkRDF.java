@@ -50,7 +50,10 @@ public class WorkRDF extends RDFObject {
 		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
 				thumbnailProperty, "en");
 		Object value = objectValueFromStatement(stmt);
-		return new Pair<String, String>(rdfModel.shortForm(stmt.getPredicate()
-				.getURI()), value.toString());
+		if (value != null && stmt.getPredicate() != null) {
+			return new Pair<String, String>(rdfModel.shortForm(stmt
+					.getPredicate().getURI()), value.toString());
+		}
+		return null;
 	}
 }
