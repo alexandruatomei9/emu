@@ -39,14 +39,15 @@ public class DataController {
 			Model workModel = DBPediaClient.retrieveRDFModelForResource(
 					workURI, servletContext);
 			if (workModel != null) {
+				JsonObjectBuilder workbuilder = factory.createObjectBuilder();
 				WorkRDF workRDF = new WorkRDF(workModel);
-				addObjectToJson(builder, workRDF.getAbstract(), "abstract");
+				addObjectToJson(workbuilder, workRDF.getAbstract(), "abstract");
 
-				addObjectToJson(builder, workRDF.getName(), "name");
+				addObjectToJson(workbuilder, workRDF.getName(), "name");
 
-				addObjectToJson(builder, workRDF.thumbnail(), "thumbnail");
+				addObjectToJson(workbuilder, workRDF.thumbnail(), "thumbnail");
 
-				addObjectToJson(builder, workRDF.getWikiPageURL(),
+				addObjectToJson(workbuilder, workRDF.getWikiPageURL(),
 						"wiki_page_url");
 				Pair<String, Resource> authorPair = workRDF.author();
 				if (authorPair != null && authorPair.isValid()
@@ -64,8 +65,13 @@ public class DataController {
 							"thumbnail");
 					addObjectToJson(authorBuilder, personRDF.getWikiPageURL(),
 							"wiki_page_url");
-					builder.add("author", authorBuilder);
+					addObjectToJson(authorBuilder, personRDF.getBirthDate(),
+							"birth_date");
+					addObjectToJson(authorBuilder, personRDF.getDeathDate(),
+							"death_date");
+					workbuilder.add("author", authorBuilder);
 				}
+				builder.add(workRDF.getResourceName(), workbuilder);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
