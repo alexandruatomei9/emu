@@ -1,4 +1,4 @@
-package ro.emu.client.models;
+package ro.emu.client.rdfmodels;
 
 import ro.emu.client.dbpedia.DBPediaExtractor;
 import ro.emu.client.utils.Constants;

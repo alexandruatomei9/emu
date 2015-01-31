@@ -17,8 +17,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.hp.hpl.jena.rdf.model.Model;
 
 import ro.emu.client.dbpedia.DBPediaClient;
-import ro.emu.client.models.MuseumRDF;
 import ro.emu.client.models.MuseumThumbnail;
+import ro.emu.client.rdfmodels.MuseumRDF;
 import ro.emu.client.utils.Request;
 
 @Controller

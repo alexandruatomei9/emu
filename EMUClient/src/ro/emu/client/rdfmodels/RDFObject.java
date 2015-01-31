@@ -1,4 +1,4 @@
-package ro.emu.client.models;
+package ro.emu.client.rdfmodels;
 
 import java.util.Map;
 
