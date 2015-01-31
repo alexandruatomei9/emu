@@ -1,4 +1,4 @@
-package ro.emu.client.models;
+package ro.emu.client.rdfmodels;
 
 import ro.emu.client.dbpedia.DBPediaExtractor;
 import ro.emu.client.utils.Constants;
@@ -35,8 +35,11 @@ public class WorkRDF extends RDFObject {
 		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
 				authorProperty, "en");
 		Object authorValue = objectValueFromStatement(stmt);
-		return new Pair<String, Resource>(rdfModel.shortForm(stmt
-				.getPredicate().getURI()), (Resource) authorValue);
+		if (authorValue != null) {
+			return new Pair<String, Resource>(rdfModel.shortForm(stmt
+					.getPredicate().getURI()), (Resource) authorValue);
+		}
+		return null;
 	}
 
 	/**
@@ -50,7 +53,10 @@ public class WorkRDF extends RDFObject {
 		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
 				thumbnailProperty, "en");
 		Object value = objectValueFromStatement(stmt);
-		return new Pair<String, String>(rdfModel.shortForm(stmt.getPredicate()
-				.getURI()), value.toString());
+		if (value != null && stmt.getPredicate() != null) {
+			return new Pair<String, String>(rdfModel.shortForm(stmt
+					.getPredicate().getURI()), value.toString());
+		}
+		return null;
 	}
 }

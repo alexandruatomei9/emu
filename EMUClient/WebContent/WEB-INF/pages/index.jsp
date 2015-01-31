@@ -1,4 +1,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+
 <html version="HTML+RDFa 1.1" lang="en"
 	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -37,44 +39,45 @@
 <script src="<c:url value="/resources/js/bootstrap.min.js" />"></script>
 <script src="<c:url value="/resources/js/index.js" />"></script>
 <script src="<c:url value="/resources/js/jquery.bxslider.min.js" />"></script>
-<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+<script
+	src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 <script>
-function initialize() {
-	var map;
-	var myLat = "${museumRDF.getLatitude().getSecond()}";
-	var myLong = "${museumRDF.getLongitude().getSecond()}";
-	var museum = "${museumRDF.getName().getSecond()}";
-	var myLatlng = new google.maps.LatLng(myLat, myLong);
+	function initialize() {
+		var map;
+		var myLat = "${museumRDF.getLatitude().getSecond()}";
+		var myLong = "${museumRDF.getLongitude().getSecond()}";
+		var museum = "${museumRDF.getName().getSecond()}";
+		var myLatlng = new google.maps.LatLng(myLat, myLong);
 
-	var mapOptions = {
-		zoom : 10,
-		center : myLatlng
-	};
-	map = new google.maps.Map(document.getElementById('map-canvas'),
-			mapOptions);
+		var mapOptions = {
+			zoom : 10,
+			center : myLatlng
+		};
+		map = new google.maps.Map(document.getElementById('map-canvas'),
+				mapOptions);
 
-	var pinColor = "0099FF";
-	var pinImage = new google.maps.MarkerImage(
-			"http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|"
-					+ pinColor, new google.maps.Size(21, 34),
-			new google.maps.Point(0, 0), new google.maps.Point(10, 34));
+		var pinColor = "0099FF";
+		var pinImage = new google.maps.MarkerImage(
+				"http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|"
+						+ pinColor, new google.maps.Size(21, 34),
+				new google.maps.Point(0, 0), new google.maps.Point(10, 34));
 
-	var marker = new google.maps.Marker({
-		position : myLatlng,
-		map : map,
-		title : museum,
-		icon : pinImage
-	});	
-}
+		var marker = new google.maps.Marker({
+			position : myLatlng,
+			map : map,
+			title : museum,
+			icon : pinImage
+		});
+	}
 
-google.maps.event.addDomListener(window, 'load', initialize);
+	google.maps.event.addDomListener(window, 'load', initialize);
 </script>
 <script type="text/javascript">
 	$(function() {
 		$('.accordion').accordion({
 			speed : 'slow',
 			heightStyle : "content",
-			collapsible: true,
+			collapsible : true,
 		});
 	});
 
@@ -82,7 +85,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
 		$('.bxslider').bxSlider({
 			mode : 'fade',
 			captions : true,
-			adaptiveHeight: false
+			adaptiveHeight : false
 		});
 	});
 </script>
@@ -138,8 +141,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
 		</div>
 
 		<div id="container" class="wrapper row col4"
-			about="${museumRDF.getResourceName()} "
-			typeof="dbpedia-owl:Museum">
+			about="${museumRDF.getResourceName()} " typeof="dbpedia-owl:Museum">
 			<div id="content" class="col-sm-7">
 				<h2>
 					<a href="${museumRDF.getWebsite().getSecond()}">${museumRDF.getName().getSecond()}</a>
@@ -157,14 +159,15 @@ google.maps.event.addDomListener(window, 'load', initialize);
 						<c:if
 							test="${not empty museumRDF.getLatitude() && not empty museumRDF.getLongitude()}">
 							<h3>Location</h3>
-							<div style="height:250px;">
-								<p style="display:none;">
+							<div style="height: 250px;">
+								<p style="display: none;">
 									(<span property="${museumRDF.getLatitude().getFirst()}"
 										datatype="xsd:float">${museumRDF.getLatitude().getSecond()}</span>,<span
 										property="${museumRDF.getLongitude().getFirst()}"
 										datatype="xsd:float">${museumRDF.getLongitude().getSecond()}</span>)
 								</p>
-								<div id="map-canvas" style="width: 100%; height:100%; margin:0 auto; padding-top:20px; padding-bottom:20px;"></div>
+								<div id="map-canvas"
+									style="width: 100%; height: 100%; margin: 0 auto; padding-top: 20px; padding-bottom: 20px;"></div>
 							</div>
 						</c:if>
 					</div>
@@ -190,12 +193,23 @@ google.maps.event.addDomListener(window, 'load', initialize);
 							</div>
 						</c:if>
 					</div>
-						<!-- Test for Director -->
+					<!-- Test for Director -->
 
-						<!-- Test for Born People -->
+					<!-- Test for Born People -->
 
-						<!-- Test for Dead People -->
-						<!-- Test for Website -->
+					<!-- Test for Dead People -->
+
+					<!-- Test for Website -->
+					<!-- Hidden List Of works -->
+					<c:if test="${not empty museumRDF.getWorks()}">
+						<c:if test="${fn:length(museumRDF.getWorks()) gt 0}">
+							<ul id="hidden_works_list" style="display: none">
+								<c:forEach var="workPair" items="${museumRDF.getWorks()}">
+									<li><c:out value="${workPair.getSecond().getURI()}"></c:out></li>
+								</c:forEach>
+							</ul>
+						</c:if>
+					</c:if>
 					<div class="accordion">
 						<c:if test="${not empty museumRDF.getWebsite()}">
 							<h3>Website</h3>
@@ -209,19 +223,20 @@ google.maps.event.addDomListener(window, 'load', initialize);
 						</c:if>
 					</div>
 
-					</div>
 				</div>
+			</div>
 			<br class="clear" /> <br class="clear" /> <br class="clear" />
 		</div>
 		<div class="wrapper col5">
 			<div id="footer">
 				<div class="bxslider">
-  					<div class="row">
-  						<div class="col-sm-4">
-  						<img src="http://www.cruzine.com/wp-content/uploads/2013/06/001-original-artworks-shichigoroshingo.jpg" />
-  						</div>
-  						<div class="description col-sm-8">
-  							<h2>Title 1</h2>
+					<div class="row">
+						<div class="col-sm-4">
+							<img
+								src="http://www.cruzine.com/wp-content/uploads/2013/06/001-original-artworks-shichigoroshingo.jpg" />
+						</div>
+						<div class="description col-sm-8">
+							<h2>Title 1</h2>
 							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 								Ut egestas dapibus nulla, rutrum ornare enim tempus eleifend.
 								Sed eu feugiat augue. Nulla non tristique mauris. Fusce lacus
@@ -262,13 +277,14 @@ google.maps.event.addDomListener(window, 'load', initialize);
 								eleifend enim ut euismod laoreet. Duis vestibulum nisl ut ipsum
 								cursus malesuada.</p>
 						</div>
-  					</div>
-  					<div class="row">
-  						<div class="col-sm-4">
-  							<img src="http://behance.vo.llnwd.net/profiles4/113797/projects/731401/d9eb81ec157108a81bf1caafc61708dd.jpg" />
-  						</div>
-  						<div class="description col-sm-8">
-  							<h2>Title 2</h2>
+					</div>
+					<div class="row">
+						<div class="col-sm-4">
+							<img
+								src="http://behance.vo.llnwd.net/profiles4/113797/projects/731401/d9eb81ec157108a81bf1caafc61708dd.jpg" />
+						</div>
+						<div class="description col-sm-8">
+							<h2>Title 2</h2>
 							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 								Ut egestas dapibus nulla, rutrum ornare enim tempus eleifend.
 								Sed eu feugiat augue. Nulla non tristique mauris. Fusce lacus
@@ -283,13 +299,14 @@ google.maps.event.addDomListener(window, 'load', initialize);
 								eleifend enim ut euismod laoreet. Duis vestibulum nisl ut ipsum
 								cursus malesuada.</p>
 						</div>
-  					</div>
-  					<div class="row">
-  						<div class="col-sm-4">
-  							<img src="http://behance.vo.llnwd.net/profiles4/113797/projects/731401/5dd0d4f20523e9ad2d51d97e9af3ef64.jpg" />
-  						</div>
-  						<div class="description col-sm-8">
-  							<h2>Title 3</h2>
+					</div>
+					<div class="row">
+						<div class="col-sm-4">
+							<img
+								src="http://behance.vo.llnwd.net/profiles4/113797/projects/731401/5dd0d4f20523e9ad2d51d97e9af3ef64.jpg" />
+						</div>
+						<div class="description col-sm-8">
+							<h2>Title 3</h2>
 							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 								Ut egestas dapibus nulla, rutrum ornare enim tempus eleifend.
 								Sed eu feugiat augue. Nulla non tristique mauris. Fusce lacus
@@ -304,7 +321,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
 								eleifend enim ut euismod laoreet. Duis vestibulum nisl ut ipsum
 								cursus malesuada.</p>
 						</div>
-  					</div>
+					</div>
 				</div>
 			</div>
 		</div>

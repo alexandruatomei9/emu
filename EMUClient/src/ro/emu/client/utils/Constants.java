@@ -41,4 +41,6 @@ public class Constants {
 	public static final String dbpPrimaryTopicKey = "isPrimaryTopicOf";
 	public static final String dbpCuratorKey = "curator";
 	public static final String dbpAuthorKey = "author";
+	public static final String dbpBirthDateKey = "birthDate";
+	public static final String dbpDeathDateKey = "deathDate";
 }

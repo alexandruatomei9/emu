@@ -1,7 +1,8 @@
-package ro.emu.client.models;
+package ro.emu.client.rdfmodels;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import ro.emu.client.dbpedia.DBPediaExtractor;
 import ro.emu.client.utils.Constants;
 import ro.emu.client.utils.Pair;

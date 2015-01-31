@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ro.emu.client.dbpedia.DBPediaClient;
-import ro.emu.client.models.MuseumRDF;
+import ro.emu.client.rdfmodels.MuseumRDF;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
