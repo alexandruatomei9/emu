@@ -58,7 +58,8 @@ public class TriviaService {
 		}
 	    
 	    for(int i=0;i<10;i++){
-	    	String cat = anyItem(cats);
+	    	int index=anyItem(cats.size());
+	    	String cat = cats.get(index);
 	    	Question question = createQuestion(cat);
 	    	questions.add(question);
 	    	cats.remove(cat);
@@ -82,8 +83,12 @@ public class TriviaService {
 		for (String value : values) {
 			options.add(value);
 		}
-		String correct = anyItem(options);
+		
+		int index = anyItem(options.size());
+		String correct = options.get(index);
+		
 		switch (category) {
+		
 		case "country":
 			List<Museum> museumsInCountry = DBPediaClient
 					.retrieveMuseumsInCountry(correct);
@@ -95,7 +100,7 @@ public class TriviaService {
 			
 			for(int i = 0; i<3; i++){
 				Answer answer = new Answer();
-				String incorrect = anyItem(options);
+				String incorrect = options.get(anyItem(options.size()));			
 				answer.setId(i+2);
 				answer.setValue(incorrect);
 				options.remove(incorrect);
@@ -106,8 +111,19 @@ public class TriviaService {
 			break;
 			
 		case "museum": 
-			/*List<Museum> countryForMuseums = DBPediaClient.(correct);
-			question.setText("Which of these museums is in "+ countryForMuseums.get(0) + "?");
+			
+			String[] uris = prop.getProperty("uri").split(",");
+			ArrayList<String>uriList = new ArrayList<String>();	
+			for (String uri : uris) {
+				uriList.add(uri);
+			}
+			
+			String correctUri=uriList.get(index);
+			
+			String countryForMuseums = DBPediaClient.retrieveCountryForMuseum(correctUri);
+			uriList.remove(correctUri);
+			
+			question.setText("Which of these museums is in "+ countryForMuseums + "?");
 			correctAnswer.setId(1);
 			correctAnswer.setValue(correct);
 			answers.add(correctAnswer);
@@ -115,15 +131,18 @@ public class TriviaService {
 			
 			for(int i = 0; i<3; i++){
 				Answer answer = new Answer();
-				String incorrect = anyItem(options);
+				int indexIncorrect=anyItem(options.size());
+				String incorrect = options.get(indexIncorrect);
 				answer.setId(i+2);
 				answer.setValue(incorrect);
 				options.remove(incorrect);
+				uriList.remove(indexIncorrect);
 				answers.add(answer);
 			}
+			
 			Collections.shuffle(answers);
 			question.setAnswers(answers);
-			break;*/
+			break;
 		default:
 			break;
 		}
@@ -131,10 +150,8 @@ public class TriviaService {
 		return question;
 	}
 
-	public String anyItem(ArrayList<String> values) {
+	public int anyItem(int size) {
 		Random randomGenerator = new Random();
-		int index = randomGenerator.nextInt(values.size());
-		String item = values.get(index);
-		return item;
-	}
-}
+		int index = randomGenerator.nextInt(size);		
+		return index;
+	}}

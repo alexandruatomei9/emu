@@ -61,7 +61,7 @@ public class Hello {
 	// This method is called if HTML is request
 	@GET
 	@Produces(MediaType.TEXT_HTML)
-	public String getMuseumsBrowser() {
+	public String getMuseumsBrowser() throws Exception {
 		// List<Museum> list = DBPediaClient.retrieveMuseumsWithPrefix(
 		// "Swe", 10);
 		// return list;
@@ -71,7 +71,8 @@ public class Hello {
 		// List<Museum> museums = DBPediaClient
 		// .retrieveMuseumsInCountry("Romania");
 		// System.out.println(museums);
-		
+		String nr=DBPediaClient.retrieveCountryForMuseum("http://dbpedia.org/resource/Ouvrage_Schoenenbourg");
+		System.out.println(nr);
 		return "Ceva";
 	}
 

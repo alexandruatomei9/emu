@@ -34,7 +34,8 @@ public class DBPediaClient {
 			if (solution != null) {
 				String resourceUri = solution.getResource("?museum").toString();
 				Literal lit = solution.getLiteral("?label");
-				String thumbnail = solution.getResource("?thumbnail").toString();
+				String thumbnail = solution.getResource("?thumbnail")
+						.toString();
 				list.add(new Museum(lit.getValue().toString(), resourceUri,
 						thumbnail));
 			}
@@ -121,28 +122,51 @@ public class DBPediaClient {
 
 		return list;
 	}
-	public static List<Museum> retrieveCountryForMuseums(String musemus)
-			throws Exception {
-		Query query = DBPediaQueryBuilder.retrieveCountryForMuseum(musemus);
-		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
-		List<Museum> list = new ArrayList<Museum>();
 
+	public static String retrieveCountryForMuseum(String museumURI)
+			throws Exception {
+		Query query = DBPediaQueryBuilder.retrieveCountryForMuseum(museumURI);
+		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
+		String resourceUri = null;
+		String country = null;
+
+		ResultSet result = qe.execSelect();
+		if (result.hasNext()) {
+			QuerySolution solution = result.next();
+			if (solution != null) {
+				resourceUri = solution.getResource("?val").toString();
+			}
+		}
+		
+		Query query2 = DBPediaQueryBuilder.retriveCountry(resourceUri);
+		QueryExecution qe2 = QueryExecutionFactory.sparqlService(service,
+				query2);
+		ResultSet result2 = qe2.execSelect();
+		if(result2.hasNext()) {
+			QuerySolution solution2 = result2.next();
+			if (solution2 != null) {
+				Literal lit = solution2.getLiteral("?label");
+				country = lit.getValue().toString();
+			}
+		}
+		return country;
+	}
+
+	public static String retriveNumberOfVisitorsMuseum(String museumURI) {
+		String numberOfVisitors = null;
+		Query query = DBPediaQueryBuilder
+				.retriveNumberOfVisitorsMuseum(museumURI);
+		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
 		ResultSet result = qe.execSelect();
 		while (result.hasNext()) {
 			QuerySolution solution = result.next();
-			if (solution != null) {
-				String resourceUri = solution.getResource("?locationCountry").toString();
-				Literal lit = solution.getLiteral("?label");
-				String thumbnail = solution.getResource("?thumbnail")
-						.toString();
-				/*list.add((lit.getValue().toString(), resourceUri,
-						thumbnail));
-*/			}
+			Literal lit = solution.getLiteral("?val");
+			numberOfVisitors = lit.getValue().toString();
 		}
 
-		return list;
+		return numberOfVisitors;
+
 	}
-	
 
 	public static List<Work> retrieveWorksForMuseum(String museumName,
 			Integer limit) throws Exception {

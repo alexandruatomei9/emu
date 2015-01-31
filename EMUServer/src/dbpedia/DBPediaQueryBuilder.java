@@ -122,22 +122,39 @@ public class DBPediaQueryBuilder {
 		return qs.asQuery();
 	}
 
-	public static Query retrieveCountryForMuseum(String museumName) {
+	public static Query retrieveCountryForMuseum(String museumURI) {
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
-		qs.setNsPrefix("dbpedia-owl", "http://dbpedia.org/ontology/");
+		qs.setBaseUri(museumURI);
 		qs.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+		qs.setNsPrefix("dbpedia-owl", "http://dbpedia.org/ontology/");
 		qs.setNsPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-		qs.setNsPrefix("dbpedia", "http://dbpedia.org/resource/");
-		qs.append("SELECT DISTINCT ?locationCountry ?label ");
-		qs.append("WHERE {");
-		qs.append("?locationCountry  rdf:dbpedia-owl:locationCountry;");
-		qs.append("dbpedia-owl:museum dbpedia:" + museumName + ";");
-		qs.append("rdfs:label ?label.");
-		qs.append(" FILTER(lang(?label) = 'en').");
-		qs.append("}");
-		qs.append("LIMIT " + 1);
+		qs.append("SELECT ?val WHERE {<" + museumURI
+				+ "> dbpedia-owl:location ?val}LIMIT" + 1);
 		return qs.asQuery();
 
+	}
+	
+	public static Query retriveCountry(String uri)
+	{
+		ParameterizedSparqlString qs = new ParameterizedSparqlString();
+		qs.setBaseUri(uri);
+		qs.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+		qs.setNsPrefix("dbpedia-owl", "http://dbpedia.org/ontology/");
+	
+
+		qs.append("SELECT ?label WHERE {<" + uri
+				+ "> rdfs:label ?label FILTER ( lang(?label) ='en')} LIMIT" + 1);
+		return qs.asQuery();
+	}
+	
+
+	public static Query retriveNumberOfVisitorsMuseum(String museumURI) {
+		ParameterizedSparqlString qs = new ParameterizedSparqlString();
+		qs.setNsPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+		qs.setNsPrefix("dbpprop", "http://dbpedia.org/property/");
+		qs.append("SELECT ?val WHERE {<" + museumURI
+				+ "> dbpprop:visitors ?val}LIMIT" + 1);
+		return qs.asQuery();
 	}
 
 	/**
