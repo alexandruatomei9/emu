@@ -101,7 +101,6 @@ public class RDFObject {
 				Constants.dbpedia_owl, Constants.dbpAbstractKey);
 		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
 				abstractProperty, lang);
-		System.out.println(rdfModel.shortForm(stmt.getPredicate().getURI()));
 		Object value = objectValueFromStatement(stmt);
 		if (value != null) {
 			String prefixNS = rdfModel.shortForm(stmt.getPredicate().getURI());
