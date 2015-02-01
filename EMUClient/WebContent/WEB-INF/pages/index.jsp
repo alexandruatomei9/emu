@@ -82,10 +82,22 @@
 	});
 
 	$(document).ready(function() {
-		$('.bxslider').bxSlider({
-			mode : 'fade',
-			captions : true,
-			adaptiveHeight : false
+		$('#hidden_works_list li').each(function(i){
+				   $.ajax({
+			            type: "GET",
+			            url: "data/work",  
+						data : {
+							workURI : $(this).html()
+								},
+						success : function(response) {
+							$(".bxslider").append(response);
+							$('.bxslider').bxSlider({
+							mode : 'fade',
+							captions : true,
+							adaptiveHeight : false
+							});
+							}
+					});
 		});
 	});
 </script>
@@ -200,16 +212,6 @@
 					<!-- Test for Dead People -->
 
 					<!-- Test for Website -->
-					<!-- Hidden List Of works -->
-					<c:if test="${not empty museumRDF.getWorks()}">
-						<c:if test="${fn:length(museumRDF.getWorks()) gt 0}">
-							<ul id="hidden_works_list" style="display: none">
-								<c:forEach var="workPair" items="${museumRDF.getWorks()}">
-									<li><c:out value="${workPair.getSecond().getURI()}"></c:out></li>
-								</c:forEach>
-							</ul>
-						</c:if>
-					</c:if>
 					<div class="accordion">
 						<c:if test="${not empty museumRDF.getWebsite()}">
 							<h3>Website</h3>
@@ -222,7 +224,16 @@
 							</div>
 						</c:if>
 					</div>
-
+					<!-- Hidden List Of works -->
+					<c:if test="${not empty museumRDF.getWorks()}">
+						<c:if test="${fn:length(museumRDF.getWorks()) gt 0}">
+							<ul id="hidden_works_list" style="display: none">
+								<c:forEach var="workPair" items="${museumRDF.getWorks()}">
+									<li><c:out value="${workPair.getSecond().getURI()}"></c:out></li>
+								</c:forEach>
+							</ul>
+						</c:if>
+					</c:if>
 				</div>
 			</div>
 			<br class="clear" /> <br class="clear" /> <br class="clear" />
@@ -230,98 +241,7 @@
 		<div class="wrapper col5">
 			<div id="footer">
 				<div class="bxslider">
-					<div class="row">
-						<div class="col-sm-4">
-							<img
-								src="http://www.cruzine.com/wp-content/uploads/2013/06/001-original-artworks-shichigoroshingo.jpg" />
-						</div>
-						<div class="description col-sm-8">
-							<h2>Title 1</h2>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-								Ut egestas dapibus nulla, rutrum ornare enim tempus eleifend.
-								Sed eu feugiat augue. Nulla non tristique mauris. Fusce lacus
-								sem, feugiat at rhoncus ac, cursus sit amet tellus. Pellentesque
-								a vulputate urna, nec consequat justo. Mauris ultrices risus
-								vitae diam lobortis, nec malesuada augue dictum. Cras nec
-								hendrerit libero, sit amet tincidunt arcu. Vivamus pulvinar
-								lorem lacus, fringilla consectetur turpis dignissim at.
-								Phasellus viverra, arcu sit amet congue vestibulum, quam leo
-								rutrum ex, ut faucibus nisi nisi ac libero. Praesent arcu
-								turpis, efficitur porta velit sed, porta tristique quam. Nullam
-								eleifend enim ut euismod laoreet. Duis vestibulum nisl ut ipsum
-								cursus malesuada.</p>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-								Ut egestas dapibus nulla, rutrum ornare enim tempus eleifend.
-								Sed eu feugiat augue. Nulla non tristique mauris. Fusce lacus
-								sem, feugiat at rhoncus ac, cursus sit amet tellus. Pellentesque
-								a vulputate urna, nec consequat justo. Mauris ultrices risus
-								vitae diam lobortis, nec malesuada augue dictum. Cras nec
-								hendrerit libero, sit amet tincidunt arcu. Vivamus pulvinar
-								lorem lacus, fringilla consectetur turpis dignissim at.
-								Phasellus viverra, arcu sit amet congue vestibulum, quam leo
-								rutrum ex, ut faucibus nisi nisi ac libero. Praesent arcu
-								turpis, efficitur porta velit sed, porta tristique quam. Nullam
-								eleifend enim ut euismod laoreet. Duis vestibulum nisl ut ipsum
-								cursus malesuada.</p>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-								Ut egestas dapibus nulla, rutrum ornare enim tempus eleifend.
-								Sed eu feugiat augue. Nulla non tristique mauris. Fusce lacus
-								sem, feugiat at rhoncus ac, cursus sit amet tellus. Pellentesque
-								a vulputate urna, nec consequat justo. Mauris ultrices risus
-								vitae diam lobortis, nec malesuada augue dictum. Cras nec
-								hendrerit libero, sit amet tincidunt arcu. Vivamus pulvinar
-								lorem lacus, fringilla consectetur turpis dignissim at.
-								Phasellus viverra, arcu sit amet congue vestibulum, quam leo
-								rutrum ex, ut faucibus nisi nisi ac libero. Praesent arcu
-								turpis, efficitur porta velit sed, porta tristique quam. Nullam
-								eleifend enim ut euismod laoreet. Duis vestibulum nisl ut ipsum
-								cursus malesuada.</p>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-4">
-							<img
-								src="http://behance.vo.llnwd.net/profiles4/113797/projects/731401/d9eb81ec157108a81bf1caafc61708dd.jpg" />
-						</div>
-						<div class="description col-sm-8">
-							<h2>Title 2</h2>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-								Ut egestas dapibus nulla, rutrum ornare enim tempus eleifend.
-								Sed eu feugiat augue. Nulla non tristique mauris. Fusce lacus
-								sem, feugiat at rhoncus ac, cursus sit amet tellus. Pellentesque
-								a vulputate urna, nec consequat justo. Mauris ultrices risus
-								vitae diam lobortis, nec malesuada augue dictum. Cras nec
-								hendrerit libero, sit amet tincidunt arcu. Vivamus pulvinar
-								lorem lacus, fringilla consectetur turpis dignissim at.
-								Phasellus viverra, arcu sit amet congue vestibulum, quam leo
-								rutrum ex, ut faucibus nisi nisi ac libero. Praesent arcu
-								turpis, efficitur porta velit sed, porta tristique quam. Nullam
-								eleifend enim ut euismod laoreet. Duis vestibulum nisl ut ipsum
-								cursus malesuada.</p>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-4">
-							<img
-								src="http://behance.vo.llnwd.net/profiles4/113797/projects/731401/5dd0d4f20523e9ad2d51d97e9af3ef64.jpg" />
-						</div>
-						<div class="description col-sm-8">
-							<h2>Title 3</h2>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-								Ut egestas dapibus nulla, rutrum ornare enim tempus eleifend.
-								Sed eu feugiat augue. Nulla non tristique mauris. Fusce lacus
-								sem, feugiat at rhoncus ac, cursus sit amet tellus. Pellentesque
-								a vulputate urna, nec consequat justo. Mauris ultrices risus
-								vitae diam lobortis, nec malesuada augue dictum. Cras nec
-								hendrerit libero, sit amet tincidunt arcu. Vivamus pulvinar
-								lorem lacus, fringilla consectetur turpis dignissim at.
-								Phasellus viverra, arcu sit amet congue vestibulum, quam leo
-								rutrum ex, ut faucibus nisi nisi ac libero. Praesent arcu
-								turpis, efficitur porta velit sed, porta tristique quam. Nullam
-								eleifend enim ut euismod laoreet. Duis vestibulum nisl ut ipsum
-								cursus malesuada.</p>
-						</div>
-					</div>
+
 				</div>
 			</div>
 		</div>

@@ -1,6 +1,7 @@
 package ro.emu.client.controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -15,21 +16,30 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 import ro.emu.client.dbpedia.DBPediaClient;
 import ro.emu.client.models.MuseumThumbnail;
 import ro.emu.client.rdfmodels.MuseumRDF;
+import ro.emu.client.rdfmodels.WorkRDF;
+import ro.emu.client.utils.Pair;
 import ro.emu.client.utils.Request;
 
 @Controller
 @RequestMapping("/home")
 public class HomeController {
 
+	private static final String URI = "http://dbpedia.org/page/The_Louvre";
+	
+	
 	@Autowired
 	ServletContext servletContext;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView homeMuseums() {
+	public ModelAndView homeMuseums(String uri) {
+		if(uri==null || uri.equals("")){
+			uri = URI;
+		}
 		ModelAndView modelAndView = new ModelAndView("index");
 
 		String resp = null;
@@ -64,13 +74,14 @@ public class HomeController {
 		modelAndView.addObject("museumThumbs", museumsThumbs);
 
 		// for the 5th museum display the image and some details
+		Map<String, String> ns = new HashMap<String,String>();
 		Model model = null;
 		try {
 
 			model = DBPediaClient.retrieveRDFModelForResource(
-					"http://dbpedia.org/page/The_Louvre", servletContext);
+					uri, servletContext);
 			MuseumRDF museumRDF = new MuseumRDF(model);
-			Map<String, String> ns = museumRDF.getNsPrefixes();
+			ns.putAll(museumRDF.getNsPrefixes());
 			modelAndView.addObject("namespaces", ns);
 			modelAndView.addObject("museumRDF", museumRDF);
 		} catch (Exception e) {
@@ -79,5 +90,31 @@ public class HomeController {
 
 		return modelAndView;
 
+	}
+	
+	@RequestMapping(value="/works", method = RequestMethod.GET)
+	public ModelAndView homeMuseumWork(String uri) {
+		if(uri==null || uri.equals("")){
+			uri = URI;
+		}
+		ModelAndView modelAndView = new ModelAndView("works");
+		ArrayList<WorkRDF> worksRDF = new ArrayList<WorkRDF>();
+		Model model = null;
+		try {
+			model = DBPediaClient.retrieveRDFModelForResource(
+					uri, servletContext);
+			MuseumRDF museumRDF = new MuseumRDF(model);
+			for(Pair<String,Resource> workPair : museumRDF.getWorks()){
+				Model workModel = DBPediaClient.retrieveRDFModelForResource(workPair.getSecond().getURI(), servletContext);
+				WorkRDF workRDF = new WorkRDF(workModel);
+				//Map<String, String> ns = workRDF.getNsPrefixes();
+				worksRDF.add(workRDF);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		modelAndView.addObject("works", worksRDF);
+		
+		return modelAndView;
 	}
 }
