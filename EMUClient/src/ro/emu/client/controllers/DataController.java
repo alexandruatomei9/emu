@@ -1,11 +1,9 @@
 package ro.emu.client.controllers;
 
-import javax.json.Json;
-import javax.json.JsonBuilderFactory;
-import javax.json.JsonObjectBuilder;
 import javax.servlet.ServletContext;
 
 import org.apache.jena.atlas.json.JsonBuilder;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,27 +25,24 @@ public class DataController {
 	@Autowired
 	ServletContext servletContext;
 
-	private static JsonBuilderFactory factory = Json.createBuilderFactory(null);
-
 	@RequestMapping(value = "/work", method = RequestMethod.GET)
 	@ResponseBody
 	public String getWork(
 			@RequestParam(value = "workURI", required = true) String workURI) {
-		JsonObjectBuilder builder = factory.createObjectBuilder();
-
+		JSONObject resourceJSON = new JSONObject();
 		try {
 			Model workModel = DBPediaClient.retrieveRDFModelForResource(
 					workURI, servletContext);
 			if (workModel != null) {
-				JsonObjectBuilder workbuilder = factory.createObjectBuilder();
 				WorkRDF workRDF = new WorkRDF(workModel);
-				addObjectToJson(workbuilder, workRDF.getAbstract(), "abstract");
+				JSONObject workJSON = new JSONObject();
+				addObjectToJson(workJSON, workRDF.getAbstract(), "abstract");
 
-				addObjectToJson(workbuilder, workRDF.getName(), "name");
+				addObjectToJson(workJSON, workRDF.getName(), "name");
 
-				addObjectToJson(workbuilder, workRDF.thumbnail(), "thumbnail");
+				addObjectToJson(workJSON, workRDF.thumbnail(), "thumbnail");
 
-				addObjectToJson(workbuilder, workRDF.getWikiPageURL(),
+				addObjectToJson(workJSON, workRDF.getWikiPageURL(),
 						"wiki_page_url");
 				Pair<String, Resource> authorPair = workRDF.author();
 				if (authorPair != null && authorPair.isValid()
@@ -56,27 +51,26 @@ public class DataController {
 							.retrieveRDFModelForResource(authorPair.getSecond()
 									.getURI(), servletContext);
 					PersonRDF personRDF = new PersonRDF(authorModel);
-					JsonObjectBuilder authorBuilder = factory
-							.createObjectBuilder();
-					addObjectToJson(authorBuilder, personRDF.getAbstract(),
+					JSONObject authorObject = new JSONObject();
+					addObjectToJson(authorObject, personRDF.getAbstract(),
 							"abstract");
-					addObjectToJson(authorBuilder, personRDF.getName(), "name");
-					addObjectToJson(authorBuilder, personRDF.thumbnail(),
+					addObjectToJson(authorObject, personRDF.getName(), "name");
+					addObjectToJson(authorObject, personRDF.thumbnail(),
 							"thumbnail");
-					addObjectToJson(authorBuilder, personRDF.getWikiPageURL(),
+					addObjectToJson(authorObject, personRDF.getWikiPageURL(),
 							"wiki_page_url");
-					addObjectToJson(authorBuilder, personRDF.getBirthDate(),
+					addObjectToJson(authorObject, personRDF.getBirthDate(),
 							"birth_date");
-					addObjectToJson(authorBuilder, personRDF.getDeathDate(),
+					addObjectToJson(authorObject, personRDF.getDeathDate(),
 							"death_date");
-					workbuilder.add("author", authorBuilder);
+					workJSON.put("author", authorObject);
 				}
-				builder.add(workRDF.getResourceName(), workbuilder);
+				resourceJSON.put(workRDF.getResourceName(), workJSON);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return builder.build().toString();
+		return resourceJSON.toString();
 	}
 
 	@RequestMapping(value = "/author", method = RequestMethod.GET)
@@ -88,14 +82,11 @@ public class DataController {
 		return jsonBuilder.build().toString();
 	}
 
-	private void addObjectToJson(JsonObjectBuilder builder,
-			Pair<String, String> pair, String jsonKey) {
+	private void addObjectToJson(JSONObject object, Pair<String, String> pair,
+			String jsonKey) {
 		if (pair != null && pair.isValid()) {
-			builder.add(
-					jsonKey,
-					factory.createObjectBuilder()
-							.add("prefix", pair.getFirst())
-							.add("value", pair.getSecond()));
+			object.put(jsonKey, new JSONObject().put("prefix", pair.getFirst())
+					.put("value", pair.getSecond()));
 		}
 	}
 }
