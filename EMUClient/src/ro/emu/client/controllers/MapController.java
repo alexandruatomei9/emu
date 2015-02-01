@@ -27,11 +27,10 @@ public class MapController {
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView homeMuseums(HttpServletRequest request)
 			throws SocketException {
-		if(request.getParameter("ip") == null){
+		if (request.getParameter("ip") == null) {
 			return new ModelAndView("redirect:" + "home");
 		}
-		
-		
+
 		ModelAndView modelAndView = new ModelAndView("map");
 
 		LookupService lookupService = null;
@@ -63,7 +62,7 @@ public class MapController {
 
 		String response = null;
 		try {
-			response = Request.sendGet("/map/getNearbyMuseums", parameters);
+			response = Request.sendGet("/map/getNearbyMuseums", parameters,true);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -86,6 +85,5 @@ public class MapController {
 			modelAndView.addObject("pins", myJson.replace("'", "`"));
 		}
 		return modelAndView;
-
 	}
 }

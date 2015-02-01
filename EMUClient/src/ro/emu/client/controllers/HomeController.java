@@ -35,7 +35,7 @@ public class HomeController {
 		String resp = null;
 		try {
 			// get 4 museums from the api
-			resp = Request.sendGet("/museums/getMuseums", null);
+			resp = Request.sendGet("/museums/getMuseums", null, true);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -52,9 +52,12 @@ public class HomeController {
 					for (int i = 0; i < items.length(); i++) {
 						JSONObject item = items.getJSONObject(i);
 						MuseumThumbnail thumb = new MuseumThumbnail();
-						thumb.setMuseumName(StringEscapeUtils.escapeHtml4(item.getString("name")));
-						thumb.setImageUrl(StringEscapeUtils.escapeHtml4(item.getString("thumbUri")));
-						thumb.setGetDetailsUrl(StringEscapeUtils.escapeHtml4(item.getString("uri")));
+						thumb.setMuseumName(StringEscapeUtils.escapeHtml4(item
+								.getString("name")));
+						thumb.setImageUrl(StringEscapeUtils.escapeHtml4(item
+								.getString("thumbUri")));
+						thumb.setGetDetailsUrl(StringEscapeUtils
+								.escapeHtml4(item.getString("uri")));
 						museumsThumbs.add(thumb);
 					}
 				}
@@ -66,9 +69,10 @@ public class HomeController {
 		// for the 5th museum display the image and some details
 		Model model = null;
 		try {
-
-			model = DBPediaClient.retrieveRDFModelForResource(
-					"http://dbpedia.org/page/The_Louvre", servletContext);
+			model = DBPediaClient
+					.retrieveRDFModelForResource(
+							"http://dbpedia.org/page/British_Museum",
+							servletContext);
 			MuseumRDF museumRDF = new MuseumRDF(model);
 			Map<String, String> ns = museumRDF.getNsPrefixes();
 			modelAndView.addObject("namespaces", ns);
