@@ -47,7 +47,7 @@ public class HomeController {
 		String resp = null;
 		try {
 			// get 4 museums from the api
-			resp = Request.sendGet("/museums/getMuseums", null);
+			resp = Request.sendGet("/museums/getMuseums", null, true);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -64,9 +64,12 @@ public class HomeController {
 					for (int i = 0; i < items.length(); i++) {
 						JSONObject item = items.getJSONObject(i);
 						MuseumThumbnail thumb = new MuseumThumbnail();
-						thumb.setMuseumName(StringEscapeUtils.escapeHtml4(item.getString("name")));
-						thumb.setImageUrl(StringEscapeUtils.escapeHtml4(item.getString("thumbUri")));
-						thumb.setGetDetailsUrl(StringEscapeUtils.escapeHtml4(item.getString("uri")));
+						thumb.setMuseumName(StringEscapeUtils.escapeHtml4(item
+								.getString("name")));
+						thumb.setImageUrl(StringEscapeUtils.escapeHtml4(item
+								.getString("thumbUri")));
+						thumb.setGetDetailsUrl(StringEscapeUtils
+								.escapeHtml4(item.getString("uri")));
 						museumsThumbs.add(thumb);
 					}
 				}
@@ -79,7 +82,6 @@ public class HomeController {
 		Map<String, String> ns = new HashMap<String,String>();
 		Model model = null;
 		try {
-
 			model = DBPediaClient.retrieveRDFModelForResource(
 					uri, servletContext);
 			MuseumRDF museumRDF = new MuseumRDF(model);

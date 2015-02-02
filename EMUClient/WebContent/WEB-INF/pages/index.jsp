@@ -4,8 +4,8 @@
 <html version="HTML+RDFa 1.1" lang="en"
 	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:dc="http://purl.org/dc/elements/1.1/"
-	<c:forEach var="ns" items="${namespaces}">
-    	xmlns:${ns.key}="${ns.value}"	
+	xmlns:dcplaces="http://purl.org/ontology/places#"
+	<c:forEach var="ns" items="${namespaces}">xmlns:${ns.key}="${ns.value}"
 	</c:forEach>>
 <head>
 <title property="dc:title">EMU</title>
@@ -202,7 +202,23 @@
 						<c:if
 							test="${not empty museumRDF.getLatitude() && not empty museumRDF.getLongitude()}">
 							<h3>Location</h3>
+
 							<div style="height: 250px;">
+								<p>
+									<c:set var="locality" scope="request"
+										value="${museumRDF.getLocality() }" />
+									<c:set var="country" scope="request"
+										value="${museumRDF.getCountry()}" />
+
+									<c:if test="${not empty country}">
+										<span property="dcplaces:country"><c:out
+												value="${country}, " /></span>
+									</c:if>
+									<c:if test="${not empty locality}">
+										<span property="dbpedia-owl:locality"><c:out
+												value="${locality}" /></span>
+									</c:if>
+								</p>
 								<p style="display: none;">
 									(<span property="${museumRDF.getLatitude().getFirst()}"
 										datatype="xsd:float">${museumRDF.getLatitude().getSecond()}</span>,<span

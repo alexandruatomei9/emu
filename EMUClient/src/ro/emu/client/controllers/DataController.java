@@ -73,7 +73,7 @@ public class DataController {
 		return resourceJSON.toString();
 	}
 
-	@RequestMapping(value = "/author", method = RequestMethod.GET)
+	@RequestMapping(value = "/director", method = RequestMethod.GET)
 	@ResponseBody
 	public String getAuthor(
 			@RequestParam(value = "authorURI", required = true) String authorURI) {

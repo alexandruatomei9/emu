@@ -15,15 +15,16 @@ import com.hp.hpl.jena.rdf.model.Model;
 @Controller
 @RequestMapping("/welcome")
 public class HelloController {
-	@Autowired ServletContext servletContext;
-	
+	@Autowired
+	ServletContext servletContext;
+
 	@RequestMapping("/rdf")
 	public void getRdfForMuseum(
 			@RequestParam("dbpediaURI") String dbpediaResourceURL) {
 		Model model = null;
 		try {
-			model = DBPediaClient
-					.retrieveRDFModelForResource(dbpediaResourceURL, servletContext);
+			model = DBPediaClient.retrieveRDFModelForResource(
+					dbpediaResourceURL, servletContext);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -38,7 +39,6 @@ public class HelloController {
 			System.out.println(museumInfos.getWebsite());
 			System.out.println(museumInfos.getWorks());
 			System.out.println(museumInfos.getSubjectsIncludingMuseum());
-			System.out.println(museumInfos.getLocations());
 			System.out.println(museumInfos.getThumbnail());
 			System.out.println(museumInfos.getDeadPeople());
 			System.out.println(museumInfos.getBornPeople());

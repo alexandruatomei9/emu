@@ -1,11 +1,16 @@
 package ro.emu.client.rdfmodels;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import ro.emu.client.dbpedia.DBPediaExtractor;
 import ro.emu.client.utils.Constants;
 import ro.emu.client.utils.Pair;
+import ro.emu.client.utils.Request;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -202,26 +207,111 @@ public class MuseumRDF extends RDFObject {
 	}
 
 	/**
-	 * Get the museum's locations(city,country,street, etc.)
+	 * Get the museum's country
 	 * 
 	 * @return
 	 */
-	public List<Pair<String, Resource>> getLocations() {
-		ArrayList<Pair<String, Resource>> locations = new ArrayList<Pair<String, Resource>>();
-		Property locationProperty = rdfModel.createProperty(
-				Constants.dbpedia_owl, Constants.dbpLocationKey);
-		List<Statement> list = DBPediaExtractor.statementsWithProperties(
-				rdfModel, locationProperty, "en");
-		if (list != null) {
-			for (Statement stmt : list) {
-				if (stmt.getObject().isResource()) {
-					locations.add(new Pair<String, Resource>(rdfModel
-							.shortForm(stmt.getPredicate().getURI()),
-							(Resource) stmt.getObject()));
+	public String getCountry() {
+		Pair<String, Float> latCoordinate = getLatitude();
+		Pair<String, Float> longCoordinate = getLongitude();
+		if (latCoordinate == null || longCoordinate == null
+				|| !latCoordinate.isValid() || !longCoordinate.isValid())
+			return null;
+		Float latitude = latCoordinate.getSecond();
+		Float longitude = longCoordinate.getSecond();
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("sensor", "false");
+		params.put("latlng", latitude + "," + longitude);
+		try {
+			String countryName = Request.sendGet(
+					"http://maps.googleapis.com/maps/api/geocode/json", params,
+					false);
+			JSONObject object = new JSONObject(countryName);
+			JSONArray resultsArray = object.getJSONArray("results");
+			if (resultsArray != null) {
+				int length = resultsArray.length();
+				for (int i = 0; i < length; i++) {
+					JSONObject result = (JSONObject) resultsArray.get(i);
+					JSONArray address_components = result
+							.getJSONArray("address_components");
+					for (int j = 0; j < address_components.length(); j++) {
+						JSONObject component = (JSONObject) address_components
+								.get(j);
+						JSONArray types = component.getJSONArray("types");
+						if (types != null) {
+							int typeLength = types.length();
+							for (int k = 0; k < typeLength; k++) {
+								String typeString = types.getString(k);
+								if (typeString.equalsIgnoreCase("country")) {
+									return component.getString("long_name");
+								}
+							}
+						}
+					}
+
 				}
 			}
+
+			System.out.println(countryName);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return locations;
+		return null;
+	}
+
+	/**
+	 * Get the museum's locality
+	 * 
+	 * @return
+	 */
+	public String getLocality() {
+		Pair<String, Float> latCoordinate = getLatitude();
+		Pair<String, Float> longCoordinate = getLongitude();
+		if (latCoordinate == null || longCoordinate == null
+				|| !latCoordinate.isValid() || !longCoordinate.isValid())
+			return null;
+		Float latitude = latCoordinate.getSecond();
+		Float longitude = longCoordinate.getSecond();
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("sensor", "false");
+		params.put("latlng", latitude + "," + longitude);
+		try {
+			String countryName = Request.sendGet(
+					"http://maps.googleapis.com/maps/api/geocode/json", params,
+					false);
+			JSONObject object = new JSONObject(countryName);
+			JSONArray resultsArray = object.getJSONArray("results");
+			if (resultsArray != null) {
+				int length = resultsArray.length();
+				for (int i = 0; i < length; i++) {
+					JSONObject result = (JSONObject) resultsArray.get(i);
+					JSONArray address_components = result
+							.getJSONArray("address_components");
+					for (int j = 0; j < address_components.length(); j++) {
+						JSONObject component = (JSONObject) address_components
+								.get(j);
+						JSONArray types = component.getJSONArray("types");
+						if (types != null) {
+							int typeLength = types.length();
+							for (int k = 0; k < typeLength; k++) {
+								String typeString = types.getString(k);
+								if (typeString.equalsIgnoreCase("locality")) {
+									return component.getString("long_name");
+								}
+							}
+						}
+					}
+
+				}
+			}
+
+			System.out.println(countryName);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	/**

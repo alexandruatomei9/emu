@@ -32,7 +32,7 @@ public class QuizController {
 		String resp = null;
 		try {
 			//get 10 question from the api
-			resp = Request.sendGet("/trivia/getQuiz", null);
+			resp = Request.sendGet("/trivia/getQuiz", null,true);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
