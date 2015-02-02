@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -21,6 +22,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import ro.emu.client.dbpedia.DBPediaClient;
 import ro.emu.client.models.MuseumThumbnail;
 import ro.emu.client.rdfmodels.MuseumRDF;
+import ro.emu.client.rdfmodels.PersonRDF;
 import ro.emu.client.rdfmodels.WorkRDF;
 import ro.emu.client.utils.Pair;
 import ro.emu.client.utils.Request;
@@ -93,28 +95,39 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value="/works", method = RequestMethod.GET)
-	public ModelAndView homeMuseumWork(String uri) {
+	public ModelAndView homeMuseumWork(@RequestParam(value = "workURI", required = true) String uri) {
 		if(uri==null || uri.equals("")){
 			uri = URI;
 		}
 		ModelAndView modelAndView = new ModelAndView("works");
-		ArrayList<WorkRDF> worksRDF = new ArrayList<WorkRDF>();
-		Model model = null;
 		try {
-			model = DBPediaClient.retrieveRDFModelForResource(
+			Model workModel = DBPediaClient.retrieveRDFModelForResource(
 					uri, servletContext);
-			MuseumRDF museumRDF = new MuseumRDF(model);
-			for(Pair<String,Resource> workPair : museumRDF.getWorks()){
-				Model workModel = DBPediaClient.retrieveRDFModelForResource(workPair.getSecond().getURI(), servletContext);
+			if (workModel != null) {
 				WorkRDF workRDF = new WorkRDF(workModel);
-				//Map<String, String> ns = workRDF.getNsPrefixes();
-				worksRDF.add(workRDF);
+				modelAndView.addObject("description", workRDF.getAbstract());
+				modelAndView.addObject("name", workRDF.getName());
+				modelAndView.addObject("thumbnail", workRDF.thumbnail());
+				modelAndView.addObject("wiki_page_url", workRDF.getWikiPageURL());
+				
+				Pair<String, Resource> authorPair = workRDF.author();
+				if (authorPair != null && authorPair.isValid()
+						&& authorPair.getSecond().getURI() != null) {
+					Model authorModel = DBPediaClient
+							.retrieveRDFModelForResource(authorPair.getSecond()
+									.getURI(), servletContext);
+					PersonRDF personRDF = new PersonRDF(authorModel);
+					modelAndView.addObject("authorAbstract", personRDF.getAbstract());
+					modelAndView.addObject("authorName", personRDF.getName());
+					modelAndView.addObject("authorThumbnail", personRDF.thumbnail());
+					modelAndView.addObject("authorWiki", personRDF.getWikiPageURL());
+					modelAndView.addObject("authorBirthDate", personRDF.getBirthDate());
+					modelAndView.addObject("authorDeathDate", personRDF.getDeathDate());
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		modelAndView.addObject("works", worksRDF);
-		
 		return modelAndView;
 	}
 }

@@ -80,24 +80,55 @@
 			collapsible : true,
 		});
 	});
+	
+	$(document).ajaxStop(function () {
+		$('.bxslider').removeClass("loading");
+		
+		$("[rel='popover']").each(function(i){
+			alert.log(this.html());
+		});
+		 
+		$("[rel='popover']").popover({
+			html: 'true', 
+			content : '<div id="popOverBox">Your Text Here</div>'
+			});
+		
+		
+		$("[rel='popover']").click(function(e) {
+					console.log($("[rel='popover']").html());
+					e.stopPropagation();
+				});
+		$(document).click(
+			function(e) {
+				if (($('.popover').has(e.target).length == 0)
+							|| $(e.target).is('.close')) {
+						$("[rel='popover']").popover('hide');
+					}
+			});
+
+				$('.bxslider').bxSlider({
+					mode : 'fade',
+					captions : true,
+					adaptiveHeight : false,
+					pagerType : 'short',
+				});
+
+			});
 
 	$(document).ready(function() {
-		$('#hidden_works_list li').each(function(i){
-				   $.ajax({
-			            type: "GET",
-			            url: "data/work",  
-						data : {
-							workURI : $(this).html()
-								},
-						success : function(response) {
-							$(".bxslider").append(response);
-							$('.bxslider').bxSlider({
-							mode : 'fade',
-							captions : true,
-							adaptiveHeight : false
-							});
-							}
-					});
+		$('.bxslider').addClass("loading");
+
+		$('#hidden_works_list li').each(function(i) {
+			$.ajax({
+				type : "GET",
+				url : "home/works",
+				data : {
+					workURI : $(this).html()
+				},
+				success : function(response) {
+					$(".bxslider").append(response);
+				}
+			});
 		});
 	});
 </script>
