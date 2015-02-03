@@ -84,11 +84,11 @@ public class TriviaService {
 				.getResourceAsStream("/WEB-INF/categories.properties");
 		Properties prop = new Properties();
 		ArrayList<Question> questions = new ArrayList<Question>();
-		Question question = new Question();
+		Question question;
 		ArrayList<String> uriList;
 		String correctUri;
-		Answer correctAnswer = new Answer();
-		List<Answer> answers = new ArrayList<Answer>();
+		Answer correctAnswer;
+		List<Answer> answers;
 		prop.load(is);
 		String[] values = prop.getProperty(category).split(",");
 		ArrayList<String> options = new ArrayList<String>();
@@ -97,41 +97,52 @@ public class TriviaService {
 			options.add(value);
 		}
 
-		int index = anyItem(options.size());
-		String correct = options.get(index);
+		int index;
+		String correct;
 
 		switch (category) {
 
 		case "country":
+			for (int j = 0; j < 2; j++) {
+				correctAnswer = new Answer();
+				answers = new ArrayList<Answer>();
+				question = new Question();
+				index = anyItem(options.size());
+				correct = options.get(index);
+				List<Museum> museumsInCountry = DBPediaClient
+						.retrieveMuseumsInCountry(correct);
+				question.setText(museumsInCountry.get(0).getName()
+						+ " will be found in :");
+				correctAnswer.setId(1);
+				correctAnswer.setValue(correct);
+				correctAnswer.setCorrectAnswer(true);
+				answers.add(correctAnswer);
+				options.remove(correct);
 
-			List<Museum> museumsInCountry = DBPediaClient
-					.retrieveMuseumsInCountry(correct);
-			question.setText(museumsInCountry.get(0).getName()
-					+ " will be found in :");
-			correctAnswer.setId(1);
-			correctAnswer.setValue(correct);
-			correctAnswer.setCorrectAnswer(true);
-			answers.add(correctAnswer);
-			options.remove(correct);
-
-			for (int i = 0; i < 3; i++) {
-				Answer answer = new Answer();
-				String incorrect = options.get(anyItem(options.size()));
-				answer.setId(i + 2);
-				answer.setValue(incorrect);
-				options.remove(incorrect);
-				answers.add(answer);
+				for (int i = 0; i < 3; i++) {
+					Answer answer = new Answer();
+					String incorrect = options.get(anyItem(options.size()));
+					answer.setId(i + 2);
+					answer.setValue(incorrect);
+					options.remove(incorrect);
+					answers.add(answer);
+				}
+				Collections.shuffle(answers);
+				question.setAnswers(answers);
+				questions.add(question);
 			}
-			Collections.shuffle(answers);
-			question.setAnswers(answers);
-			questions.add(question);
 			break;
 
 		case "museum":
-			
+			for (int j = 0; j <= 2; j++) {
+				correctAnswer = new Answer();
+				answers = new ArrayList<Answer>();
+				question = new Question();
+				index = anyItem(options.size());
+				correct = options.get(index);
 				String[] uris = prop.getProperty("uri").split(",");
 				uriList = new ArrayList<String>();
-				
+
 				for (String uri : uris) {
 					uriList.add(uri);
 				}
@@ -161,50 +172,59 @@ public class TriviaService {
 					answers.add(answer);
 				}
 
-				Collections.shuffle(answers);;
+				Collections.shuffle(answers);
 				question.setAnswers(answers);
 				questions.add(question);
-			
+			}
 			break;
 		case "visitorsMuseum":
-			String[] visitorsUri = prop.getProperty("visitorsUri").split(",");
-			uriList = new ArrayList<String>();
-			for (String uri : visitorsUri) {
-				uriList.add(uri);
+			for (int j = 0; j < 2; j++) {
+				correctAnswer = new Answer();
+				answers = new ArrayList<Answer>();
+				question = new Question();
+				index = anyItem(options.size());
+				correct = options.get(index);
+				String[] visitorsUri = prop.getProperty("visitorsUri").split(
+						",");
+				uriList = new ArrayList<String>();
+				for (String uri : visitorsUri) {
+					uriList.add(uri);
+				}
+
+				correctUri = uriList.get(index);
+
+				String visitorsForMuseum = DBPediaClient
+						.retriveNumberOfVisitorsMuseum(correctUri);
+				uriList.remove(correctUri);
+
+				question.setText("Which of these numbers represents the visitors of the  "
+						+ correct + "?");
+				correctAnswer.setId(1);
+				correctAnswer.setValue(visitorsForMuseum);
+				correctAnswer.setCorrectAnswer(true);
+				answers.add(correctAnswer);
+				options.remove(correct);
+
+				for (int i = 0; i < 3; i++) {
+					Answer answer = new Answer();
+
+					String incorrectNumber = visitorsForMuseum;
+					answer.setId(i + 2);
+					int number = Integer.parseInt(incorrectNumber);
+					if (i == 1)
+						number += 100509180;
+					else if (i == 2)
+						number -= 3060901;
+					else
+						number += 2003091004;
+					answer.setValue(Integer.toString(number));
+					answers.add(answer);
+				}
+
+				Collections.shuffle(answers);
+				question.setAnswers(answers);
+				questions.add(question);
 			}
-
-			correctUri = uriList.get(index);
-
-			String visitorsForMuseum = DBPediaClient
-					.retriveNumberOfVisitorsMuseum(correctUri);
-			uriList.remove(correctUri);
-
-			question.setText("Which of these  " + correct + "?");
-			correctAnswer.setId(1);
-			correctAnswer.setValue(visitorsForMuseum);
-			correctAnswer.setCorrectAnswer(true);
-			answers.add(correctAnswer);
-			options.remove(correct);
-
-			for (int i = 0; i < 3; i++) {
-				Answer answer = new Answer();
-				int val = anyItem(3);
-				String incorrectNumber = visitorsForMuseum;
-				answer.setId(i + 2);
-				int number = Integer.parseInt(incorrectNumber);
-				if (val == 1)
-					number += 1000000000;
-				else if (val == 2)
-					number -= 3000000;
-				else
-					number += 2000000000;
-				answer.setValue(Integer.toString(number));
-				answers.add(answer);
-			}
-
-			Collections.shuffle(answers);
-			question.setAnswers(answers);
-			questions.add(question);
 			break;
 		default:
 			break;
