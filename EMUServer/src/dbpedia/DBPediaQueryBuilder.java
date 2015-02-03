@@ -140,8 +140,6 @@ public class DBPediaQueryBuilder {
 		qs.setBaseUri(uri);
 		qs.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 		qs.setNsPrefix("dbpedia-owl", "http://dbpedia.org/ontology/");
-	
-
 		qs.append("SELECT ?label WHERE {<" + uri
 				+ "> rdfs:label ?label FILTER ( lang(?label) ='en')} LIMIT" + 1);
 		return qs.asQuery();

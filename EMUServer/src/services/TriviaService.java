@@ -45,63 +45,68 @@ public class TriviaService {
 	}
 
 	private ArrayList<Question> generateQuiz() throws Exception {
-	    ArrayList<Question> questions = new ArrayList<Question>();
-	    
-	    InputStream is = TriviaService.class
-				.getResourceAsStream("categories.properties");
+		ArrayList<Question> questions = new ArrayList<Question>();
+
+		InputStream is = TriviaService.class
+				.getResourceAsStream("E:\\emu\\emu\\EMUServer\\src\\categories.properties");
 		Properties prop = new Properties();
 		prop.load(is);
 		String[] categories = prop.getProperty("categories").split(",");
-	    ArrayList<String> cats = new ArrayList<String>();
-		for(String category : categories){
+		ArrayList<String> cats = new ArrayList<String>();
+		for (String category : categories) {
 			cats.add(category);
 		}
-	    
-	    for(int i=0;i<10;i++){
-	    	int index=anyItem(cats.size());
-	    	String cat = cats.get(index);
-	    	Question question = createQuestion(cat);
-	    	questions.add(question);
-	    	cats.remove(cat);
-	    }
-	    
-	    return questions;
-	} 
 
-	private Question createQuestion(String category) throws Exception {
+		for (int i = 0; i < 10; i++) {
+			int index = anyItem(cats.size());
+			String cat = cats.get(index);
+			ArrayList<Question> questionList = createQuestion(cat);
+			for (Question question : questionList)
+				questions.add(question);
+			cats.remove(cat);
+		}
+
+		return questions;
+	}
+
+	private ArrayList<Question> createQuestion(String category)
+			throws Exception {
 		InputStream is = TriviaService.class
 				.getResourceAsStream("categories.properties");
 		Properties prop = new Properties();
-		Question question = new Question();
-		
+		ArrayList<Question> questions = new ArrayList<Question>();
+		Question question=new Question();
+		ArrayList<String> uriList;
+		String correctUri;
 		Answer correctAnswer = new Answer();
 		List<Answer> answers = new ArrayList<Answer>();
 		prop.load(is);
 		String[] values = prop.getProperty(category).split(",");
 		ArrayList<String> options = new ArrayList<String>();
-		
+
 		for (String value : values) {
 			options.add(value);
 		}
-		
+
 		int index = anyItem(options.size());
 		String correct = options.get(index);
-		
+
 		switch (category) {
-		
+
 		case "country":
+
 			List<Museum> museumsInCountry = DBPediaClient
 					.retrieveMuseumsInCountry(correct);
-			question.setText(museumsInCountry.get(0) + " will be found in :");
+			question.setText(museumsInCountry.get(0).getName() + " will be found in :");
 			correctAnswer.setId(1);
 			correctAnswer.setValue(correct);
 			answers.add(correctAnswer);
 			options.remove(correct);
-			
-			for(int i = 0; i<3; i++){
+
+			for (int i = 0; i < 3; i++) {
 				Answer answer = new Answer();
-				String incorrect = options.get(anyItem(options.size()));			
-				answer.setId(i+2);
+				String incorrect = options.get(anyItem(options.size()));
+				answer.setId(i + 2);
 				answer.setValue(incorrect);
 				options.remove(incorrect);
 				answers.add(answer);
@@ -109,37 +114,78 @@ public class TriviaService {
 			Collections.shuffle(answers);
 			question.setAnswers(answers);
 			break;
-			
-		case "museum": 
-			
-			String[] uris = prop.getProperty("uri").split(",");
-			ArrayList<String>uriList = new ArrayList<String>();	
-			for (String uri : uris) {
+
+		case "museum":
+			for (int j = 0; j < 4; j++) {
+				String[] uris = prop.getProperty("uri").split(",");
+				uriList = new ArrayList<String>();
+				for (String uri : uris) {
+					uriList.add(uri);
+				}
+
+				correctUri = uriList.get(index);
+
+				String countryForMuseums = DBPediaClient
+						.retrieveCountryForMuseum(correctUri);
+				uriList.remove(correctUri);
+
+				question.setText("Which of these museums is in "
+						+ countryForMuseums + "?");
+				correctAnswer.setId(1);
+				correctAnswer.setValue(correct);
+				answers.add(correctAnswer);
+				options.remove(correct);
+
+				for (int i = 0; i < 3; i++) {
+					Answer answer = new Answer();
+					int indexIncorrect = anyItem(options.size());
+					String incorrect = options.get(indexIncorrect);
+					answer.setId(i + 2);
+					answer.setValue(incorrect);
+					options.remove(incorrect);
+					uriList.remove(indexIncorrect);
+					answers.add(answer);
+				}
+
+				Collections.shuffle(answers);
+				question.setAnswers(answers);
+			}
+			break;
+		case "visitorsMuseum":
+			String[] visitorsUri = prop.getProperty("visitorsUri").split(",");
+			uriList = new ArrayList<String>();
+			for (String uri : visitorsUri) {
 				uriList.add(uri);
 			}
-			
-			String correctUri=uriList.get(index);
-			
-			String countryForMuseums = DBPediaClient.retrieveCountryForMuseum(correctUri);
+
+			correctUri = uriList.get(index);
+
+			String visitorsForMuseum = DBPediaClient
+					.retriveNumberOfVisitorsMuseum(correctUri);
 			uriList.remove(correctUri);
-			
-			question.setText("Which of these museums is in "+ countryForMuseums + "?");
+
+			question.setText("Which of these  " + correct + "?");
 			correctAnswer.setId(1);
-			correctAnswer.setValue(correct);
+			correctAnswer.setValue(visitorsForMuseum);
 			answers.add(correctAnswer);
 			options.remove(correct);
-			
-			for(int i = 0; i<3; i++){
+
+			for (int i = 0; i < 3; i++) {
 				Answer answer = new Answer();
-				int indexIncorrect=anyItem(options.size());
-				String incorrect = options.get(indexIncorrect);
-				answer.setId(i+2);
-				answer.setValue(incorrect);
-				options.remove(incorrect);
-				uriList.remove(indexIncorrect);
+				int val = anyItem(3);
+				String incorrectNumber = visitorsForMuseum;
+				answer.setId(i + 2);
+				int number = Integer.parseInt(incorrectNumber);
+				if (val == 1)
+					number += 1000000000;
+				else if (val == 2)
+					number -= 3000000;
+				else
+					number += 2000000000;
+				answer.setValue(Integer.toString(number));
 				answers.add(answer);
 			}
-			
+
 			Collections.shuffle(answers);
 			question.setAnswers(answers);
 			break;
@@ -147,11 +193,12 @@ public class TriviaService {
 			break;
 		}
 
-		return question;
+		return questions;
 	}
 
 	public int anyItem(int size) {
 		Random randomGenerator = new Random();
-		int index = randomGenerator.nextInt(size);		
+		int index = randomGenerator.nextInt(size);
 		return index;
-	}}
+	}
+}

@@ -71,7 +71,7 @@ public class Hello {
 		// List<Museum> museums = DBPediaClient
 		// .retrieveMuseumsInCountry("Romania");
 		// System.out.println(museums);
-		String nr=DBPediaClient.retrieveCountryForMuseum("http://dbpedia.org/resource/Ouvrage_Schoenenbourg");
+		String nr=DBPediaClient.retrieveMuseumsInCountry("Sweden").get(0).getName();
 		System.out.println(nr);
 		return "Ceva";
 	}
