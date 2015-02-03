@@ -82,6 +82,12 @@
 	});
 	
 	$(document).ajaxStop(function () {
+		
+		var museumResource = $('#container').attr('about');
+		$('.museum_work_relation').each(function(i) {
+			$(this).attr('resource',museumResource);
+		});
+		
 		$('.bxslider').removeClass("loading");
 		
 		$('.bxslider .row').each(function(i){
@@ -112,23 +118,21 @@
 			adaptiveHeight : false,
 			pagerType : 'short',
 		});
-
 	});
 
 	$(document).ready(function() {
 		$('.bxslider').addClass("loading");
-
 		$('#hidden_works_list li').each(function(i) {
-			$.ajax({
-				type : "GET",
-				url : "works",
-				data : {
-					workURI : $(this).html()
-				},
-				success : function(response) {
-					$(".bxslider").append(response);
-				}
-			});
+				$.ajax({
+					type : "GET",
+					url : "works",
+					data : {
+						workURI : $(this).html()
+					},
+					success : function(response) {
+						$(".bxslider").append(response);
+					}
+				});
 		});
 	});
 </script>

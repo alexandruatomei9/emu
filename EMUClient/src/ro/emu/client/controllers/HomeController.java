@@ -107,6 +107,7 @@ public class HomeController {
 					uri, servletContext);
 			if (workModel != null) {
 				WorkRDF workRDF = new WorkRDF(workModel);
+				modelAndView.addObject("resourceName",workRDF.getResourceName());
 				modelAndView.addObject("description", workRDF.getAbstract());
 				modelAndView.addObject("name", workRDF.getName());
 				modelAndView.addObject("thumbnail", workRDF.thumbnail());
