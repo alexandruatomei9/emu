@@ -4,8 +4,8 @@
 <html version="HTML+RDFa 1.1" lang="en"
 	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:dc="http://purl.org/dc/elements/1.1/"
-	<c:forEach var="ns" items="${namespaces}">
-    	xmlns:${ns.key}="${ns.value}"	
+	xmlns:dcplaces="http://purl.org/ontology/places#"
+	<c:forEach var="ns" items="${namespaces}">xmlns:${ns.key}="${ns.value}"
 	</c:forEach>>
 <head>
 <title property="dc:title">EMU</title>
@@ -80,12 +80,55 @@
 			collapsible : true,
 		});
 	});
+	
+	$(document).ajaxStop(function () {
+		$('.bxslider').removeClass("loading");
+		
+		$('.bxslider .row').each(function(i){
+			$(this).removeClass("invisible");
+		});
+		 
+		$("[rel='popover']").popover({
+			html: 'true',
+			content:  function() {
+			      return $(this).closest(".row").find(".authorData").parent().html();
+		    	  }
+			});
+		
+		$("[rel='popover']").on('click', function(e) {
+					e.stopPropagation();
+				});
+		$(document).on('click',
+			function(e) {
+				if (($('.popover').has(e.target).length == 0)
+							|| $(e.target).is('.close')) {
+						$("[rel='popover']").popover('hide');
+					}
+			});
 
-	$(document).ready(function() {
 		$('.bxslider').bxSlider({
 			mode : 'fade',
 			captions : true,
-			adaptiveHeight : false
+			adaptiveHeight : false,
+			pagerType : 'short',
+		});
+
+	});
+
+	$(document).ready(function() {
+		$('.bxslider').addClass("loading");
+
+		$('#hidden_works_list li').each(function(i) {
+			$.ajax({
+				type : "GET",
+				url : "works",
+				data : {
+					workURI : $(this).html()
+				},
+				success : function(response) {
+					$(".bxslider").append(response);
+				}
+			});
 		});
 	});
 </script>
@@ -159,7 +202,23 @@
 						<c:if
 							test="${not empty museumRDF.getLatitude() && not empty museumRDF.getLongitude()}">
 							<h3>Location</h3>
+
 							<div style="height: 250px;">
+								<p>
+									<c:set var="locality" scope="request"
+										value="${museumRDF.getLocality() }" />
+									<c:set var="country" scope="request"
+										value="${museumRDF.getCountry()}" />
+
+									<c:if test="${not empty country}">
+										<span property="dcplaces:country"><c:out
+												value="${country}, " /></span>
+									</c:if>
+									<c:if test="${not empty locality}">
+										<span property="dbpedia-owl:locality"><c:out
+												value="${locality}" /></span>
+									</c:if>
+								</p>
 								<p style="display: none;">
 									(<span property="${museumRDF.getLatitude().getFirst()}"
 										datatype="xsd:float">${museumRDF.getLatitude().getSecond()}</span>,<span
@@ -200,16 +259,6 @@
 					<!-- Test for Dead People -->
 
 					<!-- Test for Website -->
-					<!-- Hidden List Of works -->
-					<c:if test="${not empty museumRDF.getWorks()}">
-						<c:if test="${fn:length(museumRDF.getWorks()) gt 0}">
-							<ul id="hidden_works_list" style="display: none">
-								<c:forEach var="workPair" items="${museumRDF.getWorks()}">
-									<li><c:out value="${workPair.getSecond().getURI()}"></c:out></li>
-								</c:forEach>
-							</ul>
-						</c:if>
-					</c:if>
 					<div class="accordion">
 						<c:if test="${not empty museumRDF.getWebsite()}">
 							<h3>Website</h3>
@@ -222,7 +271,16 @@
 							</div>
 						</c:if>
 					</div>
-
+					<!-- Hidden List Of works -->
+					<c:if test="${not empty museumRDF.getWorks()}">
+						<c:if test="${fn:length(museumRDF.getWorks()) gt 0}">
+							<ul id="hidden_works_list" style="display: none">
+								<c:forEach var="workPair" items="${museumRDF.getWorks()}">
+									<li><c:out value="${workPair.getSecond().getURI()}"></c:out></li>
+								</c:forEach>
+							</ul>
+						</c:if>
+					</c:if>
 				</div>
 			</div>
 			<br class="clear" /> <br class="clear" /> <br class="clear" />
@@ -230,98 +288,7 @@
 		<div class="wrapper col5">
 			<div id="footer">
 				<div class="bxslider">
-					<div class="row">
-						<div class="col-sm-4">
-							<img
-								src="http://www.cruzine.com/wp-content/uploads/2013/06/001-original-artworks-shichigoroshingo.jpg" />
-						</div>
-						<div class="description col-sm-8">
-							<h2>Title 1</h2>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-								Ut egestas dapibus nulla, rutrum ornare enim tempus eleifend.
-								Sed eu feugiat augue. Nulla non tristique mauris. Fusce lacus
-								sem, feugiat at rhoncus ac, cursus sit amet tellus. Pellentesque
-								a vulputate urna, nec consequat justo. Mauris ultrices risus
-								vitae diam lobortis, nec malesuada augue dictum. Cras nec
-								hendrerit libero, sit amet tincidunt arcu. Vivamus pulvinar
-								lorem lacus, fringilla consectetur turpis dignissim at.
-								Phasellus viverra, arcu sit amet congue vestibulum, quam leo
-								rutrum ex, ut faucibus nisi nisi ac libero. Praesent arcu
-								turpis, efficitur porta velit sed, porta tristique quam. Nullam
-								eleifend enim ut euismod laoreet. Duis vestibulum nisl ut ipsum
-								cursus malesuada.</p>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-								Ut egestas dapibus nulla, rutrum ornare enim tempus eleifend.
-								Sed eu feugiat augue. Nulla non tristique mauris. Fusce lacus
-								sem, feugiat at rhoncus ac, cursus sit amet tellus. Pellentesque
-								a vulputate urna, nec consequat justo. Mauris ultrices risus
-								vitae diam lobortis, nec malesuada augue dictum. Cras nec
-								hendrerit libero, sit amet tincidunt arcu. Vivamus pulvinar
-								lorem lacus, fringilla consectetur turpis dignissim at.
-								Phasellus viverra, arcu sit amet congue vestibulum, quam leo
-								rutrum ex, ut faucibus nisi nisi ac libero. Praesent arcu
-								turpis, efficitur porta velit sed, porta tristique quam. Nullam
-								eleifend enim ut euismod laoreet. Duis vestibulum nisl ut ipsum
-								cursus malesuada.</p>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-								Ut egestas dapibus nulla, rutrum ornare enim tempus eleifend.
-								Sed eu feugiat augue. Nulla non tristique mauris. Fusce lacus
-								sem, feugiat at rhoncus ac, cursus sit amet tellus. Pellentesque
-								a vulputate urna, nec consequat justo. Mauris ultrices risus
-								vitae diam lobortis, nec malesuada augue dictum. Cras nec
-								hendrerit libero, sit amet tincidunt arcu. Vivamus pulvinar
-								lorem lacus, fringilla consectetur turpis dignissim at.
-								Phasellus viverra, arcu sit amet congue vestibulum, quam leo
-								rutrum ex, ut faucibus nisi nisi ac libero. Praesent arcu
-								turpis, efficitur porta velit sed, porta tristique quam. Nullam
-								eleifend enim ut euismod laoreet. Duis vestibulum nisl ut ipsum
-								cursus malesuada.</p>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-4">
-							<img
-								src="http://behance.vo.llnwd.net/profiles4/113797/projects/731401/d9eb81ec157108a81bf1caafc61708dd.jpg" />
-						</div>
-						<div class="description col-sm-8">
-							<h2>Title 2</h2>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-								Ut egestas dapibus nulla, rutrum ornare enim tempus eleifend.
-								Sed eu feugiat augue. Nulla non tristique mauris. Fusce lacus
-								sem, feugiat at rhoncus ac, cursus sit amet tellus. Pellentesque
-								a vulputate urna, nec consequat justo. Mauris ultrices risus
-								vitae diam lobortis, nec malesuada augue dictum. Cras nec
-								hendrerit libero, sit amet tincidunt arcu. Vivamus pulvinar
-								lorem lacus, fringilla consectetur turpis dignissim at.
-								Phasellus viverra, arcu sit amet congue vestibulum, quam leo
-								rutrum ex, ut faucibus nisi nisi ac libero. Praesent arcu
-								turpis, efficitur porta velit sed, porta tristique quam. Nullam
-								eleifend enim ut euismod laoreet. Duis vestibulum nisl ut ipsum
-								cursus malesuada.</p>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-4">
-							<img
-								src="http://behance.vo.llnwd.net/profiles4/113797/projects/731401/5dd0d4f20523e9ad2d51d97e9af3ef64.jpg" />
-						</div>
-						<div class="description col-sm-8">
-							<h2>Title 3</h2>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-								Ut egestas dapibus nulla, rutrum ornare enim tempus eleifend.
-								Sed eu feugiat augue. Nulla non tristique mauris. Fusce lacus
-								sem, feugiat at rhoncus ac, cursus sit amet tellus. Pellentesque
-								a vulputate urna, nec consequat justo. Mauris ultrices risus
-								vitae diam lobortis, nec malesuada augue dictum. Cras nec
-								hendrerit libero, sit amet tincidunt arcu. Vivamus pulvinar
-								lorem lacus, fringilla consectetur turpis dignissim at.
-								Phasellus viverra, arcu sit amet congue vestibulum, quam leo
-								rutrum ex, ut faucibus nisi nisi ac libero. Praesent arcu
-								turpis, efficitur porta velit sed, porta tristique quam. Nullam
-								eleifend enim ut euismod laoreet. Duis vestibulum nisl ut ipsum
-								cursus malesuada.</p>
-						</div>
-					</div>
+
 				</div>
 			</div>
 		</div>

@@ -28,14 +28,15 @@ public class SearchController {
 		String res = "";
 		JSONObject myJson = null;
 		try {
-			response = Request.sendGet("/museums/searchMuseums", parameters);
+			response = Request.sendGet("/museums/searchMuseums", parameters,
+					true);
 			myJson = new JSONObject(response);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		ArrayList<String> result = new ArrayList<String>();
-		
+
 		if (myJson.has("code") && !myJson.isNull("code")
 				&& myJson.getString("code").equals("OK")) {
 			JSONArray myArray = myJson.getJSONArray("response");
@@ -51,17 +52,17 @@ public class SearchController {
 		} else {
 			res = "No museums found";
 		}
-		
-		if(!result.isEmpty()){
-			for(int i=0; i<result.size();i++){
-				if(i==result.size()-1){
-					res+=result.get(i);
-				}else{
-					res+=result.get(i)+"*";
+
+		if (!result.isEmpty()) {
+			for (int i = 0; i < result.size(); i++) {
+				if (i == result.size() - 1) {
+					res += result.get(i);
+				} else {
+					res += result.get(i) + "*";
 				}
 			}
 		}
-		
+
 		return res;
 	}
 }

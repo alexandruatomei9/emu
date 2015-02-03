@@ -23,13 +23,16 @@ public class Request {
 	public static final String serverUrl = "localhost:8080/EMUServer/rest";
 	private final static String USER_AGENT = "Mozilla/5.0";
 
-	public static String sendGet(String path, Map<String, String> parameters)
-			throws Exception {
+	public static String sendGet(String path, Map<String, String> parameters,
+			boolean useScheme) throws Exception {
 
 		URIBuilder builder = new URIBuilder();
-		builder.setScheme(scheme).setHost(serverUrl).setPath(path);
-
-		if (parameters!=null &&!parameters.isEmpty()) {
+		if (useScheme) {
+			builder.setScheme(scheme).setHost(serverUrl).setPath(path);
+		} else {
+			builder.setPath(path);
+		}
+		if (parameters != null && !parameters.isEmpty()) {
 			for (Map.Entry<String, String> entry : parameters.entrySet()) {
 				builder.setParameter(entry.getKey(), entry.getValue());
 			}
@@ -46,7 +49,7 @@ public class Request {
 		HttpResponse response = client.execute(request);
 
 		BufferedReader rd = new BufferedReader(new InputStreamReader(response
-				.getEntity().getContent(),"UTF8"));
+				.getEntity().getContent(), "UTF8"));
 
 		StringBuffer result = new StringBuffer();
 		String line = "";
