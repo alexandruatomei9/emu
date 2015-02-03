@@ -10,6 +10,7 @@ import java.util.Random;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import models.responses.Answer;
@@ -21,7 +22,9 @@ import dbpedia.DBPediaClient;
 
 @Path("/trivia")
 public class TriviaService {
-
+	@Context javax.servlet.ServletContext servletContext;
+	
+	
 	@GET
 	@Path("/getQuiz")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -47,8 +50,7 @@ public class TriviaService {
 	private ArrayList<Question> generateQuiz() throws Exception {
 	    ArrayList<Question> questions = new ArrayList<Question>();
 	    
-	    InputStream is = TriviaService.class
-				.getResourceAsStream("categories.properties");
+	    InputStream is = servletContext.getResourceAsStream("/WEB-INF/categories.properties");
 		Properties prop = new Properties();
 		prop.load(is);
 		String[] categories = prop.getProperty("categories").split(",");
@@ -57,7 +59,7 @@ public class TriviaService {
 			cats.add(category);
 		}
 	    
-	    for(int i=0;i<10;i++){
+	    for(int i=0;i<5;i++){
 	    	int index=anyItem(cats.size());
 	    	String cat = cats.get(index);
 	    	Question question = createQuestion(cat);
@@ -69,8 +71,7 @@ public class TriviaService {
 	} 
 
 	private Question createQuestion(String category) throws Exception {
-		InputStream is = TriviaService.class
-				.getResourceAsStream("categories.properties");
+		InputStream is = servletContext.getResourceAsStream("/WEB-INF/categories.properties");
 		Properties prop = new Properties();
 		Question question = new Question();
 		

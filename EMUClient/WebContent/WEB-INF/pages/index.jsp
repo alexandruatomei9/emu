@@ -84,21 +84,21 @@
 	$(document).ajaxStop(function () {
 		$('.bxslider').removeClass("loading");
 		
-		$("[rel='popover']").each(function(i){
-			alert.log(this.html());
+		$('.bxslider .row').each(function(i){
+			$(this).removeClass("invisible");
 		});
 		 
 		$("[rel='popover']").popover({
-			html: 'true', 
-			content : '<div id="popOverBox">Your Text Here</div>'
+			html: 'true',
+			content:  function() {
+			      return $(this).closest(".row").find(".authorData").parent().html();
+		    	  }
 			});
 		
-		
-		$("[rel='popover']").click(function(e) {
-					console.log($("[rel='popover']").html());
+		$("[rel='popover']").on('click', function(e) {
 					e.stopPropagation();
 				});
-		$(document).click(
+		$(document).on('click',
 			function(e) {
 				if (($('.popover').has(e.target).length == 0)
 							|| $(e.target).is('.close')) {
@@ -106,14 +106,14 @@
 					}
 			});
 
-				$('.bxslider').bxSlider({
-					mode : 'fade',
-					captions : true,
-					adaptiveHeight : false,
-					pagerType : 'short',
-				});
+		$('.bxslider').bxSlider({
+			mode : 'fade',
+			captions : true,
+			adaptiveHeight : false,
+			pagerType : 'short',
+		});
 
-			});
+	});
 
 	$(document).ready(function() {
 		$('.bxslider').addClass("loading");
@@ -121,7 +121,7 @@
 		$('#hidden_works_list li').each(function(i) {
 			$.ajax({
 				type : "GET",
-				url : "home/works",
+				url : "works",
 				data : {
 					workURI : $(this).html()
 				},

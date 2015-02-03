@@ -28,7 +28,7 @@ import ro.emu.client.utils.Pair;
 import ro.emu.client.utils.Request;
 
 @Controller
-@RequestMapping("/home")
+@RequestMapping("/")
 public class HomeController {
 
 	private static final String URI = "http://dbpedia.org/page/The_Louvre";
@@ -96,7 +96,7 @@ public class HomeController {
 
 	}
 	
-	@RequestMapping(value="/works", method = RequestMethod.GET)
+	@RequestMapping(value="works", method = RequestMethod.GET)
 	public ModelAndView homeMuseumWork(@RequestParam(value = "workURI", required = true) String uri) {
 		if(uri==null || uri.equals("")){
 			uri = URI;
@@ -113,18 +113,17 @@ public class HomeController {
 				modelAndView.addObject("wiki_page_url", workRDF.getWikiPageURL());
 				
 				Pair<String, Resource> authorPair = workRDF.author();
-				if (authorPair != null && authorPair.isValid()
-						&& authorPair.getSecond().getURI() != null) {
-					Model authorModel = DBPediaClient
-							.retrieveRDFModelForResource(authorPair.getSecond()
-									.getURI(), servletContext);
-					PersonRDF personRDF = new PersonRDF(authorModel);
-					modelAndView.addObject("authorAbstract", personRDF.getAbstract());
-					modelAndView.addObject("authorName", personRDF.getName());
-					modelAndView.addObject("authorThumbnail", personRDF.thumbnail());
-					modelAndView.addObject("authorWiki", personRDF.getWikiPageURL());
-					modelAndView.addObject("authorBirthDate", personRDF.getBirthDate());
-					modelAndView.addObject("authorDeathDate", personRDF.getDeathDate());
+				if (authorPair != null && authorPair.isValid() && authorPair.getSecond().getURI() != null) {
+					Model authorModel = DBPediaClient.retrieveRDFModelForResource(authorPair.getSecond().getURI(), servletContext);
+					if (authorModel != null) {
+						PersonRDF personRDF = new PersonRDF(authorModel);
+						modelAndView.addObject("authorAbstract", personRDF.getAbstract());
+						modelAndView.addObject("authorName", personRDF.getName());
+						modelAndView.addObject("authorThumbnail", personRDF.thumbnail());
+						modelAndView.addObject("authorWiki", personRDF.getWikiPageURL());
+						modelAndView.addObject("authorBirthDate", personRDF.getBirthDate());
+						modelAndView.addObject("authorDeathDate", personRDF.getDeathDate());
+					}
 				}
 			}
 		} catch (Exception e) {

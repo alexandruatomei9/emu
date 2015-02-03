@@ -17,15 +17,29 @@ public class DBPediaClient {
 		FileManager fManager = FileManager.get();
 		fManager.addLocatorURL();
 
-		model = fManager.loadModel(DBPediaClient
-				.convertDBpediaURLToResourceURL(dbpediaURL));
-		TBDManager.storeModel(model, dbpediaURL, servletContext);
+		try {
+			model = fManager.loadModel(DBPediaClient.convertDBpediaURLToResourceURL(dbpediaURL));
+			TBDManager.storeModel(model, dbpediaURL, servletContext);
+			System.out.println("--- Found "+dbpediaURL);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.out.println("Resource not found "+dbpediaURL);
+			return null;
+		}
 		return model;
 	}
 
 	private static String convertDBpediaURLToResourceURL(String dbpediaURL) {
-		StringBuilder builder = new StringBuilder(dbpediaURL.replace("/page/",
-				"/data/"));
+		StringBuilder builder = null;
+		
+		if(dbpediaURL.contains("/page/")){
+			builder = new StringBuilder(dbpediaURL.replace("/page/",
+					"/data/"));
+		}else{
+			builder = new StringBuilder(dbpediaURL.replace("/resource/",
+					"/data/"));
+		}
+		
 		builder.append(".rdf");
 		return builder.toString();
 	}
