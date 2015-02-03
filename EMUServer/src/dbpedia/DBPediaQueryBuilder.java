@@ -150,8 +150,8 @@ public class DBPediaQueryBuilder {
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
 		qs.setNsPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 		qs.setNsPrefix("dbpprop", "http://dbpedia.org/property/");
-		qs.append("SELECT ?val WHERE {<" + museumURI
-				+ "> dbpprop:visitors ?val}LIMIT" + 1);
+		qs.append("SELECT ?val WHERE {" + museumURI
+				+ " dbpprop:visitors ?val}LIMIT" + 1);
 		return qs.asQuery();
 	}
 

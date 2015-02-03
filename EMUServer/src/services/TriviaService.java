@@ -22,9 +22,9 @@ import dbpedia.DBPediaClient;
 
 @Path("/trivia")
 public class TriviaService {
-	@Context javax.servlet.ServletContext servletContext;
-	
-	
+	@Context
+	javax.servlet.ServletContext servletContext;
+
 	@GET
 	@Path("/getQuiz")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -48,9 +48,10 @@ public class TriviaService {
 	}
 
 	private ArrayList<Question> generateQuiz() throws Exception {
-	    ArrayList<Question> questions = new ArrayList<Question>();
-	    
-	    InputStream is = servletContext.getResourceAsStream("/WEB-INF/categories.properties");
+		ArrayList<Question> questions = new ArrayList<Question>();
+
+		InputStream is = servletContext
+				.getResourceAsStream("/WEB-INF/categories.properties");
 		Properties prop = new Properties();
 		prop.load(is);
 		String[] categories = prop.getProperty("categories").split(",");
@@ -66,15 +67,24 @@ public class TriviaService {
 			questions.addAll(questionList);
 			cats.remove(cat);
 		}
+		for (Question q : questions) {
+			System.out.println("------------");
+			System.out.println(q.getText());
+			for (Answer a : q.getAnswers()) {
+				System.out.println(a.getValue() + " : " + a.isCorrectAnswer());
+			}
+		}
 
 		return questions;
 	}
 
-	private ArrayList<Question> createQuestion(String category) throws Exception {
-		InputStream is = servletContext.getResourceAsStream("/WEB-INF/categories.properties");
+	private ArrayList<Question> createQuestion(String category)
+			throws Exception {
+		InputStream is = servletContext
+				.getResourceAsStream("/WEB-INF/categories.properties");
 		Properties prop = new Properties();
 		ArrayList<Question> questions = new ArrayList<Question>();
-		Question question=new Question();
+		Question question = new Question();
 		ArrayList<String> uriList;
 		String correctUri;
 		Answer correctAnswer = new Answer();
@@ -96,9 +106,11 @@ public class TriviaService {
 
 			List<Museum> museumsInCountry = DBPediaClient
 					.retrieveMuseumsInCountry(correct);
-			question.setText(museumsInCountry.get(0).getName() + " will be found in :");
+			question.setText(museumsInCountry.get(0).getName()
+					+ " will be found in :");
 			correctAnswer.setId(1);
 			correctAnswer.setValue(correct);
+			correctAnswer.setCorrectAnswer(true);
 			answers.add(correctAnswer);
 			options.remove(correct);
 
@@ -112,12 +124,14 @@ public class TriviaService {
 			}
 			Collections.shuffle(answers);
 			question.setAnswers(answers);
+			questions.add(question);
 			break;
 
 		case "museum":
-			for (int j = 0; j < 4; j++) {
+			
 				String[] uris = prop.getProperty("uri").split(",");
 				uriList = new ArrayList<String>();
+				
 				for (String uri : uris) {
 					uriList.add(uri);
 				}
@@ -132,6 +146,7 @@ public class TriviaService {
 						+ countryForMuseums + "?");
 				correctAnswer.setId(1);
 				correctAnswer.setValue(correct);
+				correctAnswer.setCorrectAnswer(true);
 				answers.add(correctAnswer);
 				options.remove(correct);
 
@@ -146,9 +161,10 @@ public class TriviaService {
 					answers.add(answer);
 				}
 
-				Collections.shuffle(answers);
+				Collections.shuffle(answers);;
 				question.setAnswers(answers);
-			}
+				questions.add(question);
+			
 			break;
 		case "visitorsMuseum":
 			String[] visitorsUri = prop.getProperty("visitorsUri").split(",");
@@ -166,6 +182,7 @@ public class TriviaService {
 			question.setText("Which of these  " + correct + "?");
 			correctAnswer.setId(1);
 			correctAnswer.setValue(visitorsForMuseum);
+			correctAnswer.setCorrectAnswer(true);
 			answers.add(correctAnswer);
 			options.remove(correct);
 
@@ -187,6 +204,7 @@ public class TriviaService {
 
 			Collections.shuffle(answers);
 			question.setAnswers(answers);
+			questions.add(question);
 			break;
 		default:
 			break;
