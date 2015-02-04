@@ -20,10 +20,10 @@ public class DBPediaClient {
 		try {
 			model = fManager.loadModel(DBPediaClient.convertDBpediaURLToResourceURL(dbpediaURL));
 			TBDManager.storeModel(model, dbpediaURL, servletContext);
-			System.out.println("--- Found "+dbpediaURL);
+			//System.out.println("--- Found "+dbpediaURL);
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.out.println("Resource not found "+dbpediaURL);
+			//System.out.println("Resource not found "+dbpediaURL);
 			return null;
 		}
 		return model;

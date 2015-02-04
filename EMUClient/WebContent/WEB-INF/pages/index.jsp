@@ -42,45 +42,36 @@
 <script
 	src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 <script>
-	function initialize() {
-		var map;
-		var myLat = "${museumRDF.getLatitude().getSecond()}";
-		var myLong = "${museumRDF.getLongitude().getSecond()}";
-		var museum = "${museumRDF.getName().getSecond()}";
-		var myLatlng = new google.maps.LatLng(myLat, myLong);
+function initialize() {
+	var map;
+	var myLat = $('#latitude').html();
+	var myLong = $('#longitude').html();
+	var museum = "${museumRDF.getName().getSecond()}";
+	var myLatlng = new google.maps.LatLng(myLat, myLong);
 
-		var mapOptions = {
-			zoom : 10,
-			center : myLatlng
-		};
-		map = new google.maps.Map(document.getElementById('map-canvas'),
-				mapOptions);
+	var mapOptions = {
+		zoom : 10,
+		center : myLatlng
+	};
+	map = new google.maps.Map(document.getElementById('map-canvas'),
+			mapOptions);
 
-		var pinColor = "0099FF";
-		var pinImage = new google.maps.MarkerImage(
-				"http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|"
-						+ pinColor, new google.maps.Size(21, 34),
-				new google.maps.Point(0, 0), new google.maps.Point(10, 34));
+	var pinColor = "0099FF";
+	var pinImage = new google.maps.MarkerImage(
+			"http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|"
+					+ pinColor, new google.maps.Size(21, 34),
+			new google.maps.Point(0, 0), new google.maps.Point(10, 34));
+ 	
+	var marker = new google.maps.Marker({
+		position : myLatlng,
+		map : map,
+		title : museum,
+		icon : pinImage
+	});
+}
 
-		var marker = new google.maps.Marker({
-			position : myLatlng,
-			map : map,
-			title : museum,
-			icon : pinImage
-		});
-	}
-
-	google.maps.event.addDomListener(window, 'load', initialize);
 </script>
 <script type="text/javascript">
-	$(function() {
-		$('.accordion').accordion({
-			speed : 'slow',
-			heightStyle : "content",
-			collapsible : true,
-		});
-	});
-	
 	$(document).ajaxStop(function () {
 		
 		var museumResource = $('#container').attr('about');
@@ -119,9 +110,15 @@
 			pagerType : 'short',
 		});
 	});
-
-	$(document).ready(function() {
+	
+	function onReadyState(){
 		$('.bxslider').addClass("loading");
+		$('.accordion').accordion({
+			speed : 'slow',
+			heightStyle : "content",
+			collapsible : true,
+		});
+		initialize();
 		$('#hidden_works_list li').each(function(i) {
 				$.ajax({
 					type : "GET",
@@ -134,6 +131,10 @@
 					}
 				});
 		});
+	}
+
+	$(document).ready(function() {
+		onReadyState();
 	});
 </script>
 
@@ -155,7 +156,7 @@
 				<ul>
 					<li class="active"><a href="home">Homepage</a><span>Find
 							out more</span></li>
-					<li><a href="#" onclick="javascript:getMap()">Map</a><span>Nearby
+					<li><a href="#" onclick="javascript:showlocation()">Map</a><span>Nearby
 							Museums</span></li>
 					<li><a href="quiz">Quiz</a><span>Test Your Knowledge</span></li>
 				</ul>
@@ -186,7 +187,9 @@
 				</div>
 			</center>
 		</div>
-
+		<div id = "mainContainer">
+		<div id="latitude" style="display:none;">${museumRDF.getLatitude().getSecond()}</div>
+		<div id="longitude" style="display:none">${museumRDF.getLongitude().getSecond()}</div>
 		<div id="container" class="wrapper row col4"
 			about="${museumRDF.getResourceName()} " typeof="dbpedia-owl:Museum">
 			<div id="content" class="col-sm-7">
@@ -230,7 +233,7 @@
 										datatype="xsd:float">${museumRDF.getLongitude().getSecond()}</span>)
 								</p>
 								<div id="map-canvas"
-									style="width: 100%; height: 100%; margin: 0 auto; padding-top: 20px; padding-bottom: 20px;"></div>
+									style="width: 100%; height: 85%; margin: 0 auto; padding-top: 10px; padding-bottom: 20px;"></div>
 							</div>
 						</c:if>
 					</div>
@@ -295,6 +298,7 @@
 
 				</div>
 			</div>
+		</div>
 		</div>
 		<div class="wrapper row col6">
 			<div id="copyright">

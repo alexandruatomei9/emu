@@ -1,37 +1,19 @@
-function myIP() {
-	if (window.XMLHttpRequest)
-		xmlhttp = new XMLHttpRequest();
-	else
-		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-
-	xmlhttp.open("GET", "http://api.hostip.info/get_html.php", false);
-	xmlhttp.send();
-	
-	var i;
-	hostipInfo = xmlhttp.responseText.split("\n");
-	for (i = 0; hostipInfo.length >= i; i++) {
-		ipAddress = hostipInfo[i].split(":");
-		if (ipAddress[0] == "IP")
-			return ipAddress[1];
+function showlocation()
+	{
+		navigator.geolocation.getCurrentPosition(callback);
 	}
-
-	return false;
-}
-
-function getMap() {
-	var theIp = myIP();
-
-	if (name != undefined || name != null) {
-		window.location = 'map?ip=' + theIp;
+function callback(position)
+	{
+		var lat=position.coords.latitude;
+		var lon=position.coords.longitude;
+		var latLng = "latitude=" + lat + "&longitude=" + lon;
+		console.log(latLng);
+		if(latLng != 'undefined'){
+			window.location = 'map?' + latLng;
 	}
 }
 
 $(function() {
-	function log(message) {
-		$("<div>").text(message).prependTo("#log");
-		$("#log").scrollTop(0);
-	}
-
 	$("#museum").autocomplete(
 			{
 				source : function(request, response) {
@@ -44,8 +26,18 @@ $(function() {
 				},
 				minLength : 3,
 				select : function(event, ui) {
-					log(ui.item ? "Selected: " + ui.item.label
-							: "Nothing selected, input was " + this.value);
+					console.log(ui.item.label);
+					$.ajax({
+						type : "GET",
+						url : "museumDetails",
+						data : {
+							museum : ui.item.label
+						},
+						success : function(response) {
+							$('#mainContainer').replaceWith(response);
+							onReadyState();
+						}
+					});
 				},
 				open : function() {
 					$(this).removeClass("ui-corner-all").addClass(

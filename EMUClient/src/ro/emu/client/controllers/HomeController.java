@@ -132,4 +132,54 @@ public class HomeController {
 		}
 		return modelAndView;
 	}
+	
+	@RequestMapping(value="museumDetails", method = RequestMethod.GET)
+	public ModelAndView searchMuseum(@RequestParam(value = "museum", required = true) String museum){
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("prefix", museum);
+		
+		String response;
+		JSONObject myJson = null;
+		try {
+			response = Request.sendGet("/museums/searchMuseums", parameters,
+					true);
+			myJson = new JSONObject(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		String uri = null;
+		if (myJson.has("code") && !myJson.isNull("code")
+				&& myJson.getString("code").equals("OK")) {
+			JSONArray myArray = myJson.getJSONArray("response");
+			if (myArray != null) {
+				for (int i = 0; i < myArray.length(); i++) {
+					JSONObject myObject = myArray.getJSONObject(i);
+					if (myObject != null && myObject.has("name")
+							&& myObject.getString("name") != null) {
+						uri = myObject.getString("uri");
+					}
+				}
+			}
+		}
+		
+		ModelAndView modelAndView = new ModelAndView("museumDetails");
+		
+		if(uri != null){
+			Model model = null;
+			try {
+				model = DBPediaClient.retrieveRDFModelForResource(
+						uri, servletContext);
+				MuseumRDF museumRDF = new MuseumRDF(model);
+				modelAndView.addObject("museumRDF", museumRDF);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		}else{
+			System.out.println("Something bad happened");
+		}
+		
+		return modelAndView;
+	}
 }
