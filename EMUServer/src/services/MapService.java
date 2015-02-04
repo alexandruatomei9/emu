@@ -21,6 +21,7 @@ public class MapService {
 	@Path("/getNearbyMuseums")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getNearbyMuseums(@QueryParam("latitude") String latitude, @QueryParam("longitude") String longitude) {
+		//TODO:SLider with values
 		List<GeoMuseum> list = new ArrayList<GeoMuseum>();
 		Response response = new Response();
 		try {

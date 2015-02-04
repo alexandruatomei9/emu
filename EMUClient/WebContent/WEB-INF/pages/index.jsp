@@ -8,6 +8,7 @@
 	<c:forEach var="ns" items="${namespaces}">xmlns:${ns.key}="${ns.value}"
 	</c:forEach>>
 <head>
+<meta about="EMU"/>
 <title property="dc:title">EMU</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta name="viewport"
@@ -42,76 +43,79 @@
 <script
 	src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 <script>
-function initialize() {
-	var map;
-	var myLat = $('#latitude').html();
-	var myLong = $('#longitude').html();
-	var museum = "${museumRDF.getName().getSecond()}";
-	var myLatlng = new google.maps.LatLng(myLat, myLong);
+	function initialize() {
+		var map;
+		var myLat = $('#latitude').html();
+		var myLong = $('#longitude').html();
+		var museum = "${museumRDF.getName().getSecond()}";
+		var myLatlng = new google.maps.LatLng(myLat, myLong);
 
-	var mapOptions = {
-		zoom : 10,
-		center : myLatlng
-	};
-	map = new google.maps.Map(document.getElementById('map-canvas'),
-			mapOptions);
+		var mapOptions = {
+			zoom : 10,
+			center : myLatlng
+		};
+		map = new google.maps.Map(document.getElementById('map-canvas'),
+				mapOptions);
 
-	var pinColor = "0099FF";
-	var pinImage = new google.maps.MarkerImage(
-			"http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|"
-					+ pinColor, new google.maps.Size(21, 34),
-			new google.maps.Point(0, 0), new google.maps.Point(10, 34));
- 	
-	var marker = new google.maps.Marker({
-		position : myLatlng,
-		map : map,
-		title : museum,
-		icon : pinImage
-	});
-}
+		var pinColor = "0099FF";
+		var pinImage = new google.maps.MarkerImage(
+				"http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|"
+						+ pinColor, new google.maps.Size(21, 34),
+				new google.maps.Point(0, 0), new google.maps.Point(10, 34));
 
+		var marker = new google.maps.Marker({
+			position : myLatlng,
+			map : map,
+			title : museum,
+			icon : pinImage
+		});
+	}
 </script>
 <script type="text/javascript">
-	$(document).ajaxStop(function () {
-		
-		var museumResource = $('#container').attr('about');
-		$('.museum_work_relation').each(function(i) {
-			$(this).attr('resource',museumResource);
-		});
-		
-		$('.bxslider').removeClass("loading");
-		
-		$('.bxslider .row').each(function(i){
-			$(this).removeClass("invisible");
-		});
-		 
-		$("[rel='popover']").popover({
-			html: 'true',
-			content:  function() {
-			      return $(this).closest(".row").find(".authorData").parent().html();
-		    	  }
-			});
-		
-		$("[rel='popover']").on('click', function(e) {
+	$(document).ajaxStop(
+			function() {
+
+				var museumResource = $('#container').attr('about');
+				$('.museum_work_relation').each(function(i) {
+					$(this).attr('resource', museumResource);
+				});
+
+				$('.bxslider').removeClass("loading");
+
+				$('.bxslider .row').each(function(i) {
+					$(this).removeClass("invisible");
+				});
+
+				$("[rel='popover']").popover(
+						{
+							html : 'true',
+							content : function() {
+								return $(this).closest(".row").find(
+										".authorData").parent().html();
+							}
+						});
+
+				$("[rel='popover']").on('click', function(e) {
 					e.stopPropagation();
 				});
-		$(document).on('click',
-			function(e) {
-				if (($('.popover').has(e.target).length == 0)
-							|| $(e.target).is('.close')) {
-						$("[rel='popover']").popover('hide');
-					}
+				$(document).on(
+						'click',
+						function(e) {
+							if (($('.popover').has(e.target).length == 0)
+									|| $(e.target).is('.close')) {
+								$("[rel='popover']").popover('hide');
+							}
+						});
+
+				$('.bxslider').bxSlider({
+					mode : 'fade',
+					captions : true,
+					adaptiveHeight : false,
+					pagerType : 'short',
+				});
 			});
 
-		$('.bxslider').bxSlider({
-			mode : 'fade',
-			captions : true,
-			adaptiveHeight : false,
-			pagerType : 'short',
-		});
-	});
-	
-	function onReadyState(){
+	function onReadyState() {
 		$('.bxslider').addClass("loading");
 		$('.accordion').accordion({
 			speed : 'slow',
@@ -187,118 +191,116 @@ function initialize() {
 				</div>
 			</center>
 		</div>
-		<div id = "mainContainer">
-		<div id="latitude" style="display:none;">${museumRDF.getLatitude().getSecond()}</div>
-		<div id="longitude" style="display:none">${museumRDF.getLongitude().getSecond()}</div>
-		<div id="container" class="wrapper row col4"
-			about="${museumRDF.getResourceName()} " typeof="dbpedia-owl:Museum">
-			<div id="content" class="col-sm-7">
-				<h2>
-					<a href="${museumRDF.getWebsite().getSecond()}">${museumRDF.getName().getSecond()}</a>
-				</h2>
-				<img class="imgl" rel="dbpedia-owl:thumbnail foaf:thumbnail"
-					src="<c:url value="${museumRDF.getThumbnail().getSecond()}" />"
-					alt="" width="125" height="125" />
-				<p class="justify" rel="${museumRDF.getAbstract().getFirst()}">${museumRDF.getAbstract().getSecond()}</p>
+		<div id="mainContainer">
+			<div id="latitude" style="display: none;">${museumRDF.getLatitude().getSecond()}</div>
+			<div id="longitude" style="display: none">${museumRDF.getLongitude().getSecond()}</div>
+			<div id="container" class="wrapper row col4"
+				about="${museumRDF.getResourceName()} " typeof="dbpedia-owl:Museum">
+				<div id="content" class="col-sm-7">
+					<h2>
+						<a href="${museumRDF.getWebsite().getSecond()}">${museumRDF.getName().getSecond()}</a>
+					</h2>
+					<img class="imgl" rel="dbpedia-owl:thumbnail foaf:thumbnail"
+						src="<c:url value="${museumRDF.getThumbnail().getSecond()}" />"
+						alt="" width="125" height="125" />
+					<p class="justify" rel="${museumRDF.getAbstract().getFirst()}">${museumRDF.getAbstract().getSecond()}</p>
+				</div>
+				<div id="column" class="col-sm-5">
+					<h2>Details</h2>
+					<div class="scrollbar">
+						<div class="accordion">
+							<!-- Test for Location Detail -->
+							<c:if
+								test="${not empty museumRDF.getLatitude() && not empty museumRDF.getLongitude()}">
+								<h3>Location</h3>
+
+								<div style="height: 250px;">
+									<p>
+										<c:set var="locality" scope="request"
+											value="${museumRDF.getLocality() }" />
+										<c:set var="country" scope="request"
+											value="${museumRDF.getCountry()}" />
+
+										<c:if test="${not empty country}">
+											<span property="dcplaces:country"><c:out
+													value="${country}, " /></span>
+										</c:if>
+										<c:if test="${not empty locality}">
+											<span property="dbpedia-owl:locality"><c:out
+													value="${locality}" /></span>
+										</c:if>
+									</p>
+									<p style="display: none;">
+										(<span property="${museumRDF.getLatitude().getFirst()}"
+											datatype="xsd:float">${museumRDF.getLatitude().getSecond()}</span>,<span
+											property="${museumRDF.getLongitude().getFirst()}"
+											datatype="xsd:float">${museumRDF.getLongitude().getSecond()}</span>)
+									</p>
+									<div id="map-canvas"
+										style="width: 100%; height: 85%; margin: 0 auto; padding-top: 10px; padding-bottom: 20px;"></div>
+								</div>
+							</c:if>
+						</div>
+						<div class="accordion">
+							<!-- Test for Established Year -->
+							<c:if test="${not empty museumRDF.getEstablishedYear()}">
+								<h3>Established Year</h3>
+								<div>
+									<p property="${museumRDF.getEstablishedYear().getFirst()}"
+										datatype="xsd:integer">
+										${museumRDF.getEstablishedYear().getSecond()}</p>
+								</div>
+							</c:if>
+						</div>
+						<div class="accordion">
+							<!-- Test for Number of Visitors -->
+							<c:if test="${not empty museumRDF.getNumberOfVisitors()}">
+								<h3>Number of Visitors</h3>
+								<div>
+									<p property="${museumRDF.getNumberOfVisitors().getFirst()}"
+										datatype="xsd:integer">
+										${museumRDF.getNumberOfVisitors().getSecond()}</p>
+								</div>
+							</c:if>
+						</div>
+						<!-- Test for Director -->
+
+						<!-- Test for Born People -->
+
+						<!-- Test for Dead People -->
+
+						<!-- Test for Website -->
+						<div class="accordion">
+							<c:if test="${not empty museumRDF.getWebsite()}">
+								<h3>Website</h3>
+								<div>
+									<p property="${museumRDF.getWebsite().getFirst()} dc:URI"
+										datatype="xsd:anyURI">
+										<a href="${museumRDF.getWebsite().getSecond()}">${museumRDF.getWebsite().getSecond()}
+										</a>
+									</p>
+								</div>
+							</c:if>
+						</div>
+						<!-- Hidden List Of works -->
+						<c:if test="${not empty museumRDF.getWorks()}">
+							<c:if test="${fn:length(museumRDF.getWorks()) gt 0}">
+								<ul id="hidden_works_list" style="display: none">
+									<c:forEach var="workPair" items="${museumRDF.getWorks()}">
+										<li><c:out value="${workPair.getSecond().getURI()}"></c:out></li>
+									</c:forEach>
+								</ul>
+							</c:if>
+						</c:if>
+					</div>
+				</div>
+				<br class="clear" /> <br class="clear" /> <br class="clear" />
 			</div>
-			<div id="column" class="col-sm-5">
-				<h2>Details</h2>
-				<div class="scrollbar">
-					<div class="accordion">
-						<!-- Test for Location Detail -->
-						<c:if
-							test="${not empty museumRDF.getLatitude() && not empty museumRDF.getLongitude()}">
-							<h3>Location</h3>
-
-							<div style="height: 250px;">
-								<p>
-									<c:set var="locality" scope="request"
-										value="${museumRDF.getLocality() }" />
-									<c:set var="country" scope="request"
-										value="${museumRDF.getCountry()}" />
-
-									<c:if test="${not empty country}">
-										<span property="dcplaces:country"><c:out
-												value="${country}, " /></span>
-									</c:if>
-									<c:if test="${not empty locality}">
-										<span property="dbpedia-owl:locality"><c:out
-												value="${locality}" /></span>
-									</c:if>
-								</p>
-								<p style="display: none;">
-									(<span property="${museumRDF.getLatitude().getFirst()}"
-										datatype="xsd:float">${museumRDF.getLatitude().getSecond()}</span>,<span
-										property="${museumRDF.getLongitude().getFirst()}"
-										datatype="xsd:float">${museumRDF.getLongitude().getSecond()}</span>)
-								</p>
-								<div id="map-canvas"
-									style="width: 100%; height: 85%; margin: 0 auto; padding-top: 10px; padding-bottom: 20px;"></div>
-							</div>
-						</c:if>
-					</div>
-					<div class="accordion">
-						<!-- Test for Established Year -->
-						<c:if test="${not empty museumRDF.getEstablishedYear()}">
-							<h3>Established Year</h3>
-							<div>
-								<p property="${museumRDF.getEstablishedYear().getFirst()}"
-									datatype="xsd:integer">
-									${museumRDF.getEstablishedYear().getSecond()}</p>
-							</div>
-						</c:if>
-					</div>
-					<div class="accordion">
-						<!-- Test for Number of Visitors -->
-						<c:if test="${not empty museumRDF.getNumberOfVisitors()}">
-							<h3>Number of Visitors</h3>
-							<div>
-								<p property="${museumRDF.getNumberOfVisitors().getFirst()}"
-									datatype="xsd:integer">
-									${museumRDF.getNumberOfVisitors().getSecond()}</p>
-							</div>
-						</c:if>
-					</div>
-					<!-- Test for Director -->
-
-					<!-- Test for Born People -->
-
-					<!-- Test for Dead People -->
-
-					<!-- Test for Website -->
-					<div class="accordion">
-						<c:if test="${not empty museumRDF.getWebsite()}">
-							<h3>Website</h3>
-							<div>
-								<p property="${museumRDF.getWebsite().getFirst()} dc:URI"
-									datatype="xsd:anyURI">
-									<a href="${museumRDF.getWebsite().getSecond()}">${museumRDF.getWebsite().getSecond()}
-									</a>
-								</p>
-							</div>
-						</c:if>
-					</div>
-					<!-- Hidden List Of works -->
-					<c:if test="${not empty museumRDF.getWorks()}">
-						<c:if test="${fn:length(museumRDF.getWorks()) gt 0}">
-							<ul id="hidden_works_list" style="display: none">
-								<c:forEach var="workPair" items="${museumRDF.getWorks()}">
-									<li><c:out value="${workPair.getSecond().getURI()}"></c:out></li>
-								</c:forEach>
-							</ul>
-						</c:if>
-					</c:if>
+			<div class="wrapper col5">
+				<div id="footer">
+					<div class="bxslider"></div>
 				</div>
 			</div>
-			<br class="clear" /> <br class="clear" /> <br class="clear" />
-		</div>
-		<div class="wrapper col5">
-			<div id="footer">
-				<div class="bxslider">
-
-				</div>
-			</div>
-		</div>
 		</div>
 		<div class="wrapper row col6">
 			<div id="copyright">
