@@ -142,26 +142,31 @@ function initialize() {
 <body id="top">
 	<div class="container">
 		<c:set var="hashtag" scope="session" value="#" />
-
 		<div id="header" class="wrapper row col2">
-			<div class="col-sm-6" id="logo">
-				<h1>
-					<a href="home">Emu</a>
-				</h1>
-				<p>Semantic Web-Enhanced Museum</p>
-			</div>
+			<nav class="navbar navbar-default">
+				<div class="container-fluid">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed"
+							data-toggle="collapse"
+							data-target="#bs-example-navbar-collapse-6">
+							<span class="sr-only">Toggle navigation</span> <span
+								class="icon-bar"></span> <span class="icon-bar"></span> <span
+								class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="home">Emu</a>
+					</div>
 
-
-			<div class="col-sm-6" id="topnav">
-				<ul>
-					<li class="active"><a href="home">Homepage</a><span>Find
-							out more</span></li>
-					<li><a href="#" onclick="javascript:showlocation()">Map</a><span>Nearby
-							Museums</span></li>
-					<li><a href="quiz">Quiz</a><span>Test Your Knowledge</span></li>
-				</ul>
-			</div>
-
+					<div class="collapse navbar-collapse"
+						id="bs-example-navbar-collapse-6">
+						<ul class="nav navbar-nav">
+							<li class="active"><a href="home">Home</a></li>
+							<li><a href="javascript:showlocation()">Map</a></li>
+							<li><a href="quiz">Quiz</a></li>
+						</ul>
+					</div>
+					<!-- /.navbar-collapse -->
+				</div>
+			</nav>
 			<br class="clear" />
 		</div>
 
