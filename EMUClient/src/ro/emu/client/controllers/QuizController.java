@@ -31,7 +31,6 @@ public class QuizController {
 		
 		String resp = null;
 		try {
-			//get 10 question from the api
 			resp = Request.sendGet("/trivia/getQuiz", null,true);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -41,16 +40,16 @@ public class QuizController {
 		QuizQuestion question = new QuizQuestion();
 		if (resp != null) {
 			JSONObject jsonResponse = new JSONObject(resp);
-			/*if (!jsonResponse.getString("code").equals("OK")) {
+			if (!jsonResponse.getString("code").equals("OK")) {
 				// server error
-			} else*/ {
-			   // items = jsonResponse.getJSONArray("response");
-			    question = parseResponse(0, "prima intrebare");
-				/*for (int i = 1; i < items.length(); i++) {
+			} else {
+			    items = jsonResponse.getJSONArray("response");
+			    question = parseResponse(0, items.getJSONObject(0));
+				for (int i = 1; i < items.length(); i++) {
 					JSONObject item = items.getJSONObject(i);
-					QuizQuestion anotherQuestion = parseResponse(item, i);
+					QuizQuestion anotherQuestion = parseResponse(i, item);
 					quizQuestion.add(anotherQuestion);
-				}*/
+				}
 			}
 		}
 
@@ -64,8 +63,8 @@ public class QuizController {
 		Integer questionId = Integer.parseInt(id);
 		Integer answerId = Integer.parseInt(answer);
 		verifiedAnswer(questionId,answerId);
-		ModelAndView model =null;
-		if(questionId.equals(9)){
+		ModelAndView model = null;
+		if(questionId.equals(6)){
 		    model = new ModelAndView("showResponses");
 			model.addObject("score", score);
 			score = 0L;
@@ -73,7 +72,7 @@ public class QuizController {
 		}
 		else{
 			model = new ModelAndView("question");
-			QuizQuestion question = parseResponse(questionId+1, "a doua intrebare");
+			QuizQuestion question = parseResponse(questionId+1, items.getJSONObject(questionId+1));
 			model.addObject("question", question);
 			}
 
@@ -86,11 +85,13 @@ public class QuizController {
 		QuizAnswer answer = question.getAnswers().get(answerId);
 		if(answer.isCorrectAnswer()){
 			score = score + 10;
+			
+			// verifica aici daca totul este ok, cred ca sunt unele probleme. cu id answer-ului.
 		}
 	}
 	
-	private QuizQuestion parseResponse( int id, String text){
-			/*QuizQuestion question =  new QuizQuestion();
+	private QuizQuestion parseResponse( int id, JSONObject item){
+			QuizQuestion question =  new QuizQuestion();
 			question.setId(id);
 			question.setText(item.getString("text"));
 			JSONArray answers = item.getJSONArray("answers");
@@ -98,26 +99,12 @@ public class QuizController {
 				for(int j = 0; j< answers.length(); j++){
 					JSONObject it = answers.getJSONObject(j);
 					QuizAnswer answer = new QuizAnswer();
-					answer.setId(Integer.parseInt(it.getString("id")));
+					answer.setId(it.getInt("id")-1);
 					answer.setValue(it.getString("value"));
+					answer.setCorrectAnswer(it.getBoolean("correctAnswer"));
+					quizAnswer.add(answer);
 				}
-			question.setAnswers(quizAnswer);*/
-		QuizQuestion question =  new QuizQuestion();
-		question.setId(id);
-		question.setText(text);
-		
-		List<QuizAnswer> quizAnswer = new ArrayList<>();
-		QuizAnswer answer = new QuizAnswer();
-		answer.setId(0);
-		answer.setValue("primul raspuns");
-		answer.setCorrectAnswer(false);
-		QuizAnswer answer1 = new QuizAnswer();
-		answer1.setId(1);
-		answer1.setValue("al doilea raspuns");
-		answer1.setCorrectAnswer(true);
-		quizAnswer.add(answer);
-		quizAnswer.add(answer1);
-		question.setAnswers(quizAnswer);
+			question.setAnswers(quizAnswer);
 		quizQuestion.add(question);
 			return question;
 		}
