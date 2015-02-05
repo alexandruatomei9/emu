@@ -6,12 +6,12 @@ if (document.getElementById('answer0').checked) {
 if (document.getElementById('answer1').checked) {
 	 rate_value = 1;
 	}
-/*if (document.getElementById('answer2').checked) {
+if (document.getElementById('answer2').checked) {
 	 rate_value = 2;
 	}
 if (document.getElementById('answer3').checked) {
 	 rate_value = 3;
-	}*/
+	}
 if(rate_value == null){
 	alert("Select a response...");
 }
