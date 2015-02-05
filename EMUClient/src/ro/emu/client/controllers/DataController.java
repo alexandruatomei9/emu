@@ -2,7 +2,6 @@ package ro.emu.client.controllers;
 
 import javax.servlet.ServletContext;
 
-import org.apache.jena.atlas.json.JsonBuilder;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -73,13 +72,34 @@ public class DataController {
 		return resourceJSON.toString();
 	}
 
-	@RequestMapping(value = "/director", method = RequestMethod.GET)
+	@RequestMapping(value = "/person", method = RequestMethod.GET)
 	@ResponseBody
-	public String getAuthor(
-			@RequestParam(value = "authorURI", required = true) String authorURI) {
-		JsonBuilder jsonBuilder = new JsonBuilder();
+	public String getPerson(
+			@RequestParam(value = "personURI", required = true) String personURI) {
+		try {
+			System.out.println(personURI);
+			Model personModel = DBPediaClient.retrieveRDFModelForResource(
+					personURI, servletContext);
+			if (personModel != null) {
+				return buildPersonJSON(personModel);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "{}";
+	}
 
-		return jsonBuilder.build().toString();
+	private String buildPersonJSON(Model model) {
+		PersonRDF personRDF = new PersonRDF(model);
+		JSONObject authorObject = new JSONObject();
+		addObjectToJson(authorObject, personRDF.getAbstract(), "abstract");
+		addObjectToJson(authorObject, personRDF.getName(), "name");
+		addObjectToJson(authorObject, personRDF.thumbnail(), "thumbnail");
+		addObjectToJson(authorObject, personRDF.getWikiPageURL(),
+				"wiki_page_url");
+		addObjectToJson(authorObject, personRDF.getBirthDate(), "birth_date");
+		addObjectToJson(authorObject, personRDF.getDeathDate(), "death_date");
+		return authorObject.toString();
 	}
 
 	private void addObjectToJson(JSONObject object, Pair<String, String> pair,

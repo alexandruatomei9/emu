@@ -8,7 +8,7 @@
 	<c:forEach var="ns" items="${namespaces}">xmlns:${ns.key}="${ns.value}"
 	</c:forEach>>
 <head>
-<meta about="EMU"/>
+<meta about="EMU" />
 <title property="dc:title">EMU</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta name="viewport"
@@ -123,7 +123,39 @@
 			collapsible : true,
 		});
 		initialize();
+
+		var directorResource = $('#hidden_director').html();
+		$.ajax({
+			type : "GET",
+			url : "data/person",
+			data : {
+				personURI : directorResource
+			},
+			success : function(response) {
+				alert(response);
+			}
+		});
+
+		$('#hidden_dead_people_list li').each(function(i) {
+			/* $.ajax({
+				type : "GET",
+				url : "data/person",
+				data : {
+					personURI : $(this).html()
+				},
+				success : function(response) {
+					alert(response);
+				}
+			}); */
+		});
+
+		$('#hidden_born_people_list li').each(function(i) {
+		});
+
+		var i = 0;
 		$('#hidden_works_list li').each(function(i) {
+			if (i < 10) {
+				i++;
 				$.ajax({
 					type : "GET",
 					url : "works",
@@ -134,6 +166,8 @@
 						$(".bxslider").append(response);
 					}
 				});
+				i++;
+			}
 		});
 	}
 
@@ -268,11 +302,48 @@
 								</div>
 							</c:if>
 						</div>
-						<!-- Test for Director -->
 
-						<!-- Test for Born People -->
+						<!-- Test for Director -->
+						<c:if test="${not empty museumRDF.getDirector()}">
+							<div id="director_section" class="accordion">
+								<h3>Director</h3>
+								<div>Director loading</div>
+							</div>
+							<p id="hidden_director" style="display: none">
+								${museumRDF.getDirector().getSecond()}</p>
+						</c:if>
 
 						<!-- Test for Dead People -->
+						<c:if test="${not empty museumRDF.getDeadPeople()}">
+							<c:if test="${fn:length(museumRDF.getDeadPeople()) gt 0}">
+								<div id="dead_people_section" class="accordion">
+									<h3>Dead People</h3>
+									<div>Dead People loading</div>
+								</div>
+								<ul id="hidden_dead_people_list" style="display: none">
+									<c:forEach var="peoplePair"
+										items="${museumRDF.getDeadPeople()}">
+										<li><c:out value="${peoplePair.getSecond().getURI()}"></c:out></li>
+									</c:forEach>
+								</ul>
+							</c:if>
+						</c:if>
+
+						<!-- Test for Born People -->
+						<c:if test="${not empty museumRDF.getBornPeople()}">
+							<c:if test="${fn:length(museumRDF.getBornPeople()) gt 0}">
+								<div id="born_people_section" class="accordion">
+									<h3>Born People</h3>
+									<div>Born People loading</div>
+								</div>
+								<ul id="hidden_born_people_list" style="display: none">
+									<c:forEach var="peoplePair"
+										items="${museumRDF.getBornPeople()}">
+										<li><c:out value="${peoplePair.getSecond().getURI()}"></c:out></li>
+									</c:forEach>
+								</ul>
+							</c:if>
+						</c:if>
 
 						<!-- Test for Website -->
 						<div class="accordion">

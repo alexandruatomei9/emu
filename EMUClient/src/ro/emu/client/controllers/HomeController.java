@@ -146,6 +146,29 @@ public class HomeController {
 		return modelAndView;
 	}
 
+	@RequestMapping(value = "director", method = RequestMethod.GET)
+	public ModelAndView museumDirector(
+			@RequestParam(value = "directorURI") String directorURI) {
+		ModelAndView modelAndView = new ModelAndView("works");
+		try {
+			Model personModel = DBPediaClient.retrieveRDFModelForResource(
+					directorURI, servletContext);
+			if (personModel != null) {
+				PersonRDF personRDF = new PersonRDF(personModel);
+				modelAndView.addObject("resourceName",
+						personRDF.getResourceName());
+				modelAndView.addObject("description", personRDF.getAbstract());
+				modelAndView.addObject("name", personRDF.getName());
+				modelAndView.addObject("thumbnail", personRDF.thumbnail());
+				modelAndView.addObject("wiki_page_url",
+						personRDF.getWikiPageURL());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return modelAndView;
+	}
+
 	@RequestMapping(value = "museumDetails", method = RequestMethod.GET)
 	public ModelAndView searchMuseum(
 			@RequestParam(value = "museum", required = true) String museum) {
