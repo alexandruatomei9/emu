@@ -125,7 +125,7 @@
 		initialize();
 
 		var directorResource = $('#hidden_director').html();
-		$.ajax({
+		/* $.ajax({
 			type : "GET",
 			url : "data/person",
 			data : {
@@ -134,7 +134,7 @@
 			success : function(response) {
 				alert(response);
 			}
-		});
+		}); */
 
 		$('#hidden_dead_people_list li').each(function(i) {
 			/* $.ajax({
@@ -155,7 +155,7 @@
 		var i = 0;
 		$('#hidden_works_list li').each(function(i) {
 			if (i < 10) {
-				i++;
+				/* i++; */
 				$.ajax({
 					type : "GET",
 					url : "works",
@@ -191,7 +191,7 @@
 								class="icon-bar"></span> <span class="icon-bar"></span> <span
 								class="icon-bar"></span>
 						</button>
-						<a class="navbar-brand" href="home">Emu</a>
+						<a class="navbar-brand" href=""><img src="<c:url value="/resources/layout/styles/images/emu.jpg" />" class="img-brand"/>Emu</a>
 					</div>
 
 					<div class="collapse navbar-collapse"
@@ -210,17 +210,18 @@
 
 		<div id="intro" class="wrapper col3">
 
-			<ul class="row">
+			<div class="row">
 				<c:forEach var="museumThumb" items="${museumThumbs}">
-					<li class="col-sm-12" resource="${museumThumb.getDetailsUrl}"
-						typeof="dbpedia-owl:Museum"><img class="gal"
+					<div class="col-lg-3 col-sm-6 col-xs-6" resource="${museumThumb.getDetailsUrl}"
+						typeof="dbpedia-owl:Museum"><img class="gal img-responsive"
 						src="${museumThumb.imageUrl}" alt=""
-						rel="dbpedia-owl:thumbnail foaf:thumbnail" /> <a
-						href="${museumThumb.getDetailsUrl}"><span
-							rel="rdfs:label foaf:name">${museumThumb.museumName}</span>
-							&raquo;</a></li>
+						rel="dbpedia-owl:thumbnail foaf:thumbnail" /> 
+						<a href="${museumThumb.getDetailsUrl}">
+							<div id="myLink" rel="rdfs:label foaf:name">${museumThumb.museumName}</div>
+						</a>
+					</div>
 				</c:forEach>
-			</ul>
+			</div>
 
 			<br class="clear" />
 			<center>

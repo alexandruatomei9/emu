@@ -77,9 +77,8 @@ public class DataController {
 	public String getPerson(
 			@RequestParam(value = "personURI", required = true) String personURI) {
 		try {
-			System.out.println(personURI);
 			Model personModel = DBPediaClient.retrieveRDFModelForResource(
-					personURI, servletContext);
+					personURI.trim(), servletContext);
 			if (personModel != null) {
 				return buildPersonJSON(personModel);
 			}
