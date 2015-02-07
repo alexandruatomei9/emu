@@ -6,24 +6,82 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
 <title>EMU</title>
+<!-- StyleSheets -->
 <link href="<c:url value="/resources/layout/styles/layout.css" />"
 	rel="stylesheet">
+<link href="<c:url value="/resources/layout/styles/jquery-ui.css" />"
+	rel="stylesheet">
+
+<!-- Scripts -->
 <script
 	src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 <script src="<c:url value="/resources/js/jquery.min.js" />"></script>
+<script src="<c:url value="/resources/js/jquery.min.js" />"></script>
+<script src="<c:url value="/resources/js/jquery-ui.min.js" />"></script>
 <script>
+	var myLat = "${myLat}";
+	var myLong = "${myLong}";
+	var myCity = "${city}";
 	var map;
+	var markers = [];
+	var museumListRequest;
+	$(function() {
+		$("#slider")
+				.slider(
+						{
+							value : 100,
+							min : 100,
+							max : 3000,
+							step : 100,
+							slide : function(event, ui) {
+								$("#radius").val(" " + ui.value + "km");
+								deleteMarkers();
+								if (typeof museumListRequest !== 'undefined'
+										&& museumListRequest.readyState > 0
+										&& museumListRequest.readyState < 4) {
+									museumListRequest.abort();
+								}
+								museumListRequest = $
+										.ajax({
+											type : "GET",
+											url : "http://localhost:8080/EMUServer/rest/map/getNearbyMuseums",
+											data : {
+												'latitude' : myLat,
+												'longitude' : myLong,
+												'radius' : ui.value
+											},
+											success : handleSuccessMuseumList
+										});
+							}
+						});
+		$("#radius").val(" " + $("#slider").slider("value") + "km");
+	});
+
+	function handleSuccessMuseumList(response) {
+		var code = response.code;
+		if (code == "OK") {
+			var museumList = response.response;
+			for ( var i in museumList) {
+				alert(museumList[i].country);
+				var latitude = museumList[i].latitude;
+				var longitude = museumList[i].longitude;
+				var resourceURI = museumList[i].resourceURI;
+				var name = museumList[i].name;
+				var location = new google.maps.LatLng(latitude, longitude);
+				addMarker(location, name);
+			}
+			setAllMap(map);
+		}
+	}
+
 	function initialize() {
-		var myLat = "${myLat}";
-		var myLong = "${myLong}";
-		var myCity = "${city}";
 		var myLatlng = new google.maps.LatLng(myLat, myLong);
 
 		var mapOptions = {
 			zoom : 3,
 			center : myLatlng
 		};
-		map = new google.maps.Map(document.getElementById('map-canvas'),
+		map = new google.maps.Map(document.getElementById('googleMap'),
 				mapOptions);
 
 		var pinColor = "0099FF";
@@ -41,23 +99,47 @@
 
 		var pins = '${pins}';
 		$.each(JSON.parse(pins), function(idx, obj) {
-			var myNewLatlng = new google.maps.LatLng(obj.latitude,
-					obj.longitude);
-			var newmarker = new google.maps.Marker({
-				position : myNewLatlng,
-				map : map,
-				title : obj.name,
-			});
-			google.maps.event.addListener(newmarker, 'click', function() {
-				  window.location.href = obj.resourceURI;
-			});
+			var location = new google.maps.LatLng(obj.latitude, obj.longitude);
+			addMarker(location, obj.title);
 		});
-		
-		
+		setAllMap(map);
+	}
+	google.maps.event.addDomListener(window, 'load', initialize);
 
+	// Add a marker to the map and push to the array.
+	function addMarker(location, title) {
+		var marker = new google.maps.Marker({
+			position : location,
+			title : title
+		});
+		google.maps.event.addListener(marker, 'click', function() {
+			window.location.href = obj.resourceURI;
+		});
+		markers.push(marker);
 	}
 
-	google.maps.event.addDomListener(window, 'load', initialize);
+	// Sets the map on all markers in the array.
+	function setAllMap(map) {
+		for (var i = 0; i < markers.length; i++) {
+			markers[i].setMap(map);
+		}
+	}
+
+	// Removes the markers from the map, but keeps them in the array.
+	function clearMarkers() {
+		setAllMap(null);
+	}
+
+	// Shows any markers currently in the array.
+	function showMarkers() {
+		setAllMap(map);
+	}
+
+	// Deletes all markers in the array by removing references to them.
+	function deleteMarkers() {
+		clearMarkers();
+		markers = [];
+	}
 </script>
 </head>
 <body>
@@ -65,7 +147,8 @@
 		<div id="header">
 			<div id="topnav">
 				<ul>
-					<li class="active last"><a href="#">Map</a><span>Nearby museums</span></li>
+					<li class="active last"><a href="#">Map</a><span>Nearby
+							museums</span></li>
 					<li><a href="quiz">Quiz</a><span>Test Your Knowledge</span></li>
 					<li><a href="home">Homepage</a><span>Find out more</span></li>
 				</ul>
@@ -80,14 +163,24 @@
 		</div>
 	</div>
 	<div class="wrapper col3">
-	<center>
-	<p>Your city: ${city}</p>
-	</center>
+		<center>
+			<p>Your city: ${city}</p>
+		</center>
+		<p>
+			<label for="radius"> Museum in area: </label> <input type="text"
+				id="radius" readonly
+				style="border: 0; color: #f6931f; font-weight: bold;">
+		</p>
+
+		<div id="slider" style="width: 200px"></div>
+
 	</div>
 	<div class="wrapper col4">
-	<center>
-		<div id="map-canvas" style="height: 500px; width: 700px; padding-top:20px; padding-bottom:20px;"></div>
-	</center>
+		<center>
+			<div id="map-canvas">
+				<div id="googleMap"></div>
+			</div>
+		</center>
 	</div>
 	<div class="wrapper col5">
 		<div id="footer">

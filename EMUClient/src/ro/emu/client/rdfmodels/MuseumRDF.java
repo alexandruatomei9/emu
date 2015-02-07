@@ -1,17 +1,13 @@
 package ro.emu.client.rdfmodels;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import ro.emu.client.dbpedia.DBPediaExtractor;
 import ro.emu.client.utils.Constants;
+import ro.emu.client.utils.GoogleGeoLocator;
+import ro.emu.client.utils.LocationType;
 import ro.emu.client.utils.Pair;
-import ro.emu.client.utils.Request;
-
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -219,45 +215,8 @@ public class MuseumRDF extends RDFObject {
 			return null;
 		Float latitude = latCoordinate.getSecond();
 		Float longitude = longCoordinate.getSecond();
-		HashMap<String, String> params = new HashMap<String, String>();
-		params.put("sensor", "false");
-		params.put("latlng", latitude + "," + longitude);
-		try {
-			String countryName = Request.sendGet(
-					"http://maps.googleapis.com/maps/api/geocode/json", params,
-					false);
-			JSONObject object = new JSONObject(countryName);
-			JSONArray resultsArray = object.getJSONArray("results");
-			if (resultsArray != null) {
-				int length = resultsArray.length();
-				for (int i = 0; i < length; i++) {
-					JSONObject result = (JSONObject) resultsArray.get(i);
-					JSONArray address_components = result
-							.getJSONArray("address_components");
-					for (int j = 0; j < address_components.length(); j++) {
-						JSONObject component = (JSONObject) address_components
-								.get(j);
-						JSONArray types = component.getJSONArray("types");
-						if (types != null) {
-							int typeLength = types.length();
-							for (int k = 0; k < typeLength; k++) {
-								String typeString = types.getString(k);
-								if (typeString.equalsIgnoreCase("country")) {
-									return component.getString("long_name");
-								}
-							}
-						}
-					}
-
-				}
-			}
-
-			System.out.println(countryName);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		return GoogleGeoLocator.getLocationFor(latitude, longitude,
+				LocationType.Country);
 	}
 
 	/**
@@ -273,45 +232,8 @@ public class MuseumRDF extends RDFObject {
 			return null;
 		Float latitude = latCoordinate.getSecond();
 		Float longitude = longCoordinate.getSecond();
-		HashMap<String, String> params = new HashMap<String, String>();
-		params.put("sensor", "false");
-		params.put("latlng", latitude + "," + longitude);
-		try {
-			String countryName = Request.sendGet(
-					"http://maps.googleapis.com/maps/api/geocode/json", params,
-					false);
-			JSONObject object = new JSONObject(countryName);
-			JSONArray resultsArray = object.getJSONArray("results");
-			if (resultsArray != null) {
-				int length = resultsArray.length();
-				for (int i = 0; i < length; i++) {
-					JSONObject result = (JSONObject) resultsArray.get(i);
-					JSONArray address_components = result
-							.getJSONArray("address_components");
-					for (int j = 0; j < address_components.length(); j++) {
-						JSONObject component = (JSONObject) address_components
-								.get(j);
-						JSONArray types = component.getJSONArray("types");
-						if (types != null) {
-							int typeLength = types.length();
-							for (int k = 0; k < typeLength; k++) {
-								String typeString = types.getString(k);
-								if (typeString.equalsIgnoreCase("locality")) {
-									return component.getString("long_name");
-								}
-							}
-						}
-					}
-
-				}
-			}
-
-			System.out.println(countryName);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		return GoogleGeoLocator.getLocationFor(latitude, longitude,
+				LocationType.Locality);
 	}
 
 	/**

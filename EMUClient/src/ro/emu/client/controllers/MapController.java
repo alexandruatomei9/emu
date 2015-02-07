@@ -21,7 +21,9 @@ public class MapController {
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView homeMuseums(HttpServletRequest request)
 			throws SocketException {
-		if (request.getParameter("latitude") == null || request.getParameter("longitude") == null) {
+		if (request.getParameter("latitude") == null
+				|| request.getParameter("longitude") == null
+				|| request.getParameter("radius") == null) {
 			return new ModelAndView("redirect:" + "/");
 		}
 
@@ -34,10 +36,11 @@ public class MapController {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("latitude", "" + request.getParameter("latitude"));
 		parameters.put("longitude", "" + request.getParameter("longitude"));
-
+		parameters.put("radius", "" + request.getParameter("radius"));
 		String response = null;
 		try {
-			response = Request.sendGet("/map/getNearbyMuseums", parameters,true);
+			response = Request.sendGet("/map/getNearbyMuseums", parameters,
+					true);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -47,15 +50,7 @@ public class MapController {
 		if (jsonResponse.getString("code").equals("OK")) {
 			JSONArray geoMuseums = jsonResponse.getJSONArray("response");
 			JSONArray toSend = new JSONArray();
-			if (geoMuseums.length() > 20) {
-				for (int i = 0; i < 19; i++) {
-					if (geoMuseums.getJSONObject(i) != null) {
-						toSend.put(i, geoMuseums.getJSONObject(i));
-					}
-				}
-			} else {
-				toSend = geoMuseums;
-			}
+			toSend = geoMuseums;
 			String myJson = toSend.toString();
 			modelAndView.addObject("pins", myJson.replace("'", "`"));
 		}
