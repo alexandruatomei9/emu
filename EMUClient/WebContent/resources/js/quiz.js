@@ -16,7 +16,6 @@ if(rate_value == null){
 	alert("Select a response...");
 }
 var object = {id:questionId,answerId:rate_value};
-
 jQuery.ajax("quiz/question/",
 {
     type:"GET",

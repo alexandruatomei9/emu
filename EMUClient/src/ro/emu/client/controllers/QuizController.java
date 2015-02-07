@@ -82,11 +82,15 @@ public class QuizController {
 	private void verifiedAnswer(Integer questionId, Integer answerId){
 		QuizQuestion question = new QuizQuestion();
 		question = quizQuestion.get(questionId);
-		QuizAnswer answer = question.getAnswers().get(answerId);
-		if(answer.isCorrectAnswer()){
+		QuizAnswer responseAnswer = null;
+		for(QuizAnswer answer : question.getAnswers()){
+			if(answer.getId() == answerId){
+				responseAnswer = answer;
+			}
+		}
+		if(responseAnswer.isCorrectAnswer()){
 			score = score + 10;
 			
-			// verifica aici daca totul este ok, cred ca sunt unele probleme. cu id answer-ului.
 		}
 	}
 	
