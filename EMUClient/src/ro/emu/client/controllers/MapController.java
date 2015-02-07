@@ -22,8 +22,7 @@ public class MapController {
 	public ModelAndView homeMuseums(HttpServletRequest request)
 			throws SocketException {
 		if (request.getParameter("latitude") == null
-				|| request.getParameter("longitude") == null
-				|| request.getParameter("radius") == null) {
+				|| request.getParameter("longitude") == null) {
 			return new ModelAndView("redirect:" + "/");
 		}
 
@@ -36,7 +35,7 @@ public class MapController {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("latitude", "" + request.getParameter("latitude"));
 		parameters.put("longitude", "" + request.getParameter("longitude"));
-		parameters.put("radius", "" + request.getParameter("radius"));
+		parameters.put("radius", "" + 100);
 		String response = null;
 		try {
 			response = Request.sendGet("/map/getNearbyMuseums", parameters,

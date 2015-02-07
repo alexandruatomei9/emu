@@ -11,6 +11,9 @@
 	rel="stylesheet">
 <link href="<c:url value="/resources/layout/styles/jquery-ui.css" />"
 	rel="stylesheet">
+<link
+	href="<c:url value="/resources/layout/styles/jquery.dataTables.css" />"
+	rel="stylesheet">
 
 <!-- Scripts -->
 <script
@@ -18,10 +21,13 @@
 <script src="<c:url value="/resources/js/jquery.min.js" />"></script>
 <script src="<c:url value="/resources/js/jquery.min.js" />"></script>
 <script src="<c:url value="/resources/js/jquery-ui.min.js" />"></script>
+<script src="<c:url value="/resources/js/jquery.dataTables.min.js"/>"></script>
+
 <script>
 	var myLat = "${myLat}";
 	var myLong = "${myLong}";
 	var myCity = "${city}";
+	var dataTableSource = "";
 	var map;
 	var markers = [];
 	var museumListRequest;
@@ -61,8 +67,8 @@
 		var code = response.code;
 		if (code == "OK") {
 			var museumList = response.response;
+			updateDataTable(museumList);
 			for ( var i in museumList) {
-				alert(museumList[i].country);
 				var latitude = museumList[i].latitude;
 				var longitude = museumList[i].longitude;
 				var resourceURI = museumList[i].resourceURI;
@@ -96,13 +102,6 @@
 			title : myCity,
 			icon : pinImage
 		});
-
-		var pins = '${pins}';
-		$.each(JSON.parse(pins), function(idx, obj) {
-			var location = new google.maps.LatLng(obj.latitude, obj.longitude);
-			addMarker(location, obj.title);
-		});
-		setAllMap(map);
 	}
 	google.maps.event.addDomListener(window, 'load', initialize);
 
@@ -140,6 +139,53 @@
 		clearMarkers();
 		markers = [];
 	}
+
+	// Update the table content
+	function updateDataTable(dataset) {
+		var table = $('#example').DataTable();
+		table.clear().draw();
+		for ( var i in dataset) {
+			var latitude = dataset[i].latitude;
+			var longitude = dataset[i].longitude;
+			var resourceURI = dataset[i].resourceURI;
+			var name = dataset[i].name;
+			table.row.add(
+					[ name, latitude.toString(), longitude.toString(),
+							resourceURI ]).draw();
+		}
+	}
+
+	$(document)
+			.ready(
+					function() {
+						museumListRequest = $
+						.ajax({
+							type : "GET",
+							url : "http://localhost:8080/EMUServer/rest/map/getNearbyMuseums",
+							data : {
+								'latitude' : myLat,
+								'longitude' : myLong,
+								'radius' : 100
+							},
+							success : handleSuccessMuseumList
+						});
+						
+						$('#demo')
+								.html(
+										'<table cellpadding="0" cellspacing="0" border="0" class="display" id="example"></table>');
+						$('#example').dataTable({
+							"data" : "",
+							"columns" : [ {
+								"title" : "Museum"
+							}, {
+								"title" : "Latitude"
+							}, {
+								"title" : "Longitude"
+							}, {
+								"title" : "Resource",
+							} ]
+						});
+					});
 </script>
 </head>
 <body>
@@ -180,6 +226,7 @@
 			<div id="map-canvas">
 				<div id="googleMap"></div>
 			</div>
+			<div id="demo"></div>
 		</center>
 	</div>
 	<div class="wrapper col5">

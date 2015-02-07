@@ -20,12 +20,16 @@ public class MapService {
 	@GET
 	@Path("/getNearbyMuseums")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getNearbyMuseums(@QueryParam("latitude") String latitude, @QueryParam("longitude") String longitude) {
-		//TODO:SLider with values
+	public Response getNearbyMuseums(@QueryParam("latitude") String latitude,
+			@QueryParam("longitude") String longitude,
+			@QueryParam("radius") Integer radius) {
+		// TODO:SLider with values
 		List<GeoMuseum> list = new ArrayList<GeoMuseum>();
 		Response response = new Response();
 		try {
-			list = DBPediaClient.retrieveNearbyMuseums(Float.parseFloat(latitude), Float.parseFloat(longitude), 2000);
+			list = DBPediaClient.retrieveNearbyMuseums(
+					Float.parseFloat(latitude), Float.parseFloat(longitude),
+					radius);
 		} catch (Exception e) {
 			response.setCode(Code.INTERNAL_SERVER_ERROR);
 			response.setMessage(e.getMessage());

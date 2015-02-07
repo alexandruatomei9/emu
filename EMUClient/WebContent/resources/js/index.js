@@ -7,7 +7,7 @@ function callback(position) {
 	var latLng = "latitude=" + lat + "&longitude=" + lon;
 	console.log(latLng);
 	if (latLng != 'undefined') {
-		window.location = 'map?' + latLng + "&radius=100";
+		window.location = 'map?' + latLng;
 	}
 }
 
