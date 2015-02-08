@@ -30,8 +30,7 @@ public class PersonRDF extends RDFObject {
 				thumbnailProperty, "en");
 		Object value = objectValueFromStatement(stmt);
 		if (value != null) {
-			return new Pair<String, String>(rdfModel.shortForm(stmt
-					.getPredicate().getURI()), value.toString());
+			return new Pair<String, String>(safeShortForm(stmt), value.toString());
 		}
 		return null;
 	}
@@ -48,8 +47,7 @@ public class PersonRDF extends RDFObject {
 				birthDateProperty, lang);
 		Object value = objectValueFromStatement(stmt);
 		if (value != null && value.getClass() == XSDDateTime.class) {
-			return new Pair<String, String>(rdfModel.shortForm(stmt
-					.getPredicate().getURI()), value.toString());
+			return new Pair<String, String>(safeShortForm(stmt), value.toString());
 		}
 		return null;
 	}
@@ -66,8 +64,7 @@ public class PersonRDF extends RDFObject {
 				deathDateProperty, lang);
 		Object value = objectValueFromStatement(stmt);
 		if (value != null && value.getClass() == XSDDateTime.class) {
-			return new Pair<String, String>(rdfModel.shortForm(stmt
-					.getPredicate().getURI()), value.toString());
+			return new Pair<String, String>(safeShortForm(stmt), value.toString());
 		}
 		return null;
 	}

@@ -36,8 +36,7 @@ public class WorkRDF extends RDFObject {
 				authorProperty, "en");
 		Object authorValue = objectValueFromStatement(stmt);
 		if (authorValue != null) {
-			return new Pair<String, Resource>(rdfModel.shortForm(stmt
-					.getPredicate().getURI()), (Resource) authorValue);
+			return new Pair<String, Resource>(safeShortForm(stmt), (Resource) authorValue);
 		}
 		return null;
 	}
@@ -54,8 +53,7 @@ public class WorkRDF extends RDFObject {
 				thumbnailProperty, "en");
 		Object value = objectValueFromStatement(stmt);
 		if (value != null && stmt.getPredicate() != null) {
-			return new Pair<String, String>(rdfModel.shortForm(stmt
-					.getPredicate().getURI()), value.toString());
+			return new Pair<String, String>(safeShortForm(stmt), value.toString());
 		}
 		return null;
 	}

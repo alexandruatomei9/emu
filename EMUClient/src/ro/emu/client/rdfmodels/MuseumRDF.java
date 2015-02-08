@@ -2,12 +2,14 @@ package ro.emu.client.rdfmodels;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import ro.emu.client.dbpedia.DBPediaExtractor;
 import ro.emu.client.utils.Constants;
 import ro.emu.client.utils.GoogleGeoLocator;
 import ro.emu.client.utils.LocationType;
 import ro.emu.client.utils.Pair;
+
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -22,6 +24,7 @@ import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
  *
  */
 public class MuseumRDF extends RDFObject {
+	public static final String URL_REGEX = "^((https?|ftp)://|(www|ftp)\\.)?[a-z0-9-]+(\\.[a-z0-9-]+)+([/?].*)?$";
 
 	public MuseumRDF() {
 	}
@@ -46,12 +49,10 @@ public class MuseumRDF extends RDFObject {
 					Constants.dbpPropLatitudeKey);
 			stmt = DBPediaExtractor.statementWithProperties(rdfModel,
 					geoProperty, lang);
-			return new Pair<String, Float>(rdfModel.shortForm(stmt
-					.getPredicate().getURI()),
+			return new Pair<String, Float>(safeShortForm(stmt),
 					(Float) objectValueFromStatement(stmt));
 		}
-		return new Pair<String, Float>(rdfModel.shortForm(stmt.getPredicate()
-				.getURI()), (Float) value);
+		return new Pair<String, Float>(safeShortForm(stmt), (Float) value);
 	}
 
 	/**
@@ -71,12 +72,10 @@ public class MuseumRDF extends RDFObject {
 					Constants.dbpPropLongitudeLey);
 			stmt = DBPediaExtractor.statementWithProperties(rdfModel,
 					geoProperty, lang);
-			return new Pair<String, Float>(rdfModel.shortForm(stmt
-					.getPredicate().getURI()),
+			return new Pair<String, Float>(safeShortForm(stmt),
 					(Float) objectValueFromStatement(stmt));
 		}
-		return new Pair<String, Float>(rdfModel.shortForm(stmt.getPredicate()
-				.getURI()), (Float) value);
+		return new Pair<String, Float>(safeShortForm(stmt), (Float) value);
 	}
 
 	/**
@@ -109,15 +108,14 @@ public class MuseumRDF extends RDFObject {
 	 * 
 	 * @return - Integer
 	 */
-	public Pair<String, Integer> getEstablishedYear() {
+	public Pair<String, Object> getEstablishedYear() {
 		Property establishedProp = rdfModel.createProperty(Constants.dbpprop,
 				Constants.dbpEstablishedKey);
 		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
 				establishedProp, "en");
 		if (stmt != null) {
-			return new Pair<String, Integer>(rdfModel.shortForm(stmt
-					.getPredicate().getURI()),
-					(Integer) objectValueFromStatement(stmt));
+			return new Pair<String, Object>(safeShortForm(stmt),
+					objectValueFromStatement(stmt));
 		}
 		return null;
 	}
@@ -128,22 +126,34 @@ public class MuseumRDF extends RDFObject {
 	 * @return Pair<String, String>
 	 */
 	public Pair<String, String> getWebsite() {
+		Pattern p = Pattern.compile(URL_REGEX);
 		Property websiteProperty = rdfModel.createProperty(Constants.dbpprop,
 				Constants.dbpWebsiteKey);
 		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
 				websiteProperty, "en");
 		Object value = objectValueFromStatement(stmt);
-		if (value == null) {
-			websiteProperty = rdfModel.createProperty(Constants.foaf,
-					Constants.dbpHomepageKey);
-			stmt = DBPediaExtractor.statementWithProperties(rdfModel,
-					websiteProperty);
-			return new Pair<String, String>(rdfModel.shortForm(stmt
-					.getPredicate().getURI()), objectValueFromStatement(stmt)
-					.toString());
+		if (value != null) {
+			if (p.matcher(value.toString()).find()) {
+				return new Pair<String, String>(safeShortForm(stmt),
+						value.toString());
+			}
 		}
-		return new Pair<String, String>(rdfModel.shortForm(stmt.getPredicate()
-				.getURI()), value.toString());
+		websiteProperty = rdfModel.createProperty(Constants.foaf,
+				Constants.dbpHomepageKey);
+		stmt = DBPediaExtractor.statementWithProperties(rdfModel,
+				websiteProperty);
+		value = objectValueFromStatement(stmt);
+		if (value != null && p.matcher(value.toString()).find()) {
+			value = objectValueFromStatement(stmt);
+			if (value != null) {
+				return new Pair<String, String>(safeShortForm(stmt),
+						objectValueFromStatement(stmt).toString());
+			} else {
+				return new Pair<String, String>(safeShortForm(stmt), null);
+			}
+		} else {
+			return new Pair<String, String>(safeShortForm(stmt), null);
+		}
 	}
 
 	/**
@@ -157,8 +167,11 @@ public class MuseumRDF extends RDFObject {
 		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
 				thumbnailProperty, "en");
 		Object value = objectValueFromStatement(stmt);
-		return new Pair<String, String>(rdfModel.shortForm(stmt.getPredicate()
-				.getURI()), value.toString());
+		if (value != null)
+			return new Pair<String, String>(safeShortForm(stmt),
+					value.toString());
+		return new Pair<String, String>(safeShortForm(stmt), null);
+
 	}
 
 	/**
@@ -174,9 +187,9 @@ public class MuseumRDF extends RDFObject {
 				rdfModel, worksProperty, "en");
 		for (Statement stmt : listStmt) {
 			Object workValue = subjectValueFromStatement(stmt);
-			if (workValue.getClass() == ResourceImpl.class) {
-				works.add(new Pair<String, Resource>(rdfModel.shortForm(stmt
-						.getPredicate().getURI()), (Resource) workValue));
+			if (workValue != null && workValue.getClass() == ResourceImpl.class) {
+				works.add(new Pair<String, Resource>(safeShortForm(stmt),
+						(Resource) workValue));
 			}
 		}
 		return works;
@@ -195,8 +208,7 @@ public class MuseumRDF extends RDFObject {
 				rdfModel, subjectProperty, "en");
 		if (list != null)
 			for (Statement stmt : list) {
-				subjects.add(new Pair<String, Resource>(rdfModel.shortForm(stmt
-						.getPredicate().getURI()),
+				subjects.add(new Pair<String, Resource>(safeShortForm(stmt),
 						(Resource) objectValueFromStatement(stmt)));
 			}
 		return subjects;
@@ -251,9 +263,8 @@ public class MuseumRDF extends RDFObject {
 			for (Statement stmt : list) {
 				Object deathPersonValue = stmt.getSubject();
 				if (deathPersonValue.getClass() == ResourceImpl.class) {
-					deadPeople.add(new Pair<String, Resource>(rdfModel
-							.shortForm(stmt.getPredicate().getURI()),
-							(Resource) deathPersonValue));
+					deadPeople.add(new Pair<String, Resource>(
+							safeShortForm(stmt), (Resource) deathPersonValue));
 				}
 			}
 		}
@@ -276,9 +287,8 @@ public class MuseumRDF extends RDFObject {
 			for (Statement stmt : list) {
 				Object bornPersonValue = stmt.getSubject();
 				if (bornPersonValue.getClass() == ResourceImpl.class) {
-					bornPeople.add(new Pair<String, Resource>(rdfModel
-							.shortForm(stmt.getPredicate().getURI()),
-							(Resource) bornPersonValue));
+					bornPeople.add(new Pair<String, Resource>(
+							safeShortForm(stmt), (Resource) bornPersonValue));
 				}
 			}
 		}
@@ -299,8 +309,8 @@ public class MuseumRDF extends RDFObject {
 		for (Statement stmt : stmts) {
 			Object nrOfVisitorsObject = objectValueFromStatement(stmt);
 			if (nrOfVisitorsObject.getClass() == Integer.class) {
-				numbers.add(new Pair<String, Integer>(rdfModel.shortForm(stmt
-						.getPredicate().getURI()), (Integer) nrOfVisitorsObject));
+				numbers.add(new Pair<String, Integer>(safeShortForm(stmt),
+						(Integer) nrOfVisitorsObject));
 			}
 		}
 		nrOfVisitorsProperty = rdfModel.createProperty(Constants.dbpprop,
@@ -310,8 +320,8 @@ public class MuseumRDF extends RDFObject {
 		for (Statement stmt : stmts) {
 			Object nrOfVisitorsObject = objectValueFromStatement(stmt);
 			if (nrOfVisitorsObject.getClass() == Integer.class) {
-				numbers.add(new Pair<String, Integer>(rdfModel.shortForm(stmt
-						.getPredicate().getURI()), (Integer) nrOfVisitorsObject));
+				numbers.add(new Pair<String, Integer>(safeShortForm(stmt),
+						(Integer) nrOfVisitorsObject));
 			}
 		}
 		if (numbers.size() == 0)

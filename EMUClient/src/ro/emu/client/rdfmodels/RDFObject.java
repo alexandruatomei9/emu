@@ -73,6 +73,14 @@ public class RDFObject {
 		return null;
 	}
 
+	protected String safeShortForm(Statement stmt) {
+		if (stmt == null || stmt.getPredicate() == null
+				|| stmt.getPredicate().getURI() == null) {
+			return null;
+		}
+		return rdfModel.shortForm(stmt.getPredicate().getURI());
+	}
+
 	public String getResourceName() {
 		Property abstractProperty = rdfModel.createProperty(
 				Constants.dbpedia_owl, Constants.dbpAbstractKey);
@@ -103,7 +111,7 @@ public class RDFObject {
 				abstractProperty, lang);
 		Object value = objectValueFromStatement(stmt);
 		if (value != null) {
-			String prefixNS = rdfModel.shortForm(stmt.getPredicate().getURI());
+			String prefixNS = safeShortForm(stmt);
 			return new Pair<String, String>(prefixNS, (String) value);
 		}
 		return null;
@@ -125,9 +133,12 @@ public class RDFObject {
 		if (nameValue == null) {
 			stmt = DBPediaExtractor.statementWithProperties(rdfModel, foafName,
 					lang);
-			return new Pair<String, String>(rdfModel.shortForm(stmt
-					.getPredicate().getURI()),
-					(String) objectValueFromStatement(stmt));
+			nameValue = (String) objectValueFromStatement(stmt);
+			if (nameValue != null) {
+				return new Pair<String, String>(safeShortForm(stmt),
+						(String) objectValueFromStatement(stmt));
+			}
+			return null;
 		}
 		return new Pair<String, String>(rdfModel.shortForm(stmt.getPredicate()
 				.getURI()), nameValue);
@@ -145,10 +156,9 @@ public class RDFObject {
 				primaryTopicOfProperty, "en");
 		Object primaryValue = objectValueFromStatement(stmt);
 		if (primaryValue != null) {
-			return new Pair<String, String>(rdfModel.shortForm(stmt
-					.getPredicate().getURI()), primaryValue.toString());
+			return new Pair<String, String>(safeShortForm(stmt),
+					primaryValue.toString());
 		}
-		return new Pair<String, String>(rdfModel.shortForm(stmt.getPredicate()
-				.getURI()), null);
+		return new Pair<String, String>(safeShortForm(stmt), null);
 	}
 }
