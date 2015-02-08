@@ -43,40 +43,29 @@
 			<br class="clear" />
   </div>
 </div>
-<div class="wrapper col3">
-  	<div id="intro">
-  		
-  	</div>
+<div id="divQuestion" class="wrapper col3" style="height: 80%;">
+	<center>
+		<h2>Your score: <span>${score}</span></h2>
+	</center>
+	<div id="quizQuestion">
+					<p>${question.id + 1}.${question.text}</p>
+					<c:forEach var="answer" items="${question.answers}" varStatus="myIndex">
+						<button id="quizBtn" class="btn" type="button" onclick="takeValue(${question.id},${myIndex.index});">${answer.value}</button>
+					</c:forEach>
+	</div>
 </div>
-<div id="divQuestion" class="wrapper col4">
-<br>
-<br>
-<br>
-<h1 id="quizH1">Quiz</h1>
-<br>
-<br>
-<div id ="quizQuestion"> 
-<h2 style="margin-bottom: 2%;">Question</h2>
-<p>${question.id + 1}. ${question.text}</p>
-	<c:forEach var="answer" items="${question.answers}" varStatus="myIndex">
-		<input id="answer${answer.id}" type="radio" name="answer" value="${answer.value}"> ${answer.value} ${answer.correctAnswer} <br><p>
-    	</c:forEach>
-		<button id="responseQuiz" type="button" onclick="takeValue(${question.id});">Response</button>
-</div>
-</div>
-<div class="wrapper row col6">
+<div class="wrapper row col4">
 			<div id="copyright">
 				<p class="fl_left">
-					Copyright &copy; 2014 - All Rights Reserved - <a href="#">Domain
-						Name</a>
+					Emu - Semantic web-enhanced museum
 				</p>
 				<p class="fl_right">
-					Template by <a target="_blank" href="http://www.os-templates.com/"
-						title="Free Website Templates">OS Templates</a>
+					WADE - 2015</a>
 				</p>
 				<br class="clear" />
 			</div>
-		</div>
+</div>
+</div>
 </div>
 </body>
 </html>

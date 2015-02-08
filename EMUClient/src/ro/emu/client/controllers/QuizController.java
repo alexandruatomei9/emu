@@ -21,14 +21,14 @@ import ro.emu.client.utils.Request;
 @RequestMapping("/quiz")
 public class QuizController {
 	
-	 List<QuizQuestion> quizQuestion = new ArrayList<>();
+	 List<QuizQuestion> quizQuestions = new ArrayList<>();
 	 Long score = 0L;
 	 JSONArray items;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView quizRequest() {
 		ModelAndView modelAndView = new ModelAndView("quiz");
-		
+		score = 0L;
 		String resp = null;
 		try {
 			resp = Request.sendGet("/trivia/getQuiz", null,true);
@@ -37,23 +37,20 @@ public class QuizController {
 			e.printStackTrace();
 		}
 
-		QuizQuestion question = new QuizQuestion();
 		if (resp != null) {
 			JSONObject jsonResponse = new JSONObject(resp);
 			if (!jsonResponse.getString("code").equals("OK")) {
 				// server error
 			} else {
 			    items = jsonResponse.getJSONArray("response");
-			    question = parseResponse(0, items.getJSONObject(0));
-				for (int i = 1; i < items.length(); i++) {
-					JSONObject item = items.getJSONObject(i);
-					QuizQuestion anotherQuestion = parseResponse(i, item);
-					quizQuestion.add(anotherQuestion);
-				}
+			    for(int j=0; j<items.length();j++){
+			    	quizQuestions.add(parseResponse(j, items.getJSONObject(j)));
+			    }
 			}
 		}
 
-		modelAndView.addObject("question", question);
+		modelAndView.addObject("question", quizQuestions.get(0));
+		modelAndView.addObject("score",score);
 		return modelAndView;
 	}
 	
@@ -64,24 +61,22 @@ public class QuizController {
 		Integer answerId = Integer.parseInt(answer);
 		verifiedAnswer(questionId,answerId);
 		ModelAndView model = null;
-		if(questionId.equals(6)){
+		if(questionId.equals(quizQuestions.size()-1)){
 		    model = new ModelAndView("showResponses");
 			model.addObject("score", score);
 			score = 0L;
-			
 		}
 		else{
 			model = new ModelAndView("question");
-			QuizQuestion question = parseResponse(questionId+1, items.getJSONObject(questionId+1));
+			QuizQuestion question = quizQuestions.get(questionId+1);
 			model.addObject("question", question);
+			model.addObject("score", score);
 			}
-
 		return model;
 	}
 	
 	private void verifiedAnswer(Integer questionId, Integer answerId){
-		QuizQuestion question = new QuizQuestion();
-		question = quizQuestion.get(questionId);
+		QuizQuestion question = quizQuestions.get(questionId);
 		QuizAnswer responseAnswer = null;
 		for(QuizAnswer answer : question.getAnswers()){
 			if(answer.getId() == answerId){
@@ -90,7 +85,6 @@ public class QuizController {
 		}
 		if(responseAnswer.isCorrectAnswer()){
 			score = score + 10;
-			
 		}
 	}
 	
@@ -109,7 +103,6 @@ public class QuizController {
 					quizAnswer.add(answer);
 				}
 			question.setAnswers(quizAnswer);
-		quizQuestion.add(question);
 			return question;
 		}
 }

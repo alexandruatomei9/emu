@@ -112,7 +112,7 @@ div.wrapper h1, div.wrapper h2, div.wrapper h3, div.wrapper h4, div.wrapper h5, 
 
 /* ----------------------------------------------Copyright------------------------------------- */
 
-#copyright{padding:20px 0;}
+#copyright{padding:20px 0; background-color:#333333;}
 #copyright p{margin:0; padding:0;}
 
 /* ------ ScrollBar ------ */
@@ -143,50 +143,27 @@ div.wrapper h1, div.wrapper h2, div.wrapper h3, div.wrapper h4, div.wrapper h5, 
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
 }
 
-#quizH1 {
-	text-align: center;
-	color: #982216;
-	font-size: 250%;
-}
-
 #quizQuestion {
 	width:70%;
 	margin:0 auto;
-	border-style: solid;
-    border-width: thin;
     padding:25px;
-
 }
 
-#responseQuiz {
-	background-color:#ed8223;
-	color:#fff;
-	font-family:'Helvetica Neue',sans-serif;
-	font-size:16px;
-	line-height:30px;
-	border-radius:20px;
-	-webkit-border-radius:20px;
-	-moz-border-radius:20px;
-	border:0;
-	text-shadow:#C17C3A 0 -1px 0;
-	width:120px;
-	height:32px;
-	margin-left: 3%;
-}
-.footer{
-	position:fixed;
-    left:0px;
-    bottom:0px;
-    width:100%;
-}
-#quizBody{
-	background-color:white;
+#quizQuestion p{
+	font-size: 20px;
 }
 
-#quizResponse{
-	width:70%;
-	margin:0 auto;
-    padding:25px;
+#quizBtn{
+	width: 50%;
+	display: block;
+	margin: 0 auto;
+	margin-top: 5px !important;
+	white-space: normal;
+    min-width: 150px;
+}
+
+#quizBtn:hover{
+	background-color:red;
 }
 
 .ui-accordion .ui-accordion-content {
@@ -204,7 +181,6 @@ div.wrapper h1, div.wrapper h2, div.wrapper h3, div.wrapper h4, div.wrapper h5, 
 }
 
 .invisible{
-	/* visibility: hidden; */
 	display: none;
 }
 
