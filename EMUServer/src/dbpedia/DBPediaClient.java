@@ -175,6 +175,35 @@ public class DBPediaClient {
 
 	}
 
+	public static String retrieveMuseumForWork(String workUri) {
+		Query query = DBPediaQueryBuilder.retrieveMuseumForWork(workUri);
+		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
+		String resourceUri = null;
+		String museum = null;
+
+		ResultSet result = qe.execSelect();
+		if (result.hasNext()) {
+			QuerySolution solution = result.next();
+			if (solution != null) {
+				resourceUri = solution.getResource("?val").toString();
+			}
+		}
+
+		Query query2 = DBPediaQueryBuilder.retriveMuseum(resourceUri);
+		QueryExecution qe2 = QueryExecutionFactory.sparqlService(service,
+				query2);
+		ResultSet result2 = qe2.execSelect();
+		if (result2.hasNext()) {
+			QuerySolution solution2 = result2.next();
+			if (solution2 != null) {
+				Literal lit = solution2.getLiteral("?label");
+				museum = lit.getValue().toString();
+			}
+		}
+		return museum;
+
+	}
+
 	public static List<Work> retrieveWorksForMuseum(String museumName,
 			Integer limit) throws Exception {
 		Query query = DBPediaQueryBuilder.worksFromAMuseumQuery(museumName,

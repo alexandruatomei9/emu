@@ -77,14 +77,12 @@ public class QuizController {
 	
 	private void verifiedAnswer(Integer questionId, Integer answerId){
 		QuizQuestion question = quizQuestions.get(questionId);
-		QuizAnswer responseAnswer = null;
 		for(QuizAnswer answer : question.getAnswers()){
 			if(answer.getId() == answerId){
-				responseAnswer = answer;
+				if(answer.isCorrectAnswer()){
+					score = score + 10;
+				}
 			}
-		}
-		if(responseAnswer.isCorrectAnswer()){
-			score = score + 10;
 		}
 	}
 	

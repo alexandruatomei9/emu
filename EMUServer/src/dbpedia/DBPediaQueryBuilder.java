@@ -124,7 +124,6 @@ public class DBPediaQueryBuilder {
 				+ "}\r\n" + "LIMIT   100");
 		return qs.asQuery();
 	}
-
 	public static Query retrieveCountryForMuseum(String museumURI) {
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
 		qs.setBaseUri(museumURI);
@@ -147,12 +146,35 @@ public class DBPediaQueryBuilder {
 		return qs.asQuery();
 	}
 
+	
 	public static Query retriveNumberOfVisitorsMuseum(String museumURI) {
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
 		qs.setNsPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 		qs.setNsPrefix("dbpprop", "http://dbpedia.org/property/");
 		qs.append("SELECT ?val WHERE {" + museumURI
 				+ " dbpprop:visitors ?val}LIMIT" + 1);
+		return qs.asQuery();
+	}
+
+	public static Query retrieveMuseumForWork(String workUri) {
+		ParameterizedSparqlString qs = new ParameterizedSparqlString();
+		qs.setBaseUri(workUri);
+		qs.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+		qs.setNsPrefix("dbpedia-owl", "http://dbpedia.org/ontology/");
+		qs.setNsPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+		qs.append("SELECT ?val WHERE {<" + workUri
+				+ "> dbpedia-owl:museum ?val}LIMIT" + 1);
+		return qs.asQuery();
+
+	}
+
+	public static Query retriveMuseum(String uri) {
+		ParameterizedSparqlString qs = new ParameterizedSparqlString();
+		qs.setBaseUri(uri);
+		qs.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+		qs.setNsPrefix("dbpedia-owl", "http://dbpedia.org/ontology/");
+		qs.append("SELECT ?label WHERE {<" + uri
+				+ "> rdfs:label ?label FILTER ( lang(?label) ='en')} LIMIT" + 1);
 		return qs.asQuery();
 	}
 

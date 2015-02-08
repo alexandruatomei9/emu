@@ -60,7 +60,7 @@ public class TriviaService {
 			cats.add(category);
 		}
 
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 6; i++) {
 			int index = anyItem(cats.size());
 			String cat = cats.get(index);
 			ArrayList<Question> questionList = createQuestion(cat);
@@ -213,11 +213,57 @@ public class TriviaService {
 					int number = Integer.parseInt(incorrectNumber);
 					if (i == 1)
 						number += 100509180;
-					else if (i == 2)
+					else if (i == 2) {
 						number -= 3060901;
-					else
+						if (number < 0)
+							number += 203891004;
+					} else
 						number += 2003091004;
 					answer.setValue(Integer.toString(number));
+					answers.add(answer);
+				}
+
+				Collections.shuffle(answers);
+				question.setAnswers(answers);
+				questions.add(question);
+			}
+			break;
+		case "work":
+			for (int j = 0; j < 1; j++) {
+				correctAnswer = new Answer();
+				answers = new ArrayList<Answer>();
+				question = new Question();
+				index = anyItem(options.size());
+				correct = options.get(index);
+				String[] uris = prop.getProperty("workUri").split(",");
+				uriList = new ArrayList<String>();
+
+				for (String uri : uris) {
+					uriList.add(uri);
+				}
+
+				correctUri = uriList.get(index);
+
+				String museumForWork = DBPediaClient
+						.retrieveMuseumForWork(correctUri);
+				uriList.remove(correctUri);
+
+				question.setText("Which of these works is in " + museumForWork
+						+ "?");
+				correctAnswer.setId(1);
+				correctAnswer.setValue(correct);
+				correctAnswer.setCorrectAnswer(true);
+				answers.add(correctAnswer);
+				options.remove(correct);
+
+				for (int i = 0; i < 3; i++) {
+					Answer answer = new Answer();
+					int indexIncorrect = anyItem(options.size());
+					String incorrect = options.get(indexIncorrect);
+					answer.setId(i + 2);
+					answer.setValue(incorrect);
+					options.remove(incorrect);
+					uriList.remove(indexIncorrect);
 					answers.add(answer);
 				}
 
