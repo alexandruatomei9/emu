@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import utils.GeoLocationHelper;
+import utils.GoogleGeoLocator;
+import utils.LocationType;
 import models.responses.CategoryMuseum;
 import models.responses.GeoMuseum;
 import models.responses.Museum;
@@ -81,9 +83,13 @@ public class DBPediaClient {
 			if (GeoLocationHelper.locationIsWithinRange(currLatitude,
 					currLongitude, litLat.getFloat(), litLong.getFloat(),
 					radius)) {
+				String country = GoogleGeoLocator.getLocationFor(
+						litLat.getFloat(), litLong.getFloat(),
+						LocationType.Country);
+				System.out.println(country);
 				list.add(new GeoMuseum(litLat.getFloat(), litLong.getFloat(),
 						solution.getResource("?Museum").toString(), litName
-								.getString()));
+								.getString(), country));
 			}
 		}
 		return list;
@@ -137,12 +143,12 @@ public class DBPediaClient {
 				resourceUri = solution.getResource("?val").toString();
 			}
 		}
-		
+
 		Query query2 = DBPediaQueryBuilder.retriveCountry(resourceUri);
 		QueryExecution qe2 = QueryExecutionFactory.sparqlService(service,
 				query2);
 		ResultSet result2 = qe2.execSelect();
-		if(result2.hasNext()) {
+		if (result2.hasNext()) {
 			QuerySolution solution2 = result2.next();
 			if (solution2 != null) {
 				Literal lit = solution2.getLiteral("?label");

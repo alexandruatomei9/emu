@@ -29,6 +29,8 @@
 	var myCity = "${city}";
 	var dataTableSource = "";
 	var map;
+	var directionsDisplay;
+	var directionsService = new google.maps.DirectionsService();
 	var markers = [];
 	var museumListRequest;
 	$(function() {
@@ -74,13 +76,14 @@
 				var resourceURI = museumList[i].resourceURI;
 				var name = museumList[i].name;
 				var location = new google.maps.LatLng(latitude, longitude);
-				addMarker(location, name);
+				addMarker(location, name, resourceURI);
 			}
 			setAllMap(map);
 		}
 	}
 
 	function initialize() {
+		directionsDisplay = new google.maps.DirectionsRenderer();
 		var myLatlng = new google.maps.LatLng(myLat, myLong);
 
 		var mapOptions = {
@@ -102,17 +105,40 @@
 			title : myCity,
 			icon : pinImage
 		});
+		directionsDisplay.setMap(map);
 	}
 	google.maps.event.addDomListener(window, 'load', initialize);
 
+	//Draw the route between current location and selected museum
+	function calcRoute() {
+		var myLatlng = new google.maps.LatLng(myLat, myLong);
+		var tr = $('tr.selected');
+		var td = tr.children('td').eq(1);
+		var destinationString = td.html();
+		destinationString = destinationString.substring(1);
+		destinationString = destinationString.substring(0,
+				destinationString.length - 1);
+		var array = destinationString.split(',');
+
+		var request = {
+			origin : myLatlng,
+			destination : new google.maps.LatLng(array[0], array[1]),
+			travelMode : google.maps.TravelMode.DRIVING
+		};
+		directionsService.route(request, function(response, status) {
+			if (status == google.maps.DirectionsStatus.OK) {
+				directionsDisplay.setDirections(response);
+			}
+		});
+	}
 	// Add a marker to the map and push to the array.
-	function addMarker(location, title) {
+	function addMarker(location, title, uri) {
 		var marker = new google.maps.Marker({
 			position : location,
 			title : title
 		});
 		google.maps.event.addListener(marker, 'click', function() {
-			window.location.href = obj.resourceURI;
+			window.location.href = uri;
 		});
 		markers.push(marker);
 	}
@@ -122,6 +148,7 @@
 		for (var i = 0; i < markers.length; i++) {
 			markers[i].setMap(map);
 		}
+		directionsDisplay.set('directions', null);
 	}
 
 	// Removes the markers from the map, but keeps them in the array.
@@ -149,8 +176,12 @@
 			var longitude = dataset[i].longitude;
 			var resourceURI = dataset[i].resourceURI;
 			var name = dataset[i].name;
+			var country = dataset[i].country;
 			table.row.add(
-					[ name, latitude.toString(), longitude.toString(),
+					[
+							name,
+							"[" + latitude.toString() + ", "
+									+ longitude.toString() + "]", country,
 							resourceURI ]).draw();
 		}
 	}
@@ -159,32 +190,44 @@
 			.ready(
 					function() {
 						museumListRequest = $
-						.ajax({
-							type : "GET",
-							url : "http://localhost:8080/EMUServer/rest/map/getNearbyMuseums",
-							data : {
-								'latitude' : myLat,
-								'longitude' : myLong,
-								'radius' : 100
-							},
-							success : handleSuccessMuseumList
-						});
-						
+								.ajax({
+									type : "GET",
+									url : "http://localhost:8080/EMUServer/rest/map/getNearbyMuseums",
+									data : {
+										'latitude' : myLat,
+										'longitude' : myLong,
+										'radius' : 100
+									},
+									success : handleSuccessMuseumList
+								});
+
 						$('#demo')
 								.html(
 										'<table cellpadding="0" cellspacing="0" border="0" class="display" id="example"></table>');
-						$('#example').dataTable({
+						var table = $('#example').dataTable({
 							"data" : "",
 							"columns" : [ {
 								"title" : "Museum"
 							}, {
-								"title" : "Latitude"
+								"title" : "Geolocation",
+								"class" : "center"
 							}, {
-								"title" : "Longitude"
+								"title" : "Country",
+								"class" : "center"
 							}, {
 								"title" : "Resource",
 							} ]
 						});
+						$('#example tbody').on('click', 'tr', function() {
+							if ($(this).hasClass('selected')) {
+								$(this).removeClass('selected');
+							} else {
+								table.$('tr.selected').removeClass('selected');
+								$(this).addClass('selected');
+								calcRoute();
+							}
+						});
+
 					});
 </script>
 </head>

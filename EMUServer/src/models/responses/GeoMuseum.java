@@ -5,13 +5,15 @@ public class GeoMuseum {
 	private float longitude;
 	private String resourceURI;
 	private String name;
+	private String country;
 
 	public GeoMuseum(float latitude, float longitude, String resourceURI,
-			String name) {
+			String name, String country) {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.resourceURI = resourceURI;
 		this.name = name;
+		this.country = country;
 	}
 
 	public float getLatitude() {
@@ -44,6 +46,14 @@ public class GeoMuseum {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
 	}
 
 }
