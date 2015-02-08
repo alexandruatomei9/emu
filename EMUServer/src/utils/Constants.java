@@ -45,4 +45,21 @@ public class Constants {
 	public static final String dbpGeoCreatorKey = "creator";
 	public static final String dbpWebsiteKey = "website";
 	public static final String dbpEstablishedKey = "established";
+
+	// Museum type mappings
+	public static final String[] artList = { "art", "artistic", "arts" };
+	public static final String[] scienceList = { "science", "scientific" };
+	public static final String[] historyList = { "history", "historic",
+			"historical" };
+	public static final String[] railwayList = { "railway" };
+	public static final String[] farmList = { "farm", "farms", "farming" };
+	public static final String[] universityList = { "university" };
+	public static final String[] geologyList = { "geology", "geological" };
+	public static final String[] photoList = { "photograph", "photography",
+			"photos" };
+	public static final String[] autoList = { "auto", "autos", "cars",
+			"vehicle", "automobile" };
+	public static final String[] computer = { "pc", "personal computer",
+			"desktop", "computer" };
+	public static final String[] warList = { "war", "military", "tank", "tanks" };
 }

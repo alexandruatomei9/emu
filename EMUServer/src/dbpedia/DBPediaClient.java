@@ -6,6 +6,7 @@ import java.util.List;
 import utils.GeoLocationHelper;
 import utils.GoogleGeoLocator;
 import utils.LocationType;
+import utils.MuseumType;
 import models.responses.CategoryMuseum;
 import models.responses.GeoMuseum;
 import models.responses.Museum;
@@ -197,7 +198,8 @@ public class DBPediaClient {
 
 	public static List<CategoryMuseum> retrieveMuseumsWithCategory(
 			String category, Integer limit) throws Exception {
-		Query query = DBPediaQueryBuilder.museumsWithAType(category, limit);
+		Query query = DBPediaQueryBuilder.museumsWithAType(
+				MuseumType.fromString(category), limit);
 		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
 		List<CategoryMuseum> list = new ArrayList<CategoryMuseum>();
 		ResultSet result = qe.execSelect();

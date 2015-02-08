@@ -2,6 +2,9 @@ package dbpedia;
 
 import java.util.Random;
 
+import utils.Constants;
+import utils.MuseumType;
+
 import com.hp.hpl.jena.query.ParameterizedSparqlString;
 import com.hp.hpl.jena.query.Query;
 
@@ -133,9 +136,8 @@ public class DBPediaQueryBuilder {
 		return qs.asQuery();
 
 	}
-	
-	public static Query retriveCountry(String uri)
-	{
+
+	public static Query retriveCountry(String uri) {
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
 		qs.setBaseUri(uri);
 		qs.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
@@ -144,7 +146,6 @@ public class DBPediaQueryBuilder {
 				+ "> rdfs:label ?label FILTER ( lang(?label) ='en')} LIMIT" + 1);
 		return qs.asQuery();
 	}
-	
 
 	public static Query retriveNumberOfVisitorsMuseum(String museumURI) {
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
@@ -184,23 +185,86 @@ public class DBPediaQueryBuilder {
 		return qs.asQuery();
 	}
 
-	public static Query museumsWithAType(String type, Integer limit) {
+	/**
+	 * This method creates a query for selecting the museums with a specified
+	 * type
+	 * 
+	 * @param type
+	 * @param limit
+	 * @return
+	 */
+	public static Query museumsWithAType(MuseumType museumType, Integer limit) {
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
 		qs.setNsPrefix("dbpedia-owl", "http://dbpedia.org/ontology/");
 		qs.setNsPrefix("dbpprop", "http://dbpedia.org/property/");
 		qs.append("SELECT DISTINCT ?museum ?label ?thumbnail ?category ");
 		qs.append("WHERE {");
 		qs.append("?museum ?p ?label;");
-		qs.append("a ?type;");
-		qs.append("dbpedia-owl:thumbnail ?thumbnail;");
-		qs.append("dbpprop:type ?category.");
-		qs.append(" FILTER (contains(str(?category), \"" + type + "\"))");
-		qs.append("FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label>).");
-		qs.append("FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, ");
+		qs.append(" a ?type;");
+		qs.append(" dbpedia-owl:thumbnail ?thumbnail;");
+		qs.append(" dbpprop:type ?category;");
+		qs.append(" dbpedia-owl:abstract ?abstract.");
+		qs.append(filtersForMuseumType(museumType));
+		qs.append(" FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label>).");
+		qs.append(" FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, ");
 		qs.append(" <http://schema.org/Museum>)).");
-		qs.append("FILTER ( lang(?label) = 'en')");
+		qs.append(" FILTER ( lang(?label) = 'en')");
 		qs.append("}");
-		qs.append("LIMIT " + limit);
+		qs.append(" LIMIT " + limit);
 		return qs.asQuery();
+	}
+
+	private static String filtersForMuseumType(MuseumType type) {
+		String[] list = null;
+		switch (type) {
+		case ArtMuseum:
+			list = Constants.artList;
+			break;
+		case AutoMuseum:
+			list = Constants.autoList;
+			break;
+		case ComputerMuseum:
+			list = Constants.computer;
+			break;
+		case FarmMuseum:
+			list = Constants.farmList;
+			break;
+		case GeologyMuseum:
+			list = Constants.geologyList;
+			break;
+		case HistoryMuseum:
+			list = Constants.historyList;
+			break;
+		case PhotographyMuseum:
+			list = Constants.photoList;
+			break;
+		case RailwayMuseum:
+			list = Constants.railwayList;
+			break;
+		case ScienceMuseum:
+			list = Constants.scienceList;
+			break;
+		case UniversityMuseum:
+			list = Constants.universityList;
+			break;
+		case WarMuseum:
+			list = Constants.warList;
+			break;
+		default:
+			break;
+		}
+		if (list == null) {
+			return "";
+		}
+		String filters = "FILTER (";
+		for (String item : list) {
+			filters += " regex(str(?category),\"" + item
+					+ "\",\"i\") || regex(str(?type),\"" + item
+					+ "\",\"i\") || regex(str(?abstract),\"" + item
+					+ "\",\"i\") ||";
+		}
+		filters = filters.substring(0, filters.length() - 2);
+		filters += ").";
+		return filters;
 	}
 }

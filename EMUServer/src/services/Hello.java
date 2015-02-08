@@ -16,6 +16,7 @@ import com.hp.hpl.jena.rdf.model.SimpleSelector;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 
+import models.responses.CategoryMuseum;
 import models.responses.Work;
 import dbpedia.DBPediaClient;
 
@@ -62,23 +63,17 @@ public class Hello {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public String getMuseumsBrowser() throws Exception {
-		// List<Museum> list = DBPediaClient.retrieveMuseumsWithPrefix(
-		// "Swe", 10);
-		// return list;
-		// DBPediaClient.retrieveNearbyMuseums(51.519459f, -0.126931f, 200);
-		// DBPediaClient
-		// .retrieveRDFModelForResource("http://dbpedia.org/data/Ireland.rdf");
-		// List<Museum> museums = DBPediaClient
-		// .retrieveMuseumsInCountry("Romania");
-		// System.out.println(museums);
-		String nr=DBPediaClient.retrieveMuseumsInCountry("Sweden").get(0).getName();
-		System.out.println(nr);
+		List<CategoryMuseum> categoryMuseum = DBPediaClient
+				.retrieveMuseumsWithCategory("Art", 100);
+		if (categoryMuseum != null) {
+			System.out.println(categoryMuseum.size());
+		}
 		return "Ceva";
 	}
 
 	public void TestModel(Model model) {
-		Property geoProperty = model.createProperty(
-				Constants.dbpprop, "latitude");
+		Property geoProperty = model.createProperty(Constants.dbpprop,
+				"latitude");
 		StmtIterator iter = model.listStatements(new SimpleSelector(null,
 				geoProperty, (RDFNode) null));
 		while (iter.hasNext()) {
