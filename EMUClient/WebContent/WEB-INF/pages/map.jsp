@@ -182,7 +182,7 @@
 							name,
 							"[" + latitude.toString() + ", "
 									+ longitude.toString() + "]", country,
-							resourceURI ]).draw();
+							resourceURI, "See more >>" ]).draw();
 		}
 	}
 
@@ -216,11 +216,14 @@
 								"class" : "center"
 							}, {
 								"title" : "Resource",
+							}, {
+								"title" : "Details",
 							} ]
 						});
 						$('#example tbody').on('click', 'tr', function() {
 							if ($(this).hasClass('selected')) {
 								$(this).removeClass('selected');
+								directionsDisplay.set('directions', null);
 							} else {
 								table.$('tr.selected').removeClass('selected');
 								$(this).addClass('selected');
