@@ -23,7 +23,6 @@ public class MapService {
 	public Response getNearbyMuseums(@QueryParam("latitude") String latitude,
 			@QueryParam("longitude") String longitude,
 			@QueryParam("radius") Integer radius) {
-		// TODO:SLider with values
 		List<GeoMuseum> list = new ArrayList<GeoMuseum>();
 		Response response = new Response();
 		try {

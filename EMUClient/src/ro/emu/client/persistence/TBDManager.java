@@ -54,7 +54,7 @@ public class TBDManager {
 				DatabaseType.MySQL);
 		JDBC.loadDriverMySQL();
 		String jdbcURL = "jdbc:mysql://localhost:3306/SDB";
-		SDBConnection conn = new SDBConnection(jdbcURL, "root", "");
+		SDBConnection conn = new SDBConnection(jdbcURL, "root", "root");
 		Store store = SDBFactory.connectStore(conn, storeDesc);
 		// here is our mode
 		Model m = null;
