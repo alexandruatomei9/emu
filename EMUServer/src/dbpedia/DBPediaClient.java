@@ -6,6 +6,7 @@ import java.util.List;
 import utils.GeoLocationHelper;
 import utils.GoogleGeoLocator;
 import utils.LocationType;
+import utils.MapQuestGeoLocator;
 import utils.MuseumType;
 import models.responses.CategoryMuseum;
 import models.responses.GeoMuseum;
@@ -88,6 +89,29 @@ public class DBPediaClient {
 						litLat.getFloat(), litLong.getFloat(),
 						LocationType.Country);
 				System.out.println(country);
+				list.add(new GeoMuseum(litLat.getFloat(), litLong.getFloat(),
+						solution.getResource("?Museum").toString(), litName
+								.getString(), country));
+			}
+		}
+		return list;
+	}
+
+	public static List<GeoMuseum> retrieveAllMuseumFromCountry(String country) {
+		Query query = DBPediaQueryBuilder.museumsWithCoordinatesQuery();
+		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
+		List<GeoMuseum> list = new ArrayList<GeoMuseum>();
+
+		ResultSet result = qe.execSelect();
+		while (result.hasNext()) {
+			QuerySolution solution = result.next();
+			Literal litLat = solution.getLiteral("?maxlatitude");
+			Literal litLong = solution.getLiteral("?maxlongitude");
+			Literal litName = solution.getLiteral("?minLabel");
+			String museumCountry = MapQuestGeoLocator
+					.getLocationFor(litLat.getFloat(), litLong.getFloat(),
+							LocationType.Country);
+			if (museumCountry.equalsIgnoreCase(country)) {
 				list.add(new GeoMuseum(litLat.getFloat(), litLong.getFloat(),
 						solution.getResource("?Museum").toString(), litName
 								.getString(), country));

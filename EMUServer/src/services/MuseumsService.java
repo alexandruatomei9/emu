@@ -59,4 +59,25 @@ public class MuseumsService {
 
 		return response;
 	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getMuseumsInCountry(@QueryParam("country") String country) {
+		Response response = new Response();
+		List<Museum> list = new ArrayList<Museum>();
+		try {
+			list = DBPediaClient.retrieveMuseumsInCountry(country);
+		} catch (Exception e) {
+			response.setCode(Code.INTERNAL_SERVER_ERROR);
+			response.setMessage(e.getMessage());
+			e.printStackTrace();
+		}
+		if (!list.isEmpty()) {
+			response.setCode(Code.OK);
+			response.setResponse(list);
+		}
+
+		return response;
+	}
+
 }

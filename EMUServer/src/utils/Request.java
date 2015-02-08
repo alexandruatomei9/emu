@@ -3,8 +3,8 @@ package utils;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Map;
 
 import org.apache.http.client.utils.URIBuilder;
@@ -26,8 +26,8 @@ public class Request {
 			}
 		}
 
-		URI uri = builder.build();
-		URL obj = uri.toURL();
+		URL obj = new URL(
+				URLDecoder.decode(builder.build().toString(), "UTF-8"));
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
 		// optional default is GET
@@ -35,10 +35,6 @@ public class Request {
 
 		// add request header
 		con.setRequestProperty("User-Agent", USER_AGENT);
-
-		int responseCode = con.getResponseCode();
-		System.out.println("\nSending 'GET' request to URL : " + obj);
-		System.out.println("Response Code : " + responseCode);
 
 		BufferedReader in = new BufferedReader(new InputStreamReader(
 				con.getInputStream()));
