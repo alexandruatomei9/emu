@@ -125,19 +125,19 @@
 		initialize();
 
 		var directorResource = $('#hidden_director').html();
-		/* $.ajax({
+		$.ajax({
 			type : "GET",
-			url : "data/person",
+			url : "director",
 			data : {
-				personURI : directorResource
+				directorURI : directorResource
 			},
 			success : function(response) {
-				alert(response);
+				$("#director_section").html(response);
 			}
-		}); */
+		});
 
 		$('#hidden_dead_people_list li').each(function(i) {
-			/* $.ajax({
+			/*  $.ajax({
 				type : "GET",
 				url : "data/person",
 				data : {
@@ -307,8 +307,8 @@
 						<!-- Test for Director -->
 						<c:if test="${not empty museumRDF.getDirector()}">
 							<div id="director_section" class="accordion">
-								<h3>Director</h3>
-								<div>Director loading</div>
+								<div id="dir">
+								</div>	
 							</div>
 							<p id="hidden_director" style="display: none">
 								${museumRDF.getDirector().getSecond()}</p>

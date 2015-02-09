@@ -149,7 +149,7 @@ public class HomeController {
 	@RequestMapping(value = "director", method = RequestMethod.GET)
 	public ModelAndView museumDirector(
 			@RequestParam(value = "directorURI") String directorURI) {
-		ModelAndView modelAndView = new ModelAndView("works");
+		ModelAndView modelAndView = new ModelAndView("director");
 		try {
 			Model personModel = DBPediaClient.retrieveRDFModelForResource(
 					directorURI, servletContext);
@@ -160,7 +160,7 @@ public class HomeController {
 				modelAndView.addObject("description", personRDF.getAbstract());
 				modelAndView.addObject("name", personRDF.getName());
 				modelAndView.addObject("thumbnail", personRDF.thumbnail());
-				modelAndView.addObject("wiki_page_url",
+				modelAndView.addObject("wiki",
 						personRDF.getWikiPageURL());
 			}
 		} catch (Exception e) {
