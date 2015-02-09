@@ -72,6 +72,12 @@ public class DBPediaQueryBuilder {
 		return qs.asQuery();
 	}
 
+	/**
+	 * This method creates a sparql query for selecting all the museums with
+	 * their geolocation coordinates
+	 * 
+	 * @return
+	 */
 	public static Query museumsWithCoordinatesQuery() {
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
 		qs.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
@@ -103,6 +109,8 @@ public class DBPediaQueryBuilder {
 	}
 
 	/**
+	 * This method creates a sparql query for selecting all the museums in
+	 * country(without geolocation)
 	 * 
 	 * @param country
 	 * @return
@@ -124,6 +132,13 @@ public class DBPediaQueryBuilder {
 				+ "}\r\n" + "LIMIT   100");
 		return qs.asQuery();
 	}
+
+	/**
+	 * This method creates a sparql query for retrieving the country of museum
+	 * 
+	 * @param museumURI
+	 * @return
+	 */
 	public static Query retrieveCountryForMuseum(String museumURI) {
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
 		qs.setBaseUri(museumURI);
@@ -136,6 +151,13 @@ public class DBPediaQueryBuilder {
 
 	}
 
+	/**
+	 * This method creates a sparql query for finding the name of a country
+	 * resource
+	 * 
+	 * @param uri
+	 * @return
+	 */
 	public static Query retriveCountry(String uri) {
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
 		qs.setBaseUri(uri);
@@ -146,7 +168,6 @@ public class DBPediaQueryBuilder {
 		return qs.asQuery();
 	}
 
-	
 	public static Query retriveNumberOfVisitorsMuseum(String museumURI) {
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
 		qs.setNsPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
@@ -168,6 +189,13 @@ public class DBPediaQueryBuilder {
 
 	}
 
+	/**
+	 * This method creates a sparql query for retrieving the name of a museum
+	 * resource
+	 * 
+	 * @param uri
+	 * @return
+	 */
 	public static Query retriveMuseum(String uri) {
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
 		qs.setBaseUri(uri);
@@ -234,6 +262,83 @@ public class DBPediaQueryBuilder {
 		qs.append("}");
 		qs.append(" LIMIT " + limit);
 		return qs.asQuery();
+	}
+
+	public static Query geoMuseumsWithType(MuseumType museumType, Integer limit) {
+		ParameterizedSparqlString qs = new ParameterizedSparqlString();
+		qs.setNsPrefix("dbpedia-owl", "http://dbpedia.org/ontology/");
+		qs.setNsPrefix("dbpprop", "http://dbpedia.org/property/");
+		qs.setNsPrefix("geo", "http://www.w3.org/2003/01/geo/wgs84_pos#");
+		qs.append("SELECT DISTINCT ?museum ?label ?latitude ?longitude ");
+		qs.append("WHERE {");
+		qs.append("?museum ?p ?label;");
+		qs.append(" a ?type;");
+		qs.append(" dbpprop:type ?category;");
+		qs.append("geo:lat ?latitude ;");
+		qs.append("geo:long ?longitude. ");
+		qs.append(filtersForMuseumType(museumType));
+		qs.append(" FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label>).");
+		qs.append(" FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, ");
+		qs.append(" <http://schema.org/Museum>)).");
+		qs.append(" FILTER ( lang(?label) = 'en')");
+		qs.append("}");
+		qs.append(" LIMIT " + limit);
+		return qs.asQuery();
+	}
+
+	public static Query geoMuseumsInCountry(String country, Integer limit) {
+		ParameterizedSparqlString qs = new ParameterizedSparqlString();
+		qs.setNsPrefix("dbpedia-owl", "http://dbpedia.org/ontology/");
+		qs.setNsPrefix("dbpprop", "http://dbpedia.org/property/");
+		qs.setNsPrefix("geo", "http://www.w3.org/2003/01/geo/wgs84_pos#");
+		qs.setNsPrefix("dbpedia", "http://dbpedia.org/resource");
+		qs.append("SELECT DISTINCT ?museum ?label ?latitude ?longitude ");
+		qs.append("WHERE {");
+		qs.append("?museum ?p ?label;");
+		qs.append(" a ?type;");
+		qs.append(" dbpprop:type ?category;");
+		qs.append("geo:lat ?latitude ;");
+		qs.append("geo:long ?longitude;");
+		qs.append("dbpedia-owl:location ?location.");
+		qs.append(filterForCountry(country));
+		qs.append(" FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label>).");
+		qs.append(" FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, ");
+		qs.append(" <http://schema.org/Museum>)).");
+		qs.append(" FILTER ( lang(?label) = 'en')");
+		qs.append("}");
+		qs.append(" LIMIT " + limit);
+		return qs.asQuery();
+	}
+
+	public static Query geoMuseumsInCountryWithType(String country,
+			MuseumType type, Integer limit) {
+		ParameterizedSparqlString qs = new ParameterizedSparqlString();
+		qs.setNsPrefix("dbpedia-owl", "http://dbpedia.org/ontology/");
+		qs.setNsPrefix("dbpprop", "http://dbpedia.org/property/");
+		qs.setNsPrefix("geo", "http://www.w3.org/2003/01/geo/wgs84_pos#");
+		qs.setNsPrefix("dbpedia", "http://dbpedia.org/resource");
+		qs.append("SELECT DISTINCT ?museum ?label ?latitude ?longitude ");
+		qs.append("WHERE {");
+		qs.append("?museum ?p ?label;");
+		qs.append(" a ?type;");
+		qs.append(" dbpprop:type ?category;");
+		qs.append("geo:lat ?latitude ;");
+		qs.append("geo:long ?longitude;");
+		qs.append("dbpedia-owl:location ?location. ");
+		qs.append(filterForCountry(country));
+		qs.append(filtersForMuseumType(type));
+		qs.append(" FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label>).");
+		qs.append(" FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, ");
+		qs.append(" <http://schema.org/Museum>)).");
+		qs.append(" FILTER ( lang(?label) = 'en')");
+		qs.append("}");
+		qs.append(" LIMIT " + limit);
+		return qs.asQuery();
+	}
+
+	private static String filterForCountry(String country) {
+		return "FILTER (?location=dbpedia:" + country + " || "
+				+ "regex(?location, \"" + country + "\", \"i\")).";
 	}
 
 	private static String filtersForMuseumType(MuseumType type) {

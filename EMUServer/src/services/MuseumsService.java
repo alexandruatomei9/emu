@@ -3,15 +3,19 @@ package services;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import models.responses.GeoMuseum;
 import models.responses.Museum;
 import models.responses.Response;
 import utils.Code;
+import utils.MuseumFilter;
+import utils.MuseumType;
 import dbpedia.DBPediaClient;
 
 @Path("/museums")
@@ -62,11 +66,21 @@ public class MuseumsService {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getMuseumsInCountry(@QueryParam("country") String country) {
+	public Response getMuseumsWithFilters(
+			@QueryParam("country") String country,
+			@QueryParam("type") String type) {
 		Response response = new Response();
-		List<Museum> list = new ArrayList<Museum>();
+		List<GeoMuseum> list = new ArrayList<GeoMuseum>();
+		MuseumFilter filter = findTypeOfRequest(country, type);
 		try {
-			list = DBPediaClient.retrieveMuseumsInCountry(country);
+			if (filter == MuseumFilter.Country) {
+				list = DBPediaClient.retrieveGeoMuseumsInCountry(country, 100);
+			} else if (filter == MuseumFilter.Type) {
+				list = DBPediaClient.retrieveGeoMuseumsWithType(type, 100);
+			} else if (filter == MuseumFilter.CountryAndType) {
+				list = DBPediaClient.retrieveGeoMuseumsInCountryWithType(
+						country, type, 100);
+			}
 		} catch (Exception e) {
 			response.setCode(Code.INTERNAL_SERVER_ERROR);
 			response.setMessage(e.getMessage());
@@ -80,4 +94,14 @@ public class MuseumsService {
 		return response;
 	}
 
+	private MuseumFilter findTypeOfRequest(String country, String type) {
+		if (country != null && type != null)
+			return MuseumFilter.CountryAndType;
+		if (type != null)
+			return MuseumFilter.Type;
+		if (country != null)
+			return MuseumFilter.Country;
+
+		return MuseumFilter.Invalid;
+	}
 }
