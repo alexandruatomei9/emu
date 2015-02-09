@@ -280,4 +280,64 @@ public class DBPediaClient {
 		return list;
 	}
 
+	public static List<GeoMuseum> retrieveGeoMuseumsInCountry(String country,
+			Integer limit) {
+		Query query = DBPediaQueryBuilder.geoMuseumsInCountry(country, limit);
+		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
+		List<GeoMuseum> list = new ArrayList<GeoMuseum>();
+
+		ResultSet result = qe.execSelect();
+		while (result.hasNext()) {
+			QuerySolution solution = result.next();
+			if (solution != null) {
+				// TODO: parse
+			}
+		}
+
+		return list;
+	}
+
+	public static List<GeoMuseum> retrieveGeoMuseumsWithType(String type,
+			Integer limit) {
+		Query query = DBPediaQueryBuilder.geoMuseumsWithType(
+				MuseumType.fromString(type), limit);
+		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
+		List<GeoMuseum> list = new ArrayList<GeoMuseum>();
+		ResultSet result = qe.execSelect();
+		while (result.hasNext()) {
+			QuerySolution solution = result.next();
+			if (solution != null) {
+				String resourceUri = solution.getResource("?museum").toString();
+				Literal labelLiteral = solution.getLiteral("?label");
+				Literal latitudeLiteral = solution.getLiteral("?latitude");
+				Literal longitudeLiteral = solution.getLiteral("?longitude");
+				String museumCountry = MapQuestGeoLocator.getLocationFor(
+						latitudeLiteral.getFloat(),
+						longitudeLiteral.getFloat(), LocationType.Country);
+				list.add(new GeoMuseum(latitudeLiteral.getFloat(),
+						longitudeLiteral.getFloat(), resourceUri.toString(),
+						labelLiteral.getString(), museumCountry));
+
+			}
+		}
+		return list;
+	}
+
+	public static List<GeoMuseum> retrieveGeoMuseumsInCountryWithType(
+			String country, String type, Integer limit) {
+		Query query = DBPediaQueryBuilder.geoMuseumsInCountryWithType(country,
+				MuseumType.fromString(type), limit);
+		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
+		List<GeoMuseum> list = new ArrayList<GeoMuseum>();
+
+		ResultSet result = qe.execSelect();
+		while (result.hasNext()) {
+			QuerySolution solution = result.next();
+			if (solution != null) {
+				// TODO: parse
+			}
+		}
+
+		return list;
+	}
 }
