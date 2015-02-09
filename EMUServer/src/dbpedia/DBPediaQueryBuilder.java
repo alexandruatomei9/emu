@@ -38,7 +38,7 @@ public class DBPediaQueryBuilder {
 		qs.append("FILTER (?date > " + minDate + " && ?date < " + maxDate
 				+ ").");
 		qs.append("FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label>).");
-		qs.append("FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, <http://schema.org/Museum>)).");
+		qs.append("FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, <http://schema.org/Museum>, <http://dbpedia.org/class/yago/Museum103800563>)).");
 		qs.append("FILTER ( lang(?label) = 'en')");
 		qs.append("}");
 		qs.append("ORDER BY ASC(?date)");
@@ -67,7 +67,7 @@ public class DBPediaQueryBuilder {
 		qs.append("?museum dbpedia-owl:thumbnail ?thumbnail.");
 		qs.append("FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label>).");
 		qs.append("FILTER regex(?label, \"^" + prefix + "\", \"i\").\r\n");
-		qs.append("FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, <http://schema.org/Museum>)).");
+		qs.append("FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, <http://schema.org/Museum>,  <http://dbpedia.org/class/yago/Museum103800563>)).");
 		qs.append("FILTER ( lang(?label) = 'en') } LIMIT " + number);
 		return qs.asQuery();
 	}
@@ -89,18 +89,15 @@ public class DBPediaQueryBuilder {
 		qs.append("{");
 		qs.append("SELECT ?Museum");
 		qs.append("(MIN(?label) as ?minLabel)");
-		qs.append("(MIN(?name) as ?maxname)");
 		qs.append("(MAX(?longitude) as ?maxlongitude)");
 		qs.append("(MAX(?latitude) as ?maxlatitude)");
 		qs.append("WHERE {");
 		qs.append("?Museum a ?type ;");
-		qs.append("dbpprop:name ?name ;");
 		qs.append("geo:lat ?latitude ;");
 		qs.append("rdfs:label ?label ;");
 		qs.append("geo:long ?longitude .");
-		qs.append("FILTER (langMatches(lang(?name),\"EN\"))");
 		qs.append("FILTER (langMatches(lang(?label),\"EN\"))");
-		qs.append("FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, <http://schema.org/Museum>)).");
+		qs.append("FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, <http://schema.org/Museum>,  <http://dbpedia.org/class/yago/Museum103800563>)).");
 		qs.append("}");
 		qs.append("GROUP BY ?Museum");
 		qs.append("}}");
@@ -124,7 +121,7 @@ public class DBPediaQueryBuilder {
 				+ "   ?museum ?p ?label .\r\n  "
 				+ "  ?museum dbpedia-owl:thumbnail ?thumbnail\r\n   "
 				+ " FILTER ( ?p = <http://www.w3.org/2000/01/rdf-schema#label> )\r\n  "
-				+ "  FILTER ( ?type IN (dbpedia-owl:Museum, <http://schema.org/Museum>) )\r\n  "
+				+ "  FILTER ( ?type IN (dbpedia-owl:Museum, <http://schema.org/Museum>,  <http://dbpedia.org/class/yago/Museum103800563>) )\r\n  "
 				+ "  ?museum dbpedia-owl:location dbpedia:"
 				+ country
 				+ "\r\n   "
@@ -257,7 +254,7 @@ public class DBPediaQueryBuilder {
 		qs.append(filtersForMuseumType(museumType));
 		qs.append(" FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label>).");
 		qs.append(" FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, ");
-		qs.append(" <http://schema.org/Museum>)).");
+		qs.append(" <http://schema.org/Museum>,  <http://dbpedia.org/class/yago/Museum103800563>)).");
 		qs.append(" FILTER ( lang(?label) = 'en')");
 		qs.append("}");
 		qs.append(" LIMIT " + limit);
@@ -266,73 +263,95 @@ public class DBPediaQueryBuilder {
 
 	public static Query geoMuseumsWithType(MuseumType museumType, Integer limit) {
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
+		qs.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 		qs.setNsPrefix("dbpedia-owl", "http://dbpedia.org/ontology/");
 		qs.setNsPrefix("dbpprop", "http://dbpedia.org/property/");
 		qs.setNsPrefix("geo", "http://www.w3.org/2003/01/geo/wgs84_pos#");
-		qs.append("SELECT DISTINCT ?museum ?label ?latitude ?longitude ");
+		qs.setNsPrefix("foaf", "http://xmlns.com/foaf/0.1/");
+		qs.setNsPrefix("dbpedia", "http://dbpedia.org/resource");
+		qs.setNsPrefix("dbpprop", "http://dbpedia.org/property/");
+		qs.append("SELECT ?Museum ?minLabel ?maxlongitude ?maxlatitude WHERE { ");
+		qs.append("{");
+		qs.append("SELECT ?Museum");
+		qs.append("(MIN(?label) as ?minLabel)");
+		qs.append("(MIN(?name) as ?maxname)");
+		qs.append("(MAX(?longitude) as ?maxlongitude)");
+		qs.append("(MAX(?latitude) as ?maxlatitude)");
 		qs.append("WHERE {");
-		qs.append("?museum ?p ?label;");
-		qs.append(" a ?type;");
-		qs.append(" dbpprop:type ?category;");
+		qs.append("?Museum a ?type ;");
 		qs.append("geo:lat ?latitude ;");
-		qs.append("geo:long ?longitude. ");
+		qs.append("rdfs:label ?label ;");
+		qs.append("geo:long ?longitude ;");
+		qs.append(" dbpprop:type ?category;");
+		qs.append(" dbpedia-owl:abstract ?abstract.");
 		qs.append(filtersForMuseumType(museumType));
-		qs.append(" FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label>).");
-		qs.append(" FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, ");
-		qs.append(" <http://schema.org/Museum>)).");
-		qs.append(" FILTER ( lang(?label) = 'en')");
+		qs.append("FILTER (langMatches(lang(?label),\"EN\"))");
+		qs.append("FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, <http://schema.org/Museum>, <http://dbpedia.org/class/yago/Museum103800563>)).");
 		qs.append("}");
-		qs.append(" LIMIT " + limit);
+		qs.append("GROUP BY ?Museum");
+		qs.append("}}");
 		return qs.asQuery();
 	}
 
 	public static Query geoMuseumsInCountry(String country, Integer limit) {
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
+		qs.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 		qs.setNsPrefix("dbpedia-owl", "http://dbpedia.org/ontology/");
-		qs.setNsPrefix("dbpprop", "http://dbpedia.org/property/");
 		qs.setNsPrefix("geo", "http://www.w3.org/2003/01/geo/wgs84_pos#");
+		qs.setNsPrefix("foaf", "http://xmlns.com/foaf/0.1/");
 		qs.setNsPrefix("dbpedia", "http://dbpedia.org/resource");
-		qs.append("SELECT DISTINCT ?museum ?label ?latitude ?longitude ");
+		qs.append("SELECT ?Museum ?minLabel ?maxlongitude ?maxlatitude WHERE { ");
+		qs.append("{");
+		qs.append("SELECT ?Museum");
+		qs.append("(MIN(?label) as ?minLabel)");
+		qs.append("(MIN(?name) as ?maxname)");
+		qs.append("(MAX(?longitude) as ?maxlongitude)");
+		qs.append("(MAX(?latitude) as ?maxlatitude)");
 		qs.append("WHERE {");
-		qs.append("?museum ?p ?label;");
-		qs.append(" a ?type;");
-		qs.append(" dbpprop:type ?category;");
+		qs.append("?Museum a ?type ;");
 		qs.append("geo:lat ?latitude ;");
-		qs.append("geo:long ?longitude;");
+		qs.append("rdfs:label ?label ;");
+		qs.append("geo:long ?longitude ;");
 		qs.append("dbpedia-owl:location ?location.");
 		qs.append(filterForCountry(country));
-		qs.append(" FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label>).");
-		qs.append(" FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, ");
-		qs.append(" <http://schema.org/Museum>)).");
-		qs.append(" FILTER ( lang(?label) = 'en')");
+		qs.append("FILTER (langMatches(lang(?label),\"EN\"))");
+		qs.append("FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, <http://schema.org/Museum>,<http://dbpedia.org/class/yago/Museum103800563>)).");
 		qs.append("}");
-		qs.append(" LIMIT " + limit);
+		qs.append("GROUP BY ?Museum");
+		qs.append("}}");
 		return qs.asQuery();
 	}
 
 	public static Query geoMuseumsInCountryWithType(String country,
 			MuseumType type, Integer limit) {
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
+		qs.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 		qs.setNsPrefix("dbpedia-owl", "http://dbpedia.org/ontology/");
-		qs.setNsPrefix("dbpprop", "http://dbpedia.org/property/");
 		qs.setNsPrefix("geo", "http://www.w3.org/2003/01/geo/wgs84_pos#");
+		qs.setNsPrefix("foaf", "http://xmlns.com/foaf/0.1/");
 		qs.setNsPrefix("dbpedia", "http://dbpedia.org/resource");
-		qs.append("SELECT DISTINCT ?museum ?label ?latitude ?longitude ");
+		qs.setNsPrefix("dbpprop", "http://dbpedia.org/property/");
+		qs.append("SELECT ?Museum ?minLabel ?maxlongitude ?maxlatitude WHERE { ");
+		qs.append("{");
+		qs.append("SELECT ?Museum");
+		qs.append("(MIN(?label) as ?minLabel)");
+		qs.append("(MAX(?longitude) as ?maxlongitude)");
+		qs.append("(MAX(?latitude) as ?maxlatitude)");
 		qs.append("WHERE {");
-		qs.append("?museum ?p ?label;");
-		qs.append(" a ?type;");
-		qs.append(" dbpprop:type ?category;");
+		qs.append("?Museum a ?type ;");
 		qs.append("geo:lat ?latitude ;");
-		qs.append("geo:long ?longitude;");
-		qs.append("dbpedia-owl:location ?location. ");
+		qs.append("rdfs:label ?label ;");
+		qs.append("geo:long ?longitude ;");
+		qs.append(" dbpprop:type ?category;");
+		qs.append(" dbpedia-owl:abstract ?abstract;");
+		qs.append("dbpedia-owl:location ?location.");
 		qs.append(filterForCountry(country));
 		qs.append(filtersForMuseumType(type));
-		qs.append(" FILTER (?p=<http://www.w3.org/2000/01/rdf-schema#label>).");
-		qs.append(" FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, ");
-		qs.append(" <http://schema.org/Museum>)).");
-		qs.append(" FILTER ( lang(?label) = 'en')");
+		qs.append("FILTER (langMatches(lang(?label),\"EN\"))");
+		qs.append("FILTER (?type IN (<http://dbpedia.org/ontology/Museum>, <http://schema.org/Museum>,<http://dbpedia.org/class/yago/Museum103800563>)).");
 		qs.append("}");
-		qs.append(" LIMIT " + limit);
+		qs.append("GROUP BY ?Museum");
+		qs.append("}}");
 		return qs.asQuery();
 	}
 

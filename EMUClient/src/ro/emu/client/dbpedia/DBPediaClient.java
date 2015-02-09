@@ -2,7 +2,6 @@ package ro.emu.client.dbpedia;
 
 import javax.servlet.ServletContext;
 
-import ro.emu.client.persistence.TBDManager;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.FileManager;
 

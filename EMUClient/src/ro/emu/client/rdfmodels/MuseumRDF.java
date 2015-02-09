@@ -63,7 +63,6 @@ public class MuseumRDF extends RDFObject {
 	public Pair<String, Float> getLongitude() {
 		Property geoProperty = rdfModel.createProperty(Constants.geo,
 				Constants.dbpGeoLongKey);
-
 		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
 				geoProperty, lang);
 		Object value = objectValueFromStatement(stmt);

@@ -2,7 +2,6 @@ package utils;
 
 import java.util.HashMap;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class GoogleGeoLocator {

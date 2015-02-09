@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import utils.GeoLocationHelper;
-import utils.GoogleGeoLocator;
 import utils.LocationType;
 import utils.MapQuestGeoLocator;
 import utils.MuseumType;
@@ -85,12 +84,12 @@ public class DBPediaClient {
 			if (GeoLocationHelper.locationIsWithinRange(currLatitude,
 					currLongitude, litLat.getFloat(), litLong.getFloat(),
 					radius)) {
-				String country = GoogleGeoLocator.getLocationFor(
-						litLat.getFloat(), litLong.getFloat(),
-						LocationType.Country);
+				// String country = GoogleGeoLocator.getLocationFor(
+				// litLat.getFloat(), litLong.getFloat(),
+				// LocationType.Country);
 				list.add(new GeoMuseum(litLat.getFloat(), litLong.getFloat(),
 						solution.getResource("?Museum").toString(), litName
-								.getString(), country));
+								.getString(), "Romania"));
 			}
 		}
 		return list;
@@ -290,7 +289,13 @@ public class DBPediaClient {
 		while (result.hasNext()) {
 			QuerySolution solution = result.next();
 			if (solution != null) {
-				// TODO: parse
+				String resourceUri = solution.getResource("?Museum").toString();
+				Literal labelLiteral = solution.getLiteral("?minLabel");
+				Literal latitudeLiteral = solution.getLiteral("?maxlatitude");
+				Literal longitudeLiteral = solution.getLiteral("?maxlongitude");
+				list.add(new GeoMuseum(latitudeLiteral.getFloat(),
+						longitudeLiteral.getFloat(), resourceUri, labelLiteral
+								.getString(), country));
 			}
 		}
 
@@ -307,16 +312,16 @@ public class DBPediaClient {
 		while (result.hasNext()) {
 			QuerySolution solution = result.next();
 			if (solution != null) {
-				String resourceUri = solution.getResource("?museum").toString();
-				Literal labelLiteral = solution.getLiteral("?label");
-				Literal latitudeLiteral = solution.getLiteral("?latitude");
-				Literal longitudeLiteral = solution.getLiteral("?longitude");
+				String resourceUri = solution.getResource("?Museum").toString();
+				Literal labelLiteral = solution.getLiteral("?minLabel");
+				Literal latitudeLiteral = solution.getLiteral("?maxlatitude");
+				Literal longitudeLiteral = solution.getLiteral("?maxlongitude");
 				String museumCountry = MapQuestGeoLocator.getLocationFor(
 						latitudeLiteral.getFloat(),
 						longitudeLiteral.getFloat(), LocationType.Country);
 				list.add(new GeoMuseum(latitudeLiteral.getFloat(),
-						longitudeLiteral.getFloat(), resourceUri.toString(),
-						labelLiteral.getString(), museumCountry));
+						longitudeLiteral.getFloat(), resourceUri, labelLiteral
+								.getString(), museumCountry));
 
 			}
 		}
@@ -334,7 +339,13 @@ public class DBPediaClient {
 		while (result.hasNext()) {
 			QuerySolution solution = result.next();
 			if (solution != null) {
-				// TODO: parse
+				String resourceUri = solution.getResource("?Museum").toString();
+				Literal labelLiteral = solution.getLiteral("?minLabel");
+				Literal latitudeLiteral = solution.getLiteral("?maxlatitude");
+				Literal longitudeLiteral = solution.getLiteral("?maxlongitude");
+				list.add(new GeoMuseum(latitudeLiteral.getFloat(),
+						longitudeLiteral.getFloat(), resourceUri, labelLiteral
+								.getString(), country));
 			}
 		}
 

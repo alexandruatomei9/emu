@@ -207,8 +207,10 @@ public class HomeController {
 			try {
 				model = DBPediaClient.retrieveRDFModelForResource(uri,
 						servletContext);
-				MuseumRDF museumRDF = new MuseumRDF(model);
-				modelAndView.addObject("museumRDF", museumRDF);
+				if (model != null) {
+					MuseumRDF museumRDF = new MuseumRDF(model);
+					modelAndView.addObject("museumRDF", museumRDF);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
