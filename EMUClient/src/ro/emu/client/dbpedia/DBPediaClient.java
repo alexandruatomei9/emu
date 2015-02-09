@@ -9,17 +9,18 @@ import com.hp.hpl.jena.util.FileManager;
 public class DBPediaClient {
 	public static Model retrieveRDFModelForResource(String dbpediaURL,
 			ServletContext servletContext) throws Exception {
-		Model model = TBDManager.getModel(dbpediaURL, servletContext);
-		if (model != null) {
+		//Model model = TBDManager.getModel(dbpediaURL, servletContext);
+		Model model = null;
+		/*if (model != null) {
 			return model;
 		}
-
+*/
 		FileManager fManager = FileManager.get();
 		fManager.addLocatorURL();
 
 		try {
 			model = fManager.loadModel(DBPediaClient.convertDBpediaURLToResourceURL(dbpediaURL));
-			TBDManager.storeModel(model, dbpediaURL, servletContext);
+			//TBDManager.storeModel(model, dbpediaURL, servletContext);
 			//System.out.println("--- Found "+dbpediaURL);
 		} catch (Exception ex) {
 			ex.printStackTrace();

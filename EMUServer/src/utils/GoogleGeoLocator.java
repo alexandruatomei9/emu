@@ -21,39 +21,17 @@ public class GoogleGeoLocator {
 	private static String extractValueOfField(Float latitude, Float longitude,
 			String fieldName) {
 		HashMap<String, String> params = new HashMap<String, String>();
-		params.put("sensor", "false");
-		params.put("latlng", latitude + "," + longitude);
+		params.put("lat", ""+latitude);
+		params.put("lng", ""+longitude);
+		params.put("username","alexandru.atomei");
+		params.put("type", "json");
 		try {
-			String countryName = Request.sendGet(
-					"http://maps.googleapis.com/maps/api/geocode/json", params,
+			String resp = Request.sendGet(
+					"http://ws.geonames.org/countryCode", params,
 					false);
-			JSONObject object = new JSONObject(countryName);
-			JSONArray resultsArray = object.getJSONArray("results");
-			if (resultsArray != null) {
-				int length = resultsArray.length();
-				for (int i = 0; i < length; i++) {
-					JSONObject result = (JSONObject) resultsArray.get(i);
-					JSONArray address_components = result
-							.getJSONArray("address_components");
-					for (int j = 0; j < address_components.length(); j++) {
-						JSONObject component = (JSONObject) address_components
-								.get(j);
-						JSONArray types = component.getJSONArray("types");
-						if (types != null) {
-							int typeLength = types.length();
-							for (int k = 0; k < typeLength; k++) {
-								String typeString = types.getString(k);
-								if (typeString.equalsIgnoreCase(fieldName)) {
-									return component.getString("long_name");
-								}
-							}
-						}
-					}
-
-				}
-			}
-
-			System.out.println(countryName);
+			JSONObject object = new JSONObject(resp);
+			String countryName = object.getString("countryName");
+			return countryName;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

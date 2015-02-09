@@ -7,6 +7,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
 <title>EMU</title>
 <!-- StyleSheets -->
+<link
+	href="<c:url value="/resources/layout/styles/bootstrap.min.css" />"
+	rel="stylesheet">
 <link href="<c:url value="/resources/layout/styles/layout.css" />"
 	rel="stylesheet">
 <link href="<c:url value="/resources/layout/styles/jquery-ui.css" />"
@@ -21,7 +24,6 @@
 <script
 	src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 <script src="<c:url value="/resources/js/jquery.min.js" />"></script>
-<script src="<c:url value="/resources/js/jquery.min.js" />"></script>
 <script src="<c:url value="/resources/js/jquery-ui.min.js" />"></script>
 <script src="<c:url value="/resources/js/jquery.dataTables.min.js"/>"></script>
 <script src="<c:url value="/resources/js/chosen.jquery.min.js"/>"></script>
@@ -29,7 +31,10 @@
 <script>
 	var myLat = "${myLat}";
 	var myLong = "${myLong}";
-	var myCity = "${city}";
+	var myCity;
+	$.get("http://ipinfo.io", function(response) {
+	    myCity = response.city;
+	}, "jsonp");
 	var dataTableSource = "";
 	var map;
 	var directionsDisplay;
@@ -44,8 +49,10 @@
 							min : 100,
 							max : 3000,
 							step : 100,
-							slide : function(event, ui) {
-								$("#radius").val(" " + ui.value + "km");
+							slide: function(event, ui){
+								$("#radius").text(" " + ui.value + "km");
+							},
+							stop : function(event, ui) {
 								deleteMarkers();
 								if (typeof museumListRequest !== 'undefined'
 										&& museumListRequest.readyState > 0
@@ -65,7 +72,7 @@
 										});
 							}
 						});
-		$("#radius").val(" " + $("#slider").slider("value") + "km");
+		$("#radius").text(" " + $("#slider").slider("value") + "km");
 	});
 
 	function handleSuccessMuseumList(response) {
@@ -190,9 +197,10 @@
 	}
 
 	$(document)
-			.ready(
-					function() {
-						museumListRequest = $
+			.ready(function() {
+					 $("#radiusCenter").text(myCity);
+					
+					 museumListRequest = $
 								.ajax({
 									type : "GET",
 									url : "http://localhost:8080/EMUServer/rest/map/getNearbyMuseums",
@@ -236,14 +244,12 @@
 
 						$('#country-select').change(function () {
 						     var optionSelected = $(this).find("option:selected");
-						     var valueSelected  = optionSelected.val();
 						     var textSelected   = optionSelected.text();
 						     alert(textSelected);
 						 });
 						
 						$('#museum-type-select').change(function () {
 						     var optionSelected = $(this).find("option:selected");
-						     var valueSelected  = optionSelected.val();
 						     var textSelected   = optionSelected.text();
 						     alert(textSelected);
 						 });
@@ -251,37 +257,48 @@
 					});
 </script>
 </head>
-<body>
-	<div class="wrapper col2">
-		<div id="header">
-			<div id="topnav">
-				<ul>
-					<li class="active last"><a href="#">Map</a><span>Nearby
-							museums</span></li>
-					<li><a href="quiz">Quiz</a><span>Test Your Knowledge</span></li>
-					<li><a href="home">Homepage</a><span>Find out more</span></li>
-				</ul>
-			</div>
-			<div id="logo">
-				<h1>
-					<a href="home">Emu</a>
-				</h1>
-				<p>Semantic Web-Enhanced Museum</p>
-			</div>
+<body id="top">
+	<div class="container">
+	<div id="header" class="wrapper row col2">
+			<nav class="navbar navbar-default">
+				<div class="container-fluid">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed"
+							data-toggle="collapse"
+							data-target="#bs-example-navbar-collapse-6">
+							<span class="sr-only">Toggle navigation</span> <span
+								class="icon-bar"></span> <span class="icon-bar"></span> <span
+								class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href=""><img src="<c:url value="/resources/layout/styles/images/emu.jpg" />" class="img-brand"/>Emu</a>
+					</div>
+
+					<div class="collapse navbar-collapse"
+						id="bs-example-navbar-collapse-6">
+						<ul class="nav navbar-nav">
+							<li><a href="home">Home</a></li>
+							<li class="active"><a href="javascript:showlocation()">Map</a></li>
+							<li><a href="quiz">Quiz</a></li>
+						</ul>
+					</div>
+				</div>
+			</nav>
 			<br class="clear" />
-		</div>
 	</div>
 	<div class="wrapper col3">
 		<center>
-			<p>Your city: ${city}</p>
-		</center>
-		<p>
-			<label for="radius"> Museum in area: </label> <input type="text"
-				id="radius" readonly
-				style="border: 0; color: #f6931f; font-weight: bold;">
-		</p>
-		<div id="slider" style="width: 200px"></div>
-		<select id="country-select">
+			<div id="map-canvas">
+				<div id="googleMap"></div>
+			</div>
+			<div id="map-controls">
+			<center>
+			<p>
+				Museum in a <span id="radius" style="border: 0; color: #f6931f; font-weight: bold;"></span> radius centered in <span id="radiusCenter">your current location</span>
+			</p>
+			<div id="slider" style="width: 200px;"></div>
+			</center>
+			</div>
+			<select id="country-select">
 			<option value="Afghanistan">Afghanistan</option>
 			<option value="Albania">Albania</option>
 			<option value="Algeria">Algeria</option>
@@ -520,77 +537,23 @@
 			<option value="University">University Museum</option>
 			<option value="War">War Museum</option>
 		</select>
-	</div>
-	<div class="wrapper col4">
-		<center>
-			<div id="map-canvas">
-				<div id="googleMap"></div>
-			</div>
-			<div id="demo"></div>
+		<br class="clear"/><br class="clear"/><br class="clear"/>
 		</center>
 	</div>
-	<div class="wrapper col5">
-		<div id="footer">
-			<div id="newsletter">
-				<h2>Stay In The Know !</h2>
-				<p>Please enter your email to join our mailing list</p>
-				<form action="#" method="post">
-					<fieldset>
-						<legend>News Letter</legend>
-						<input type="text" value="Enter Email Here&hellip;"
-							onfocus="this.value=(this.value=='Enter Email Here&hellip;')? '' : this.value ;" />
-						<input type="submit" name="news_go" id="news_go" value="GO" />
-					</fieldset>
-				</form>
-				<p>
-					To unsubscribe please <a href="#">click here &raquo;</a>
-				</p>
-			</div>
-			<div class="footbox">
-				<h2>Lacus interdum</h2>
-				<ul>
-					<li><a href="#">Praesent et eros</a></li>
-					<li><a href="#">Praesent et eros</a></li>
-					<li><a href="#">Lorem ipsum dolor</a></li>
-					<li><a href="#">Suspendisse in neque</a></li>
-					<li class="last"><a href="#">Praesent et eros</a></li>
-				</ul>
-			</div>
-			<div class="footbox">
-				<h2>Lacus interdum</h2>
-				<ul>
-					<li><a href="#">Praesent et eros</a></li>
-					<li><a href="#">Praesent et eros</a></li>
-					<li><a href="#">Lorem ipsum dolor</a></li>
-					<li><a href="#">Suspendisse in neque</a></li>
-					<li class="last"><a href="#">Praesent et eros</a></li>
-				</ul>
-			</div>
-			<div class="footbox">
-				<h2>Lacus interdum</h2>
-				<ul>
-					<li><a href="#">Praesent et eros</a></li>
-					<li><a href="#">Praesent et eros</a></li>
-					<li><a href="#">Lorem ipsum dolor</a></li>
-					<li><a href="#">Suspendisse in neque</a></li>
-					<li class="last"><a href="#">Praesent et eros</a></li>
-				</ul>
-			</div>
-			<br class="clear" />
-		</div>
+	<div class="wrapper col4">
+		<div id="demo"></div>
 	</div>
-	<div class="wrapper col6">
-		<div id="copyright">
-			<p class="fl_left">
-				Copyright &copy; 2014 - All Rights Reserved - <a href="#">Domain
-					Name</a>
-			</p>
-			<p class="fl_right">
-				Template by <a target="_blank" href="http://www.os-templates.com/"
-					title="Free Website Templates">OS Templates</a>
-			</p>
-			<br class="clear" />
-		</div>
+	<div class="wrapper row col5">
+			<div id="copyright">
+				<p class="fl_left">
+					Emu - Semantic web-enhanced museum
+				</p>
+				<p class="fl_right">
+					WADE - 2015</a>
+				</p>
+				<br class="clear" />
+			</div>
+</div>
 	</div>
 </body>
 </html>

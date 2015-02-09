@@ -53,7 +53,7 @@ public class GoogleGeoLocator {
 				}
 			}
 
-			System.out.println(countryName);
+			//System.out.println(countryName);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

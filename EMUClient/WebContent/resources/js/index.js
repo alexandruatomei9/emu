@@ -22,6 +22,7 @@ $(function() {
 			});
 		},
 		minLength : 3,
+		delay: 2000,
 		select : function(event, ui) {
 			console.log(ui.item.label);
 			$.ajax({

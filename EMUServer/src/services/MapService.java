@@ -39,7 +39,7 @@ public class MapService {
 			response.setCode(Code.OK);
 			response.setResponse(list);
 		}
-
+		
 		return response;
 	}
 }

@@ -88,7 +88,6 @@ public class DBPediaClient {
 				String country = GoogleGeoLocator.getLocationFor(
 						litLat.getFloat(), litLong.getFloat(),
 						LocationType.Country);
-				System.out.println(country);
 				list.add(new GeoMuseum(litLat.getFloat(), litLong.getFloat(),
 						solution.getResource("?Museum").toString(), litName
 								.getString(), country));

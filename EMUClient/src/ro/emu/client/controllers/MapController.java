@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import ro.emu.client.utils.Request;
 
+
 @Controller
 @RequestMapping("/map")
 public class MapController {
@@ -27,8 +28,7 @@ public class MapController {
 		}
 
 		ModelAndView modelAndView = new ModelAndView("map");
-
-		modelAndView.addObject("city", "My city");
+		
 		modelAndView.addObject("myLat", request.getParameter("latitude"));
 		modelAndView.addObject("myLong", request.getParameter("longitude"));
 
