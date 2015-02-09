@@ -20,10 +20,10 @@ public class DBPediaClient {
 		try {
 			model = fManager.loadModel(DBPediaClient.convertDBpediaURLToResourceURL(dbpediaURL));
 			//TBDManager.storeModel(model, dbpediaURL, servletContext);
-			//System.out.println("--- Found "+dbpediaURL);
+			System.out.println("--- Found "+dbpediaURL);
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			//System.out.println("Resource not found "+dbpediaURL);
+			System.out.println("Resource not found "+dbpediaURL);
 			return null;
 		}
 		return model;
@@ -31,7 +31,9 @@ public class DBPediaClient {
 
 	private static String convertDBpediaURLToResourceURL(String dbpediaURL) {
 		StringBuilder builder = null;
-		
+		dbpediaURL = dbpediaURL.replace("<", "");
+		dbpediaURL = dbpediaURL.replace(">", "");
+		dbpediaURL = dbpediaURL.trim();
 		if(dbpediaURL.contains("/page/")){
 			builder = new StringBuilder(dbpediaURL.replace("/page/",
 					"/data/"));
