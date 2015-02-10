@@ -47,13 +47,14 @@
 <div id="divQuestion" class="wrapper col3" style="height: 80%;">
 	<center>
 		<h2>Your score: <span>${score}</span></h2>
-	</center>
+	
 	<div id="quizQuestion">
 					<p>${question.id + 1}.${question.text}</p>
 					<c:forEach var="answer" items="${question.answers}" varStatus="myIndex">
-						<button id="quizBtn" class="btn" type="button" onclick="takeValue(${question.id},${myIndex.index});">${answer.value}</button>
+						<button id="quizBtn" class="btn" type="button" onclick="takeValue(${question.id},${answer.id});">${answer.value}</button>
 					</c:forEach>
 	</div>
+	</center>
 </div>
 <div class="wrapper row col4">
 			<div id="copyright">

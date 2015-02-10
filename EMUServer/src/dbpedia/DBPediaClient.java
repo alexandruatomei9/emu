@@ -154,6 +154,12 @@ public class DBPediaClient {
 
 	public static String retrieveCountryForMuseum(String museumURI)
 			throws Exception {
+		if(museumURI.contains("<")){
+			museumURI = museumURI.replace("<", "");
+		}
+		if(museumURI.contains(">")){
+			museumURI = museumURI.replace(">", "");
+		}
 		Query query = DBPediaQueryBuilder.retrieveCountryForMuseum(museumURI);
 		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
 		String resourceUri = null;
