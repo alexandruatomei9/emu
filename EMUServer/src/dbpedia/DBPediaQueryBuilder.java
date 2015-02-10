@@ -356,6 +356,19 @@ public class DBPediaQueryBuilder {
 	}
 
 	private static String filterForCountry(String country) {
+
+		if (country.equals("united_states")) {
+			return "FILTER (?location=dbpedia:" + country + " || "
+					+ "?location=dbpedia:" + "US"
+					+ " || ?location=dbpedia:USA).";
+		}
+		
+		if (country.equals("united_kingdom")) {
+			return "FILTER (?location=dbpedia:" + country + " || "
+					+ "?location=dbpedia:" + "England"
+					+ " || ?location=dbpedia:Scotland"
+					+ " || ?location=dbpedia:Wales).";
+		}
 		return "FILTER (?location=dbpedia:" + country + " || "
 				+ "regex(?location, \"" + country + "\", \"i\")).";
 	}
