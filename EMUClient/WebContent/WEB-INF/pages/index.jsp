@@ -1,5 +1,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ page contentType="text/html; charset=UTF-8"%>
 
 <html version="HTML+RDFa 1.1" lang="en"
 	xmlns="http://www.w3.org/1999/xhtml"
@@ -10,7 +11,6 @@
 <head>
 <meta about="EMU" />
 <title property="dc:title">EMU</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="keywords"
