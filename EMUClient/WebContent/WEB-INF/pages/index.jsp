@@ -10,7 +10,7 @@
 <head>
 <meta about="EMU" />
 <title property="dc:title">EMU</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="keywords"
@@ -154,6 +154,7 @@
 		});
 
 		var i = 0;
+		if($('#hidden_works_list li').length > 1){
 		$('#hidden_works_list li').each(function(i) {
 			if (i < 10) {
 				/* i++; */
@@ -170,8 +171,13 @@
 				i++;
 			}
 		});
+		}
 	}
 
+	function encode_utf8(s) {
+		return unescape(encodeURIComponent(s));
+	}
+	
 	$(document).ready(function() {
 		onReadyState();
 	});
@@ -192,13 +198,13 @@
 								class="icon-bar"></span> <span class="icon-bar"></span> <span
 								class="icon-bar"></span>
 						</button>
-						<a class="navbar-brand" href=""><img src="<c:url value="/resources/layout/styles/images/emu.jpg" />" class="img-brand"/>Emu</a>
+						<a class="navbar-brand" href="./"><img src="<c:url value="/resources/layout/styles/images/emu.jpg" />" class="img-brand"/>Emu</a>
 					</div>
 
 					<div class="collapse navbar-collapse"
 						id="bs-example-navbar-collapse-6">
 						<ul class="nav navbar-nav">
-							<li class="active"><a href="home">Home</a></li>
+							<li class="active"><a href="">Home</a></li>
 							<li><a href="javascript:showlocation()">Map</a></li>
 							<li><a href="quiz">Quiz</a></li>
 						</ul>
@@ -349,7 +355,7 @@
 
 						<!-- Test for Website -->
 						<div class="accordion">
-							<c:if test="${not empty museumRDF.getWebsite()}">
+							<c:if test="${not empty museumRDF.getWebsite().getSecond()}">
 								<h3>Website</h3>
 								<div>
 									<p property="${museumRDF.getWebsite().getFirst()} dc:URI"

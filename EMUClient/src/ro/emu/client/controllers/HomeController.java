@@ -1,5 +1,7 @@
 package ro.emu.client.controllers;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,17 +34,25 @@ import ro.emu.client.utils.Request;
 public class HomeController {
 
 	private static final String URI = "http://dbpedia.org/page/The_Louvre";
-
 	@Autowired
 	ServletContext servletContext;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView homeMuseums(String uri) {
+	public ModelAndView homeMuseums(
+			@RequestParam(value = "museum", required = false) String uri) {
 		if (uri == null || uri.equals("")) {
 			uri = URI;
 		}
-		ModelAndView modelAndView = new ModelAndView("index");
+		try {
+			String decodedURI = URLDecoder.decode(uri, "UTF-8");
+			System.out.println(decodedURI);
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
+		ModelAndView modelAndView = new ModelAndView("index");
+		
 		String resp = null;
 		try {
 			// get 4 museums from the api
@@ -157,9 +167,11 @@ public class HomeController {
 				PersonRDF personRDF = new PersonRDF(personModel);
 				modelAndView.addObject("directorResourceName",
 						personRDF.getResourceName());
-				modelAndView.addObject("directorDescription", personRDF.getAbstract());
+				modelAndView.addObject("directorDescription",
+						personRDF.getAbstract());
 				modelAndView.addObject("directorName", personRDF.getName());
-				modelAndView.addObject("directorThumbnail", personRDF.thumbnail());
+				modelAndView.addObject("directorThumbnail",
+						personRDF.thumbnail());
 				modelAndView.addObject("directorWiki",
 						personRDF.getWikiPageURL());
 			}

@@ -21,7 +21,7 @@ import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
  * a museum
  * 
  * @author claudiu
- *
+ * 
  */
 public class MuseumRDF extends RDFObject {
 	public static final String URL_REGEX = "^((https?|ftp)://|(www|ftp)\\.)?[a-z0-9-]+(\\.[a-z0-9-]+)+([/?].*)?$";
@@ -83,23 +83,27 @@ public class MuseumRDF extends RDFObject {
 	 * @return Pair<String, Resource>
 	 */
 	public Pair<String, Resource> getDirector() {
-		Property directorProperty = rdfModel.createProperty(
-				Constants.dbpedia_owl, Constants.dbpDirectorKey);
-		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
-				directorProperty, lang);
-		Object value = objectValueFromStatement(stmt);
-		if (value == null) {
-			directorProperty = rdfModel.createProperty(Constants.dbpprop,
-					Constants.dbpDirectorKey);
-			stmt = DBPediaExtractor.statementWithProperties(rdfModel,
+		try {
+			Property directorProperty = rdfModel.createProperty(
+					Constants.dbpedia_owl, Constants.dbpDirectorKey);
+			Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
 					directorProperty, lang);
-			return new Pair<String, Resource>(rdfModel.shortForm(stmt
-					.getPredicate().getURI()),
-					(Resource) objectValueFromStatement(stmt));
+			Object value = objectValueFromStatement(stmt);
+			if (value == null) {
+				directorProperty = rdfModel.createProperty(Constants.dbpprop,
+						Constants.dbpDirectorKey);
+				stmt = DBPediaExtractor.statementWithProperties(rdfModel,
+						directorProperty, lang);
+				return new Pair<String, Resource>(rdfModel.shortForm(stmt
+						.getPredicate().getURI()),
+						(Resource) objectValueFromStatement(stmt));
 
+			}
+			return new Pair<String, Resource>(rdfModel.shortForm(stmt
+					.getPredicate().getURI()), (Resource) value);
+		} catch (Exception ex) {
+			return null;
 		}
-		return new Pair<String, Resource>(rdfModel.shortForm(stmt
-				.getPredicate().getURI()), (Resource) value);
 	}
 
 	/**
@@ -125,33 +129,37 @@ public class MuseumRDF extends RDFObject {
 	 * @return Pair<String, String>
 	 */
 	public Pair<String, String> getWebsite() {
-		Pattern p = Pattern.compile(URL_REGEX);
-		Property websiteProperty = rdfModel.createProperty(Constants.dbpprop,
-				Constants.dbpWebsiteKey);
-		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
-				websiteProperty, "en");
-		Object value = objectValueFromStatement(stmt);
-		if (value != null) {
-			if (p.matcher(value.toString()).find()) {
-				return new Pair<String, String>(safeShortForm(stmt),
-						value.toString());
-			}
-		}
-		websiteProperty = rdfModel.createProperty(Constants.foaf,
-				Constants.dbpHomepageKey);
-		stmt = DBPediaExtractor.statementWithProperties(rdfModel,
-				websiteProperty);
-		value = objectValueFromStatement(stmt);
-		if (value != null && p.matcher(value.toString()).find()) {
-			value = objectValueFromStatement(stmt);
+		try {
+			Pattern p = Pattern.compile(URL_REGEX);
+			Property websiteProperty = rdfModel.createProperty(
+					Constants.dbpprop, Constants.dbpWebsiteKey);
+			Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
+					websiteProperty, "en");
+			Object value = objectValueFromStatement(stmt);
 			if (value != null) {
-				return new Pair<String, String>(safeShortForm(stmt),
-						objectValueFromStatement(stmt).toString());
+				if (p.matcher(value.toString()).find()) {
+					return new Pair<String, String>(safeShortForm(stmt),
+							value.toString());
+				}
+			}
+			websiteProperty = rdfModel.createProperty(Constants.foaf,
+					Constants.dbpHomepageKey);
+			stmt = DBPediaExtractor.statementWithProperties(rdfModel,
+					websiteProperty);
+			value = objectValueFromStatement(stmt);
+			if (value != null && p.matcher(value.toString()).find()) {
+				value = objectValueFromStatement(stmt);
+				if (value != null) {
+					return new Pair<String, String>(safeShortForm(stmt),
+							objectValueFromStatement(stmt).toString());
+				} else {
+					return new Pair<String, String>(safeShortForm(stmt), null);
+				}
 			} else {
 				return new Pair<String, String>(safeShortForm(stmt), null);
 			}
-		} else {
-			return new Pair<String, String>(safeShortForm(stmt), null);
+		} catch (Exception ex) {
+			return null;
 		}
 	}
 
@@ -161,16 +169,19 @@ public class MuseumRDF extends RDFObject {
 	 * @return - Pair<String,String>
 	 */
 	public Pair<String, String> getThumbnail() {
-		Property thumbnailProperty = rdfModel.createProperty(
-				Constants.dbpedia_owl, Constants.dbpThumbnailKey);
-		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
-				thumbnailProperty, "en");
-		Object value = objectValueFromStatement(stmt);
-		if (value != null)
-			return new Pair<String, String>(safeShortForm(stmt),
-					value.toString());
-		return new Pair<String, String>(safeShortForm(stmt), null);
-
+		try {
+			Property thumbnailProperty = rdfModel.createProperty(
+					Constants.dbpedia_owl, Constants.dbpThumbnailKey);
+			Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
+					thumbnailProperty, "en");
+			Object value = objectValueFromStatement(stmt);
+			if (value != null)
+				return new Pair<String, String>(safeShortForm(stmt),
+						value.toString());
+			return new Pair<String, String>(safeShortForm(stmt), null);
+		} catch (Exception ex) {
+			return null;
+		}
 	}
 
 	/**
@@ -179,19 +190,24 @@ public class MuseumRDF extends RDFObject {
 	 * @return Pair<String, Resource>
 	 */
 	public List<Pair<String, Resource>> getWorks() {
-		ArrayList<Pair<String, Resource>> works = new ArrayList<Pair<String, Resource>>();
-		Property worksProperty = rdfModel.createProperty(Constants.dbpedia_owl,
-				Constants.dbpMuseumKey);
-		List<Statement> listStmt = DBPediaExtractor.statementsWithProperties(
-				rdfModel, worksProperty, "en");
-		for (Statement stmt : listStmt) {
-			Object workValue = subjectValueFromStatement(stmt);
-			if (workValue != null && workValue.getClass() == ResourceImpl.class) {
-				works.add(new Pair<String, Resource>(safeShortForm(stmt),
-						(Resource) workValue));
+		try {
+			ArrayList<Pair<String, Resource>> works = new ArrayList<Pair<String, Resource>>();
+			Property worksProperty = rdfModel.createProperty(
+					Constants.dbpedia_owl, Constants.dbpMuseumKey);
+			List<Statement> listStmt = DBPediaExtractor
+					.statementsWithProperties(rdfModel, worksProperty, "en");
+			for (Statement stmt : listStmt) {
+				Object workValue = subjectValueFromStatement(stmt);
+				if (workValue != null
+						&& workValue.getClass() == ResourceImpl.class) {
+					works.add(new Pair<String, Resource>(safeShortForm(stmt),
+							(Resource) workValue));
+				}
 			}
+			return works;
+		} catch (Exception ex) {
+			return null;
 		}
-		return works;
 	}
 
 	/**
@@ -200,17 +216,22 @@ public class MuseumRDF extends RDFObject {
 	 * @return List<Pair<String, Resource>>
 	 */
 	public List<Pair<String, Resource>> getSubjectsIncludingMuseum() {
-		ArrayList<Pair<String, Resource>> subjects = new ArrayList<Pair<String, Resource>>();
-		Property subjectProperty = rdfModel.createProperty(Constants.dcterms,
-				Constants.dbpSubjectKey);
-		List<Statement> list = DBPediaExtractor.statementsWithProperties(
-				rdfModel, subjectProperty, "en");
-		if (list != null)
-			for (Statement stmt : list) {
-				subjects.add(new Pair<String, Resource>(safeShortForm(stmt),
-						(Resource) objectValueFromStatement(stmt)));
-			}
-		return subjects;
+		try {
+			ArrayList<Pair<String, Resource>> subjects = new ArrayList<Pair<String, Resource>>();
+			Property subjectProperty = rdfModel.createProperty(
+					Constants.dcterms, Constants.dbpSubjectKey);
+			List<Statement> list = DBPediaExtractor.statementsWithProperties(
+					rdfModel, subjectProperty, "en");
+			if (list != null)
+				for (Statement stmt : list) {
+					subjects.add(new Pair<String, Resource>(
+							safeShortForm(stmt),
+							(Resource) objectValueFromStatement(stmt)));
+				}
+			return subjects;
+		} catch (Exception ex) {
+			return null;
+		}
 	}
 
 	/**

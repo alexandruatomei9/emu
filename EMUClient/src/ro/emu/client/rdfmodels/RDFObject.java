@@ -150,15 +150,19 @@ public class RDFObject {
 	 * @return
 	 */
 	public Pair<String, String> getWikiPageURL() {
-		Property primaryTopicOfProperty = rdfModel.createProperty(
-				Constants.foaf, Constants.dbpPrimaryTopicKey);
-		Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
-				primaryTopicOfProperty, "en");
-		Object primaryValue = objectValueFromStatement(stmt);
-		if (primaryValue != null) {
-			return new Pair<String, String>(safeShortForm(stmt),
-					primaryValue.toString());
+		try {
+			Property primaryTopicOfProperty = rdfModel.createProperty(
+					Constants.foaf, Constants.dbpPrimaryTopicKey);
+			Statement stmt = DBPediaExtractor.statementWithProperties(rdfModel,
+					primaryTopicOfProperty, "en");
+			Object primaryValue = objectValueFromStatement(stmt);
+			if (primaryValue != null) {
+				return new Pair<String, String>(safeShortForm(stmt),
+						primaryValue.toString());
+			}
+			return new Pair<String, String>(safeShortForm(stmt), null);
+		} catch (Exception ex) {
+			return null;
 		}
-		return new Pair<String, String>(safeShortForm(stmt), null);
 	}
 }
