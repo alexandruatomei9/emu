@@ -155,12 +155,12 @@ public class HomeController {
 					directorURI, servletContext);
 			if (personModel != null) {
 				PersonRDF personRDF = new PersonRDF(personModel);
-				modelAndView.addObject("resourceName",
+				modelAndView.addObject("directorResourceName",
 						personRDF.getResourceName());
-				modelAndView.addObject("description", personRDF.getAbstract());
-				modelAndView.addObject("name", personRDF.getName());
-				modelAndView.addObject("thumbnail", personRDF.thumbnail());
-				modelAndView.addObject("wiki",
+				modelAndView.addObject("directorDescription", personRDF.getAbstract());
+				modelAndView.addObject("directorName", personRDF.getName());
+				modelAndView.addObject("directorThumbnail", personRDF.thumbnail());
+				modelAndView.addObject("directorWiki",
 						personRDF.getWikiPageURL());
 			}
 		} catch (Exception e) {

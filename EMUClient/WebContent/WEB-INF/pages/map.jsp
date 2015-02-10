@@ -17,7 +17,7 @@
 <link
 	href="<c:url value="/resources/layout/styles/jquery.dataTables.css" />"
 	rel="stylesheet">
-<link href="<c:url value="/resources/layout/styles/chosen.min.css"/>"
+<link href="http://cdn.datatables.net/responsive/1.0.4/css/dataTables.responsive.css"
 	rel="stylesheet">
 
 <!-- Scripts -->
@@ -26,8 +26,7 @@
 <script src="<c:url value="/resources/js/jquery.min.js" />"></script>
 <script src="<c:url value="/resources/js/jquery-ui.min.js" />"></script>
 <script src="<c:url value="/resources/js/jquery.dataTables.min.js"/>"></script>
-<script src="<c:url value="/resources/js/chosen.jquery.min.js"/>"></script>
-
+<script src="http://cdn.datatables.net/responsive/1.0.4/js/dataTables.responsive.js"></script>
 <script>
 	var myLat = "${myLat}";
 	var myLong = "${myLong}";
@@ -53,7 +52,7 @@
 								$("#radius").text(" " + ui.value + "km");
 							},
 							stop : function(event, ui) {
-								deleteMarkers();
+								
 								if (typeof museumListRequest !== 'undefined'
 										&& museumListRequest.readyState > 0
 										&& museumListRequest.readyState < 4) {
@@ -78,6 +77,7 @@
 	function handleSuccessMuseumList(response) {
 		var code = response.code;
 		if (code == "OK") {
+			deleteMarkers();
 			var museumList = response.response;
 			updateDataTable(museumList);
 			for ( var i in museumList) {
@@ -192,14 +192,40 @@
 							name,
 							"[" + latitude.toString() + ", "
 									+ longitude.toString() + "]", country,
-							resourceURI, "See more >>" ]).draw();
+							'<a href="'+resourceURI+'" target="_blank">DBpedia Link</a>', "See more >>" ]).draw();
 		}
 	}
 
 	$(document)
 			.ready(function() {
-					 $("#radiusCenter").text(myCity);
-					
+					 $("#country-select").selectmenu({width: 200}).selectmenu( "menuWidget" ).addClass( "overflow" );
+					 $("#museum-type-select").selectmenu({width: 200}).selectmenu( "menuWidget" ).addClass( "overflow" );
+					 
+					 $("#go").button().click(function( event ) {
+				          var countryVal = $("#country-select").val();
+				          var typeVal = $("#museum-type-select").val();
+				          
+				          var params;
+				          if(countryVal != 'x' && typeVal != 'y'){
+				        	  params="country="+countryVal+"&type="+typeVal;
+				          }else if(countryVal != 'x'){
+				        	  params="country="+countryVal;
+				          }else if(typeVal != 'y'){
+				        	  params="type="+typeVal;
+				          }else{
+				        	  return;
+				          }
+				          
+				          var myUrl = "http://localhost:8080/EMUServer/rest/museums?"+params;
+				          console.log(myUrl);
+				          museumListRequest = $
+							.ajax({
+								type : "GET",
+								url : myUrl,
+								success : handleSuccessMuseumList
+							});
+				     });
+					 
 					 museumListRequest = $
 								.ajax({
 									type : "GET",
@@ -214,9 +240,10 @@
 
 						$('#demo')
 								.html(
-										'<table cellpadding="0" cellspacing="0" border="0" class="display" id="example"></table>');
-						var table = $('#example').dataTable({
+										'<table cellpadding="0" cellspacing="0" border="0" class="display" id="example" width="100%"></table>');
+						var table = $('#example').DataTable({
 							"data" : "",
+							"responsive": "true",
 							"columns" : [ {
 								"title" : "Museum"
 							}, {
@@ -240,20 +267,7 @@
 								$(this).addClass('selected');
 								calcRoute();
 							}
-						});
-
-						$('#country-select').change(function () {
-						     var optionSelected = $(this).find("option:selected");
-						     var textSelected   = optionSelected.text();
-						     alert(textSelected);
-						 });
-						
-						$('#museum-type-select').change(function () {
-						     var optionSelected = $(this).find("option:selected");
-						     var textSelected   = optionSelected.text();
-						     alert(textSelected);
-						 });
-						
+						});	
 					});
 </script>
 </head>
@@ -293,12 +307,15 @@
 			<div id="map-controls">
 			<center>
 			<p>
-				Museum in a <span id="radius" style="border: 0; color: #f6931f; font-weight: bold;"></span> radius centered in <span id="radiusCenter">your current location</span>
+				Museums in a <span id="radius" style="border: 0; color: #f6931f; font-weight: bold;"></span> radius centered in <span id="radiusCenter">your current location</span>
 			</p>
 			<div id="slider" style="width: 200px;"></div>
 			</center>
 			</div>
-			<select id="country-select">
+			<div class="container">
+			<div class="col-sm-4">
+			<select id="country-select" title="Country">
+			<option value="x">Select a country</option>
 			<option value="Afghanistan">Afghanistan</option>
 			<option value="Albania">Albania</option>
 			<option value="Algeria">Algeria</option>
@@ -524,7 +541,11 @@
 			<option value="Yemen">Yemen</option>
 			<option value="Zambia">Zambia</option>
 			<option value="Zimbabwe">Zimbabwe</option>
-		</select> <select id="museum-type-select">
+		</select>
+		</div>
+		<div class="col-sm-4">
+		<select id="museum-type-select">
+			<option value="y">Select a type</option>
 			<option value="Art">Art Museum</option>
 			<option value="Auto">Auto Museum</option>
 			<option value="Computer">Computer Museum</option>
@@ -537,6 +558,11 @@
 			<option value="University">University Museum</option>
 			<option value="War">War Museum</option>
 		</select>
+		</div> 
+		<div class="col-sm-4">
+		<button id="go" style="width:50px;">Go!</button>
+		</div>
+		</div>
 		<br class="clear"/><br class="clear"/><br class="clear"/>
 		</center>
 	</div>

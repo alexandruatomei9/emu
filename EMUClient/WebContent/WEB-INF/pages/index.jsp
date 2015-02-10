@@ -132,6 +132,7 @@
 				directorURI : directorResource
 			},
 			success : function(response) {
+				console.log(response);
 				$("#director_section").html(response);
 			}
 		});
