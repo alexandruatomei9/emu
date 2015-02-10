@@ -41,6 +41,9 @@ public class TriviaService {
 
 		if (!questions.isEmpty()) {
 			response.setCode(Code.OK);
+			if(questions.size()>10){
+				questions.subList(0, 9);
+			}
 			response.setResponse(questions);
 		}
 

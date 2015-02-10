@@ -137,6 +137,12 @@ public class DBPediaQueryBuilder {
 	 * @return
 	 */
 	public static Query retrieveCountryForMuseum(String museumURI) {
+		if(museumURI.contains("<")){
+			museumURI = museumURI.replace("<", "");
+		}
+		if(museumURI.contains(">")){
+			museumURI = museumURI.replace(">", "");
+		}
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
 		qs.setBaseUri(museumURI);
 		qs.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
