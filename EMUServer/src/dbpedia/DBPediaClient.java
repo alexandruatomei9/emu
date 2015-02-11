@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import utils.GeoLocationHelper;
+import utils.GoogleGeoLocator;
 import utils.LocationType;
 import utils.MapQuestGeoLocator;
 import utils.MuseumType;
@@ -23,7 +24,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.util.FileManager;
 
 public class DBPediaClient {
-	private static String service = "http://dbpedia.org/sparql";
+	private static String service = "http://live.dbpedia.org/sparql";
 
 	public static List<Museum> retrieveHomeMuseums(Integer limit)
 			throws Exception {
@@ -84,12 +85,10 @@ public class DBPediaClient {
 			if (GeoLocationHelper.locationIsWithinRange(currLatitude,
 					currLongitude, litLat.getFloat(), litLong.getFloat(),
 					radius)) {
-				// String country = GoogleGeoLocator.getLocationFor(
-				// litLat.getFloat(), litLong.getFloat(),
-				// LocationType.Country);
+				String country = GoogleGeoLocator.getLocationFor(litLat.getFloat(), litLong.getFloat(), LocationType.Country);
 				list.add(new GeoMuseum(litLat.getFloat(), litLong.getFloat(),
 						solution.getResource("?Museum").toString(), litName
-								.getString(), "Romania"));
+								.getString(), country));
 			}
 		}
 		return list;
