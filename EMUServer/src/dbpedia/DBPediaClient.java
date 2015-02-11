@@ -23,7 +23,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.util.FileManager;
 
 public class DBPediaClient {
-	private static String service = "http://live.dbpedia.org/sparql";
+	private static String service = "http://dbpedia.org/sparql";
 
 	public static List<Museum> retrieveHomeMuseums(Integer limit)
 			throws Exception {
