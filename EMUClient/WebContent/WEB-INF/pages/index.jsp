@@ -125,52 +125,74 @@
 		initialize();
 
 		var directorResource = $('#hidden_director').html();
-		$.ajax({
-			type : "GET",
-			url : "director",
-			data : {
-				directorURI : directorResource
-			},
-			success : function(response) {
-				console.log(response);
-				$("#director_section").html(response);
-			}
-		});
-
-		$('#hidden_dead_people_list li').each(function(i) {
-			/*  $.ajax({
-				type : "GET",
-				url : "data/person",
-				data : {
-					personURI : $(this).html()
-				},
-				success : function(response) {
-					alert(response);
-				}
-			}); */
-		});
-
-		$('#hidden_born_people_list li').each(function(i) {
-		});
-
-		var i = 0;
-		if($('#hidden_works_list li').length > 1){
-		$('#hidden_works_list li').each(function(i) {
-			if (i < 10) {
-				/* i++; */
+		
+		if (typeof directorResource != 'undefined') {
+			$.ajax({
+						type : "GET",
+						url : "person",
+						data : {
+							personURI : directorResource
+						},
+						success : function(response) {
+							if ($(response).find("#personName").html().length
+									&& $(response).find("#personDescription")
+											.html().length) {
+								$("#dir").html(response);
+							} else {
+								$("#director_section").remove();
+							}
+						}
+					});
+		}
+		if ($('#hidden_dead_people_list li').length > 0) {
+			$('#hidden_dead_people_list li').each(function(i) {
 				$.ajax({
 					type : "GET",
-					url : "works",
+					url : "person",
 					data : {
-						workURI : $(this).html()
+						personURI : $(this).html()
 					},
 					success : function(response) {
-						$(".bxslider").append(response);
+						$("#dead").append(response);
 					}
 				});
-				i++;
-			}
-		});
+			});
+		}
+		if ($('#hidden_born_people_list li').length > 0) {
+			$('#hidden_born_people_list li').each(function(i) {
+				$.ajax({
+					type : "GET",
+					url : "person",
+					data : {
+						personURI : $(this).html()
+					},
+					success : function(response) {
+						$("#born").append(response);
+					}
+				});
+			});
+		}
+
+		var i = 0;
+		if ($('#hidden_works_list li').length > 1) {
+			$('#hidden_works_list li').each(function(i) {
+				if (i < 10) {
+					/* i++; */
+					$.ajax({
+						type : "GET",
+						url : "works",
+						data : {
+							workURI : $(this).html()
+						},
+						success : function(response) {
+							$(".bxslider").append(response);
+						}
+					});
+					i++;
+				}
+			});
+		}else{
+			$("#footer").remove();
 		}
 	}
 
@@ -178,6 +200,21 @@
 		return unescape(encodeURIComponent(s));
 	}
 	
+	function getMuseumDetailsFromUri(museumUri){
+		var uri = $(museumUri).attr('data-uri');
+		$.ajax({
+			type : "GET",
+			url : "museumDetails",
+			data : {
+				uri : uri
+			},
+			success : function(response) {
+				$('#mainContainer').replaceWith(response);
+				onReadyState();
+			}
+		});
+	}
+
 	$(document).ready(function() {
 		onReadyState();
 	});
@@ -205,7 +242,7 @@
 						id="bs-example-navbar-collapse-6">
 						<ul class="nav navbar-nav">
 							<li class="active"><a href="">Home</a></li>
-							<li><a href="javascript:showlocation()">Map</a></li>
+							<li><a href="map">Map</a></li>
 							<li><a href="quiz">Quiz</a></li>
 						</ul>
 					</div>
@@ -223,7 +260,7 @@
 						typeof="dbpedia-owl:Museum"><img class="gal img-responsive"
 						src="${museumThumb.imageUrl}" alt=""
 						rel="dbpedia-owl:thumbnail foaf:thumbnail" /> 
-						<a href="${museumThumb.getDetailsUrl}">
+						<a href="#" data-uri=${museumThumb.getDetailsUrl} onclick='getMuseumDetailsFromUri(this);return false;'>
 							<div id="myLink" rel="rdfs:label foaf:name">${museumThumb.museumName}</div>
 						</a>
 					</div>
@@ -245,7 +282,7 @@
 				about="${museumRDF.getResourceName()} " typeof="dbpedia-owl:Museum">
 				<div id="content" class="col-sm-7">
 					<h2>
-						<a href="${museumRDF.getWebsite().getSecond()}">${museumRDF.getName().getSecond()}</a>
+						<a target="_blank" href="${museumRDF.getWebsite().getSecond()}">${museumRDF.getName().getSecond()}</a>
 					</h2>
 					<img class="imgl" rel="dbpedia-owl:thumbnail foaf:thumbnail"
 						src="<c:url value="${museumRDF.getThumbnail().getSecond()}" />"
@@ -302,7 +339,7 @@
 						<div class="accordion">
 							<!-- Test for Number of Visitors -->
 							<c:if test="${not empty museumRDF.getNumberOfVisitors()}">
-								<h3>Number of Visitors</h3>
+								<h3>Number of Visitors per Year</h3>
 								<div>
 									<p property="${museumRDF.getNumberOfVisitors().getFirst()}"
 										datatype="xsd:integer">
@@ -314,6 +351,7 @@
 						<!-- Test for Director -->
 						<c:if test="${not empty museumRDF.getDirector()}">
 							<div id="director_section" class="accordion">
+								<h3>Director</h3>
 								<div id="dir">
 								</div>	
 							</div>
@@ -321,32 +359,32 @@
 								${museumRDF.getDirector().getSecond()}</p>
 						</c:if>
 
-						<!-- Test for Dead People -->
-						<c:if test="${not empty museumRDF.getDeadPeople()}">
-							<c:if test="${fn:length(museumRDF.getDeadPeople()) gt 0}">
-								<div id="dead_people_section" class="accordion">
-									<h3>Dead People</h3>
-									<div>Dead People loading</div>
+						<!-- Test for Born People -->
+						<c:if test="${not empty museumRDF.getBornPeople()}">
+							<c:if test="${fn:length(museumRDF.getBornPeople()) gt 0}">
+								<div id="born_people_section" class="accordion">
+									<h3>Born People</h3>
+									<div id="born"></div>
 								</div>
-								<ul id="hidden_dead_people_list" style="display: none">
+								<ul id="hidden_born_people_list" style="display: none">
 									<c:forEach var="peoplePair"
-										items="${museumRDF.getDeadPeople()}">
+										items="${museumRDF.getBornPeople()}">
 										<li><c:out value="${peoplePair.getSecond().getURI()}"></c:out></li>
 									</c:forEach>
 								</ul>
 							</c:if>
 						</c:if>
 
-						<!-- Test for Born People -->
-						<c:if test="${not empty museumRDF.getBornPeople()}">
-							<c:if test="${fn:length(museumRDF.getBornPeople()) gt 0}">
-								<div id="born_people_section" class="accordion">
-									<h3>Born People</h3>
-									<div>Born People loading</div>
+						<!-- Test for Dead People -->
+						<c:if test="${not empty museumRDF.getDeadPeople()}">
+							<c:if test="${fn:length(museumRDF.getDeadPeople()) gt 0}">
+								<div id="dead_people_section" class="accordion">
+									<h3>Dead People</h3>
+									<div id="dead"></div>
 								</div>
-								<ul id="hidden_born_people_list" style="display: none">
+								<ul id="hidden_dead_people_list" style="display: none">
 									<c:forEach var="peoplePair"
-										items="${museumRDF.getBornPeople()}">
+										items="${museumRDF.getDeadPeople()}">
 										<li><c:out value="${peoplePair.getSecond().getURI()}"></c:out></li>
 									</c:forEach>
 								</ul>
@@ -360,7 +398,7 @@
 								<div>
 									<p property="${museumRDF.getWebsite().getFirst()} dc:URI"
 										datatype="xsd:anyURI">
-										<a href="${museumRDF.getWebsite().getSecond()}">${museumRDF.getWebsite().getSecond()}
+										<a target="_blank" href="${museumRDF.getWebsite().getSecond()}">${museumRDF.getWebsite().getSecond()}
 										</a>
 									</p>
 								</div>

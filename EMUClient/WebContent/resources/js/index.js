@@ -1,16 +1,3 @@
-function showlocation() {
-	navigator.geolocation.getCurrentPosition(callback);
-}
-function callback(position) {
-	var lat = position.coords.latitude;
-	var lon = position.coords.longitude;
-	var latLng = "latitude=" + lat + "&longitude=" + lon;
-	console.log(latLng);
-	if (latLng != 'undefined') {
-		window.location = 'map?' + latLng;
-	}
-}
-
 $(function() {
 	$("#museum").autocomplete({
 		source : function(request, response) {

@@ -215,8 +215,7 @@ div.wrapper h1, div.wrapper h2, div.wrapper h3, div.wrapper h4, div.wrapper h5, 
 }
 
 .loading  { 
-  background: white url('images/bx_loader.gif') center center no-repeat; 
-  /* display:none; */
+  background: white url('images/bx_loader.gif') center center no-repeat;
 }
 
 .auth{
@@ -226,6 +225,49 @@ div.wrapper h1, div.wrapper h2, div.wrapper h3, div.wrapper h4, div.wrapper h5, 
 .popover{
 	max-width: 400px;
 }
+
+
+.personData{
+	width: 100%;
+	text-align: justify;
+	border-bottom: 1px solid black;
+	padding-top: 5px; 
+}
+
+
+.personDataImage{
+	width: 50px !important;
+	height: 50px !important;
+	margin-top: 0px !important;
+	display: block;
+	float:left;
+	margin-right:10px;
+	margin-bottom:5px;
+}
+
+.personData img {
+	width: 100% !important;
+	height: 100% !important;
+	margin-top: 0px !important;
+}
+
+.personDataContent{
+	display: block;
+	padding: 2px;
+}
+
+.personData h4 {
+	font-size:14px !important;
+	width: 100% !important;
+	margin-bottom:0px !important;
+	border: none !important;
+}
+
+.personData p {
+	font-size:10px;
+	width:100% !important; 
+}
+
 
 .authorData{
 	width: 100%;

@@ -211,95 +211,98 @@
 	function decode_utf8(s) {
 		return decodeURIComponent(escape(s));
 	}
-	$(document)
-			.ready(
-					function() {
-						$("#country-select").selectmenu({
-							width : 200
-						}).selectmenu("menuWidget").addClass("overflow");
-						$("#museum-type-select").selectmenu({
-							width : 200
-						}).selectmenu("menuWidget").addClass("overflow");
 
-						$("#go")
-								.button()
-								.click(
-										function(event) {
-											var countryVal = $(
-													"#country-select").val();
-											var typeVal = $(
-													"#museum-type-select")
-													.val();
+	function callOnReady(){
+		$("#country-select").selectmenu({
+			width : 200
+		}).selectmenu("menuWidget").addClass("overflow");
+		$("#museum-type-select").selectmenu({
+			width : 200
+		}).selectmenu("menuWidget").addClass("overflow");
 
-											var params;
-											if (countryVal != 'x'
-													&& typeVal != 'y') {
-												params = "country="
-														+ countryVal + "&type="
-														+ typeVal;
-											} else if (countryVal != 'x') {
-												params = "country="
-														+ countryVal;
-											} else if (typeVal != 'y') {
-												params = "type=" + typeVal;
-											} else {
-												return;
-											}
+		$("#go")
+				.button()
+				.click(
+						function(event) {
+							var countryVal = $(
+									"#country-select").val();
+							var typeVal = $(
+									"#museum-type-select")
+									.val();
 
-											var myUrl = "http://localhost:8080/EMUServer/rest/museums?"
-													+ params;
-											console.log(myUrl);
-											museumListRequest = $
-													.ajax({
-														type : "GET",
-														url : myUrl,
-														success : handleSuccessMuseumList
-													});
-										});
-
-						museumListRequest = $
-								.ajax({
-									type : "GET",
-									url : "http://localhost:8080/EMUServer/rest/map/getNearbyMuseums",
-									data : {
-										'latitude' : myLat,
-										'longitude' : myLong,
-										'radius' : 100
-									},
-									success : handleSuccessMuseumList
-								});
-
-						$('#demo')
-								.html(
-										'<table cellpadding="0" cellspacing="0" border="0" class="display" id="example" width="100%"></table>');
-						var table = $('#example').DataTable({
-							"data" : "",
-							"responsive" : "true",
-							"columns" : [ {
-								"title" : "Museum"
-							}, {
-								"title" : "Geolocation",
-								"class" : "center"
-							}, {
-								"title" : "Country",
-								"class" : "center"
-							}, {
-								"title" : "Resource",
-							}, {
-								"title" : "Details",
-							} ]
-						});
-						$('#example tbody').on('click', 'tr', function() {
-							if ($(this).hasClass('selected')) {
-								$(this).removeClass('selected');
-								directionsDisplay.set('directions', null);
+							var params;
+							if (countryVal != 'x'
+									&& typeVal != 'y') {
+								params = "country="
+										+ countryVal + "&type="
+										+ typeVal;
+							} else if (countryVal != 'x') {
+								params = "country="
+										+ countryVal;
+							} else if (typeVal != 'y') {
+								params = "type=" + typeVal;
 							} else {
-								table.$('tr.selected').removeClass('selected');
-								$(this).addClass('selected');
-								calcRoute();
+								return;
 							}
+
+							var myUrl = "http://localhost:8080/EMUServer/rest/museums?"
+									+ params;
+							console.log(myUrl);
+							museumListRequest = $
+									.ajax({
+										type : "GET",
+										url : myUrl,
+										success : handleSuccessMuseumList
+									});
 						});
-					});
+
+		museumListRequest = $
+				.ajax({
+					type : "GET",
+					url : "http://localhost:8080/EMUServer/rest/map/getNearbyMuseums",
+					data : {
+						'latitude' : myLat,
+						'longitude' : myLong,
+						'radius' : 100
+					},
+					success : handleSuccessMuseumList
+				});
+
+		$('#demo')
+				.html(
+						'<table cellpadding="0" cellspacing="0" border="0" class="display" id="example" width="100%"></table>');
+		var table = $('#example').DataTable({
+			"data" : "",
+			"responsive" : "true",
+			"columns" : [ {
+				"title" : "Museum"
+			}, {
+				"title" : "Geolocation",
+				"class" : "center"
+			}, {
+				"title" : "Country",
+				"class" : "center"
+			}, {
+				"title" : "Resource",
+			}, {
+				"title" : "Details",
+			} ]
+		});
+		$('#example tbody').on('click', 'tr', function() {
+			if ($(this).hasClass('selected')) {
+				$(this).removeClass('selected');
+				directionsDisplay.set('directions', null);
+			} else {
+				table.$('tr.selected').removeClass('selected');
+				$(this).addClass('selected');
+				calcRoute();
+			}
+		});
+	}	
+	
+	$(document).ready(function() {
+		callOnReady();
+	});
 </script>
 </head>
 <body id="top">
@@ -322,9 +325,9 @@
 				<div class="collapse navbar-collapse"
 					id="bs-example-navbar-collapse-6">
 					<ul class="nav navbar-nav">
-						<li><a href="./">Home</a></li>
-						<li class="active"><a href="javascript:showlocation()">Map</a></li>
-						<li><a href="quiz">Quiz</a></li>
+						<li><a href="../">Home</a></li>
+						<li class="active"><a href="#">Map</a></li>
+						<li><a href="../quiz">Quiz</a></li>
 					</ul>
 				</div>
 			</div>

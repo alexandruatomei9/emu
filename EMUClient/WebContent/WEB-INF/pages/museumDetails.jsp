@@ -1,11 +1,14 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ page contentType="text/html; charset=UTF-8"%>
+<div id="mainContainer">
 <div id="latitude" style="display:none;">${museumRDF.getLatitude().getSecond()}</div>
 <div id="longitude" style="display:none">${museumRDF.getLongitude().getSecond()}</div>
 <div id="container" class="wrapper row col4"
 			about="${museumRDF.getResourceName()} " typeof="dbpedia-owl:Museum">
 			<div id="content" class="col-sm-7">
 				<h2>
-					<a href="${museumRDF.getWebsite().getSecond()}">${museumRDF.getName().getSecond()}</a>
+					<a target="_blank" href="${museumRDF.getWebsite().getSecond()}">${museumRDF.getName().getSecond()}</a>
 				</h2>
 				<img class="imgl" rel="dbpedia-owl:thumbnail foaf:thumbnail"
 					src="${museumRDF.getThumbnail().getSecond()}"
@@ -62,7 +65,7 @@
 					<div class="accordion">
 						<!-- Test for Number of Visitors -->
 						<c:if test="${not empty museumRDF.getNumberOfVisitors()}">
-							<h3>Number of Visitors</h3>
+							<h3>Number of Visitors per Year</h3>
 							<div>
 								<p property="${museumRDF.getNumberOfVisitors().getFirst()}"
 									datatype="xsd:integer">
@@ -70,11 +73,49 @@
 							</div>
 						</c:if>
 					</div>
+					
 					<!-- Test for Director -->
+						<c:if test="${not empty museumRDF.getDirector()}">
+							<div id="director_section" class="accordion">
+								<h3>Director</h3>
+								<div id="dir">
+								</div>	
+							</div>
+							<p id="hidden_director" style="display: none">
+								${museumRDF.getDirector().getSecond()}</p>
+						</c:if>
 
-					<!-- Test for Born People -->
+						<!-- Test for Born People -->
+						<c:if test="${not empty museumRDF.getBornPeople()}">
+							<c:if test="${fn:length(museumRDF.getBornPeople()) gt 0}">
+								<div id="born_people_section" class="accordion">
+									<h3>Born People</h3>
+									<div id="born"></div>
+								</div>
+								<ul id="hidden_born_people_list" style="display: none">
+									<c:forEach var="peoplePair"
+										items="${museumRDF.getBornPeople()}">
+										<li><c:out value="${peoplePair.getSecond().getURI()}"></c:out></li>
+									</c:forEach>
+								</ul>
+							</c:if>
+						</c:if>
 
-					<!-- Test for Dead People -->
+						<!-- Test for Dead People -->
+						<c:if test="${not empty museumRDF.getDeadPeople()}">
+							<c:if test="${fn:length(museumRDF.getDeadPeople()) gt 0}">
+								<div id="dead_people_section" class="accordion">
+									<h3>Dead People</h3>
+									<div id="dead"></div>
+								</div>
+								<ul id="hidden_dead_people_list" style="display: none">
+									<c:forEach var="peoplePair"
+										items="${museumRDF.getDeadPeople()}">
+										<li><c:out value="${peoplePair.getSecond().getURI()}"></c:out></li>
+									</c:forEach>
+								</ul>
+							</c:if>
+						</c:if>
 
 					<!-- Test for Website -->
 					<div class="accordion">
@@ -83,7 +124,7 @@
 							<div>
 								<p property="${museumRDF.getWebsite().getFirst()} dc:URI"
 									datatype="xsd:anyURI">
-									<a href="${museumRDF.getWebsite().getSecond()}">${museumRDF.getWebsite().getSecond()}
+									<a target="_blank" href="${museumRDF.getWebsite().getSecond()}">${museumRDF.getWebsite().getSecond()}
 									</a>
 								</p>
 							</div>
@@ -110,3 +151,4 @@
 				</div>
 			</div>
 		</div>
+</div>
