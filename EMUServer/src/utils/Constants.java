@@ -59,7 +59,7 @@ public class Constants {
 			"photos" };
 	public static final String[] autoList = { "auto", "autos", "cars",
 			"vehicle", "automobile" };
-	public static final String[] computer = { "pc", "personal computer",
+	public static final String[] computer = { "personal computer",
 			"desktop", "computer" };
 	public static final String[] warList = { "war", "military", "tank", "tanks" };
 }

@@ -3,15 +3,14 @@ package dbpedia;
 import java.util.ArrayList;
 import java.util.List;
 
-import utils.GeoLocationHelper;
-import utils.GoogleGeoLocator;
-import utils.LocationType;
-import utils.MapQuestGeoLocator;
-import utils.MuseumType;
 import models.responses.CategoryMuseum;
 import models.responses.GeoMuseum;
 import models.responses.Museum;
 import models.responses.Work;
+import utils.GeoLocationHelper;
+import utils.GoogleGeoLocator;
+import utils.LocationType;
+import utils.MuseumType;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -105,7 +104,7 @@ public class DBPediaClient {
 			Literal litLat = solution.getLiteral("?maxlatitude");
 			Literal litLong = solution.getLiteral("?maxlongitude");
 			Literal litName = solution.getLiteral("?minLabel");
-			String museumCountry = MapQuestGeoLocator
+			String museumCountry = GoogleGeoLocator
 					.getLocationFor(litLat.getFloat(), litLong.getFloat(),
 							LocationType.Country);
 			if (museumCountry.equalsIgnoreCase(country)) {
@@ -153,6 +152,12 @@ public class DBPediaClient {
 
 	public static String retrieveCountryForMuseum(String museumURI)
 			throws Exception {
+		if(museumURI.contains("<")){
+			museumURI = museumURI.replace("<", "");
+		}
+		if(museumURI.contains(">")){
+			museumURI = museumURI.replace(">", "");
+		}
 		Query query = DBPediaQueryBuilder.retrieveCountryForMuseum(museumURI);
 		QueryExecution qe = QueryExecutionFactory.sparqlService(service, query);
 		String resourceUri = null;
@@ -315,7 +320,7 @@ public class DBPediaClient {
 				Literal labelLiteral = solution.getLiteral("?minLabel");
 				Literal latitudeLiteral = solution.getLiteral("?maxlatitude");
 				Literal longitudeLiteral = solution.getLiteral("?maxlongitude");
-				String museumCountry = MapQuestGeoLocator.getLocationFor(
+				String museumCountry = GoogleGeoLocator.getLocationFor(
 						latitudeLiteral.getFloat(),
 						longitudeLiteral.getFloat(), LocationType.Country);
 				list.add(new GeoMuseum(latitudeLiteral.getFloat(),

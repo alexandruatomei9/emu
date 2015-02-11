@@ -41,6 +41,9 @@ public class TriviaService {
 
 		if (!questions.isEmpty()) {
 			response.setCode(Code.OK);
+			if(questions.size()>10){
+				questions.subList(0, 9);
+			}
 			response.setResponse(questions);
 		}
 
@@ -60,13 +63,17 @@ public class TriviaService {
 			cats.add(category);
 		}
 
-		for (int i = 0; i < 6; i++) {
+		int j = 0;
+		int listSize = cats.size();
+		while (j < listSize && questions.size() < 10) {
 			int index = anyItem(cats.size());
 			String cat = cats.get(index);
 			ArrayList<Question> questionList = createQuestion(cat);
 			questions.addAll(questionList);
 			cats.remove(cat);
+			j++;
 		}
+
 		for (Question q : questions) {
 			System.out.println("------------");
 			System.out.println(q.getText());
@@ -103,7 +110,7 @@ public class TriviaService {
 		switch (category) {
 
 		case "country":
-			for (int j = 0; j < 2; j++) {
+			for (int j = 0; j < 3; j++) {
 				correctAnswer = new Answer();
 				answers = new ArrayList<Answer>();
 				question = new Question();
@@ -133,19 +140,19 @@ public class TriviaService {
 			}
 			break;
 
-		case "museum":
-			for (int j = 0; j <= 2; j++) {
+		case "museum": {
+			String[] uris = prop.getProperty("uri").split(",");
+			uriList = new ArrayList<String>();
+
+			for (String uri : uris) {
+				uriList.add(uri);
+			}
+			for (int j = 0; j < 3; j++) {
 				correctAnswer = new Answer();
 				answers = new ArrayList<Answer>();
 				question = new Question();
 				index = anyItem(options.size());
 				correct = options.get(index);
-				String[] uris = prop.getProperty("uri").split(",");
-				uriList = new ArrayList<String>();
-
-				for (String uri : uris) {
-					uriList.add(uri);
-				}
 
 				correctUri = uriList.get(index);
 
@@ -176,20 +183,21 @@ public class TriviaService {
 				question.setAnswers(answers);
 				questions.add(question);
 			}
+		}
 			break;
-		case "visitorsMuseum":
+		case "visitorsMuseum": {
+			String[] visitorsUri = prop.getProperty("visitorsUri").split(",");
+			uriList = new ArrayList<String>();
+			for (String uri : visitorsUri) {
+				uriList.add(uri);
+			}
+
 			for (int j = 0; j < 2; j++) {
 				correctAnswer = new Answer();
 				answers = new ArrayList<Answer>();
 				question = new Question();
 				index = anyItem(options.size());
 				correct = options.get(index);
-				String[] visitorsUri = prop.getProperty("visitorsUri").split(
-						",");
-				uriList = new ArrayList<String>();
-				for (String uri : visitorsUri) {
-					uriList.add(uri);
-				}
 
 				correctUri = uriList.get(index);
 
@@ -203,7 +211,7 @@ public class TriviaService {
 				correctAnswer.setValue(visitorsForMuseum);
 				correctAnswer.setCorrectAnswer(true);
 				answers.add(correctAnswer);
-				options.remove(correct);
+				options.remove(index);
 
 				for (int i = 0; i < 3; i++) {
 					Answer answer = new Answer();
@@ -227,23 +235,23 @@ public class TriviaService {
 				question.setAnswers(answers);
 				questions.add(question);
 			}
+		}
 			break;
-		case "work":
-			for (int j = 0; j < 1; j++) {
+		case "work": {
+			String[] uris = prop.getProperty("workUri").split(",");
+			uriList = new ArrayList<String>();
+
+			for (String uri : uris) {
+				uriList.add(uri);
+			}
+			for (int j = 0; j < 2; j++) {
 				correctAnswer = new Answer();
 				answers = new ArrayList<Answer>();
 				question = new Question();
 				index = anyItem(options.size());
 				correct = options.get(index);
-				String[] uris = prop.getProperty("workUri").split(",");
-				uriList = new ArrayList<String>();
-
-				for (String uri : uris) {
-					uriList.add(uri);
-				}
 
 				correctUri = uriList.get(index);
-
 				String museumForWork = DBPediaClient
 						.retrieveMuseumForWork(correctUri);
 				uriList.remove(correctUri);
@@ -262,7 +270,7 @@ public class TriviaService {
 					String incorrect = options.get(indexIncorrect);
 					answer.setId(i + 2);
 					answer.setValue(incorrect);
-					options.remove(incorrect);
+					options.remove(indexIncorrect);
 					uriList.remove(indexIncorrect);
 					answers.add(answer);
 				}
@@ -271,6 +279,7 @@ public class TriviaService {
 				question.setAnswers(answers);
 				questions.add(question);
 			}
+		}
 			break;
 		default:
 			break;

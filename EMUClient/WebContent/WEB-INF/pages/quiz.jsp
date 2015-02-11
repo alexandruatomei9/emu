@@ -1,8 +1,9 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page contentType="text/html; charset=UTF-8"%>
+
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>EMU</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="keywords" content="content slider, responsive image gallery, responsive image gallery, image slider, image fade, image rotator">
 <link href="<c:url value="/resources/layout/styles/bootstrap.min.css" />" rel="stylesheet">
@@ -46,13 +47,14 @@
 <div id="divQuestion" class="wrapper col3" style="height: 80%;">
 	<center>
 		<h2>Your score: <span>${score}</span></h2>
-	</center>
+	
 	<div id="quizQuestion">
 					<p>${question.id + 1}.${question.text}</p>
 					<c:forEach var="answer" items="${question.answers}" varStatus="myIndex">
-						<button id="quizBtn" class="btn" type="button" onclick="takeValue(${question.id},${myIndex.index});">${answer.value}</button>
+						<button id="quizBtn" class="btn" type="button" onclick="takeValue(${question.id},${answer.id});">${answer.value}</button>
 					</c:forEach>
 	</div>
+	</center>
 </div>
 <div class="wrapper row col4">
 			<div id="copyright">

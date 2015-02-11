@@ -137,6 +137,12 @@ public class DBPediaQueryBuilder {
 	 * @return
 	 */
 	public static Query retrieveCountryForMuseum(String museumURI) {
+		if(museumURI.contains("<")){
+			museumURI = museumURI.replace("<", "");
+		}
+		if(museumURI.contains(">")){
+			museumURI = museumURI.replace(">", "");
+		}
 		ParameterizedSparqlString qs = new ParameterizedSparqlString();
 		qs.setBaseUri(museumURI);
 		qs.setNsPrefix("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
@@ -356,6 +362,19 @@ public class DBPediaQueryBuilder {
 	}
 
 	private static String filterForCountry(String country) {
+
+		if (country.equals("united_states")) {
+			return "FILTER (?location=dbpedia:" + country + " || "
+					+ "?location=dbpedia:" + "US"
+					+ " || ?location=dbpedia:USA).";
+		}
+		
+		if (country.equals("united_kingdom")) {
+			return "FILTER (?location=dbpedia:" + country + " || "
+					+ "?location=dbpedia:" + "England"
+					+ " || ?location=dbpedia:Scotland"
+					+ " || ?location=dbpedia:Wales).";
+		}
 		return "FILTER (?location=dbpedia:" + country + " || "
 				+ "regex(?location, \"" + country + "\", \"i\")).";
 	}

@@ -21,13 +21,14 @@ import ro.emu.client.utils.Request;
 @RequestMapping("/quiz")
 public class QuizController {
 	
-	 List<QuizQuestion> quizQuestions = new ArrayList<>();
-	 Long score = 0L;
+	 List<QuizQuestion> quizQuestions;
+	 Long score;
 	 JSONArray items;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView quizRequest() {
 		ModelAndView modelAndView = new ModelAndView("quiz");
+		quizQuestions = new ArrayList<>();
 		score = 0L;
 		String resp = null;
 		try {
