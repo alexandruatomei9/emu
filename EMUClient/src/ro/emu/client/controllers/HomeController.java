@@ -1,7 +1,5 @@
 package ro.emu.client.controllers;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,9 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Resource;
-
 import ro.emu.client.dbpedia.DBPediaClient;
 import ro.emu.client.models.MuseumThumbnail;
 import ro.emu.client.rdfmodels.MuseumRDF;
@@ -28,6 +23,9 @@ import ro.emu.client.rdfmodels.PersonRDF;
 import ro.emu.client.rdfmodels.WorkRDF;
 import ro.emu.client.utils.Pair;
 import ro.emu.client.utils.Request;
+
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 @Controller
 @RequestMapping("/")
@@ -42,13 +40,6 @@ public class HomeController {
 			@RequestParam(value = "museum", required = false) String uri) {
 		if (uri == null || uri.equals("")) {
 			uri = URI;
-		}
-		try {
-			String decodedURI = URLDecoder.decode(uri, "UTF-8");
-			System.out.println(decodedURI);
-		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
 		}
 
 		ModelAndView modelAndView = new ModelAndView("index");
@@ -156,10 +147,10 @@ public class HomeController {
 		return modelAndView;
 	}
 
-	@RequestMapping(value = "director", method = RequestMethod.GET)
+	@RequestMapping(value = "person", method = RequestMethod.GET)
 	public ModelAndView museumDirector(
-			@RequestParam(value = "directorURI") String directorURI) {
-		ModelAndView modelAndView = new ModelAndView("director");
+			@RequestParam(value = "personURI") String directorURI) {
+		ModelAndView modelAndView = new ModelAndView("person");
 		try {
 			Model personModel = DBPediaClient.retrieveRDFModelForResource(
 					directorURI, servletContext);
@@ -183,7 +174,17 @@ public class HomeController {
 
 	@RequestMapping(value = "museumDetails", method = RequestMethod.GET)
 	public ModelAndView searchMuseum(
-			@RequestParam(value = "museum", required = true) String museum) {
+			@RequestParam(value = "museum", required=false) String museum, @RequestParam(value = "uri", required=false) String museumUri) {
+		if(museum!=null){
+			return getMuseumDetailsByMuseumName(museum);
+		}else if(museumUri!=null){
+			return getMuseumDetailsByUri(museumUri);
+		}else{
+			return new ModelAndView("redirect:" + "/");
+		}
+	}
+	
+	private ModelAndView getMuseumDetailsByMuseumName(String museum){
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("prefix", museum);
 
@@ -231,6 +232,21 @@ public class HomeController {
 			System.out.println("Something bad happened");
 		}
 
+		return modelAndView;
+	}
+	
+	private ModelAndView getMuseumDetailsByUri(String uri){
+		ModelAndView modelAndView = new ModelAndView("museumDetails");
+		
+		Model model = null;
+		try {
+			model = DBPediaClient.retrieveRDFModelForResource(uri,
+					servletContext);
+			MuseumRDF museumRDF = new MuseumRDF(model);
+			modelAndView.addObject("museumRDF", museumRDF);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return modelAndView;
 	}
 }

@@ -24,10 +24,17 @@ public class QuizController {
 	 List<QuizQuestion> quizQuestions;
 	 Long score;
 	 JSONArray items;
+	 
+	 @RequestMapping(method = RequestMethod.GET)
+		public ModelAndView loading() {
+			ModelAndView modelAndView = new ModelAndView("quizLoader");
 
-	@RequestMapping(method = RequestMethod.GET)
+			return modelAndView;
+		}
+
+	@RequestMapping(value="/generate", method = RequestMethod.GET)
 	public ModelAndView quizRequest() {
-		ModelAndView modelAndView = new ModelAndView("quiz");
+		ModelAndView modelAndView = new ModelAndView("question");
 		quizQuestions = new ArrayList<>();
 		score = 0L;
 		String resp = null;
@@ -59,8 +66,10 @@ public class QuizController {
 	public ModelAndView sendQuiz(@RequestParam(value="id") String id, @RequestParam(value="answerId") String answer, 
 			HttpServletRequest request) {
 		Integer questionId = Integer.parseInt(id);
-		Integer answerId = Integer.parseInt(answer);
-		verifiedAnswer(questionId,answerId);
+		if(answer!= null && !answer.equals("")){
+			Integer answerId = Integer.parseInt(answer);
+			verifiedAnswer(questionId,answerId);
+		}
 		ModelAndView model = null;
 		if(questionId.equals(quizQuestions.size()-1)){
 		    model = new ModelAndView("showResponses");

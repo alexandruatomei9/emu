@@ -1,13 +1,13 @@
 <div about="${resourceName}" typeof="foaf:Person">
-	<div class="authorData">
-		<div class="authorDataImage">
+	<div class="personData">
+		<div class="personDataImage">
 			<img rel="${directorThumbnail.getFirst()}"
 				src="${directorThumbnail.getSecond()}" />
 		</div>
 		<div property="${directorName.getFirst()}"
-			content="${directorName.getSecond()}" class="authorDataContent">
-			<h4>${directorName.getSecond()}</h4>
-			<p property="${directorDescription.getFirst()}">${directorDescription.getSecond()}</p>
+			content="${directorName.getSecond()}" class="personDataContent">
+			<h4 id="personName">${directorName.getSecond()}</h4>
+			<p id="personDescription" property="${directorDescription.getFirst()}">${directorDescription.getSecond()}</p>
 			<p property="${directorWiki.getFirst()}"
 				content="${directorWiki.getSecond()}">
 				<a href="${directorWiki.getSecond()}" target="blank">Details

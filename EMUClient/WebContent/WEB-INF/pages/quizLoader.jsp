@@ -9,9 +9,45 @@
 <link href="<c:url value="/resources/layout/styles/bootstrap.min.css" />" rel="stylesheet">
 <link href="<c:url value="/resources/layout/styles/layout.css" />" rel="stylesheet">
 <link href="<c:url value="/resources/layout/styles/jquery-ui.css" />" rel="stylesheet">
+<link href="<c:url value="/resources/layout/styles/jquery.countdown.css" />" rel="stylesheet">
+
 <script src="<c:url value="/resources/js/jquery.min.js" />"></script>
 <script src="<c:url value="/resources/js/jquery-ui.min.js" />"></script>
 <script src="<c:url value="/resources/js/quiz.js" />"></script>
+<script src="<c:url value="/resources/js/jquery.countdown.js" />"></script>
+<script src="<c:url value="/resources/js/jquery.plugin.js" />"></script>
+<script> 
+function takeValue(questionId , answerId){
+	clearAllTimeouts();
+	var rate_value = answerId;
+	var object = {id:questionId,answerId:rate_value};
+	jQuery.ajax("quiz/question/",
+	{
+	    type:"GET",
+	    data: object,
+	    success: function(response) {
+	        $("#divQuestion").replaceWith(response);
+	    }
+	}); 
+	};
+
+	function timeExpired(){
+		var questId = $("#hiddenId").text();
+		takeValue(questId,null);
+	}
+	
+  $(document).ready(function(){
+	  $("#divQuestion").addClass("loading");
+	  $.ajax({
+			type : "GET",
+			url : "quiz/generate",
+			success : function(response) {
+				$("#divQuestion").replaceWith(response);
+				$("#divQuestion").removeClass("loading");
+			}
+		});
+  });
+</script>
 </head>
 </html>
 <body id="top">
@@ -35,7 +71,7 @@
 						id="bs-example-navbar-collapse-6">
 						<ul class="nav navbar-nav">
 							<li><a href="./">Home</a></li>
-							<li><a href="javascript:showlocation()">Map</a></li>
+							<li><a href="./map">Map</a></li>
 							<li class="active"><a href="quiz">Quiz</a></li>
 						</ul>
 					</div>
@@ -44,17 +80,10 @@
 			<br class="clear" />
   </div>
 </div>
+<span id="shortly"></span>
+<button type="button" id="shortlyStart">Start</button>
 <div id="divQuestion" class="wrapper col3" style="height: 80%;">
-	<center>
-		<h2>Your score: <span>${score}</span></h2>
 	
-	<div id="quizQuestion">
-					<p>${question.id + 1}.${question.text}</p>
-					<c:forEach var="answer" items="${question.answers}" varStatus="myIndex">
-						<button id="quizBtn" class="btn" type="button" onclick="takeValue(${question.id},${answer.id});">${answer.value}</button>
-					</c:forEach>
-	</div>
-	</center>
 </div>
 <div class="wrapper row col4">
 			<div id="copyright">
@@ -65,7 +94,7 @@
 					WADE - 2015</a>
 				</p>
 				<br class="clear" />
-			</div>
+</div>
 </div>
 </div>
 </div>

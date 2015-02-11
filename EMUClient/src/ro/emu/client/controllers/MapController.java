@@ -20,7 +20,14 @@ import ro.emu.client.utils.Request;
 @RequestMapping("/map")
 public class MapController {
 	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView homeMuseums(HttpServletRequest request)
+	public ModelAndView loadingScreen(HttpServletRequest request)
+			throws SocketException {
+		ModelAndView modelAndView = new ModelAndView("mapLoader");
+		return modelAndView;
+	}
+	
+	@RequestMapping(value ="/generate",method = RequestMethod.GET)
+	public ModelAndView theMap(HttpServletRequest request)
 			throws SocketException {
 		if (request.getParameter("latitude") == null
 				|| request.getParameter("longitude") == null) {
