@@ -125,9 +125,10 @@
 		initialize();
 
 		var directorResource = $('#hidden_director').html();
-		
+
 		if (typeof directorResource != 'undefined') {
-			$.ajax({
+			$
+					.ajax({
 						type : "GET",
 						url : "person",
 						data : {
@@ -137,7 +138,16 @@
 							if ($(response).find("#personName").html().length
 									&& $(response).find("#personDescription")
 											.html().length) {
-								$("#dir").html(response);
+								var el = $('<div></div>');
+								el.html(response);
+
+								$('.personData', el).attr("rel",
+										"dbpedia-owl:director");
+								var museumResource = $('#container').attr(
+										'about');
+								$('.personData', el).attr("resource",
+										museumResource);
+								$("#dir").html(el);
 							} else {
 								$("#director_section").remove();
 							}
@@ -145,32 +155,53 @@
 					});
 		}
 		if ($('#hidden_dead_people_list li').length > 0) {
-			$('#hidden_dead_people_list li').each(function(i) {
-				$.ajax({
-					type : "GET",
-					url : "person",
-					data : {
-						personURI : $(this).html()
-					},
-					success : function(response) {
-						$("#dead").append(response);
-					}
-				});
-			});
+			$('#hidden_dead_people_list li').each(
+					function(i) {
+						$.ajax({
+							type : "GET",
+							url : "person",
+							data : {
+								personURI : $(this).html()
+							},
+							success : function(response) {
+								var el = $('<div></div>');
+								el.html(response);
+
+								$('.personData', el).attr("rel",
+										"dbpedia-owl:deathPlace");
+								var museumResource = $('#container').attr(
+										'about');
+								$('.personData', el).attr("resource",
+										museumResource);
+								$("#dead").append(el);
+							}
+						});
+					});
 		}
 		if ($('#hidden_born_people_list li').length > 0) {
-			$('#hidden_born_people_list li').each(function(i) {
-				$.ajax({
-					type : "GET",
-					url : "person",
-					data : {
-						personURI : $(this).html()
-					},
-					success : function(response) {
-						$("#born").append(response);
-					}
-				});
-			});
+			$('#hidden_born_people_list li').each(
+					function(i) {
+						$.ajax({
+							type : "GET",
+							url : "person",
+							data : {
+								personURI : $(this).html()
+							},
+							success : function(response) {
+
+								var el = $('<div></div>');
+								el.html(response);
+
+								$('.personData', el).attr("rel",
+										"dbpedia-owl:birthPlace");
+								var museumResource = $('#container').attr(
+										'about');
+								$('.personData', el).attr("resource",
+										museumResource);
+								$("#born").append(el);
+							}
+						});
+					});
 		}
 
 		var i = 0;
@@ -191,7 +222,7 @@
 					i++;
 				}
 			});
-		}else{
+		} else {
 			$("#footer").remove();
 		}
 	}
@@ -199,8 +230,8 @@
 	function encode_utf8(s) {
 		return unescape(encodeURIComponent(s));
 	}
-	
-	function getMuseumDetailsFromUri(museumUri){
+
+	function getMuseumDetailsFromUri(museumUri) {
 		var uri = $(museumUri).attr('data-uri');
 		$.ajax({
 			type : "GET",
@@ -235,7 +266,9 @@
 								class="icon-bar"></span> <span class="icon-bar"></span> <span
 								class="icon-bar"></span>
 						</button>
-						<a class="navbar-brand" href="./"><img src="<c:url value="/resources/layout/styles/images/emu.jpg" />" class="img-brand"/>Emu</a>
+						<a class="navbar-brand" href="./"><img
+							src="<c:url value="/resources/layout/styles/images/emu.jpg" />"
+							class="img-brand" />Emu</a>
 					</div>
 
 					<div class="collapse navbar-collapse"
@@ -256,11 +289,13 @@
 
 			<div class="row">
 				<c:forEach var="museumThumb" items="${museumThumbs}">
-					<div class="col-lg-3 col-sm-6 col-xs-6" resource="${museumThumb.getDetailsUrl}"
-						typeof="dbpedia-owl:Museum"><img class="gal img-responsive"
-						src="${museumThumb.imageUrl}" alt=""
-						rel="dbpedia-owl:thumbnail foaf:thumbnail" /> 
-						<a href="#" data-uri=${museumThumb.getDetailsUrl} onclick='getMuseumDetailsFromUri(this);return false;'>
+					<div class="col-lg-3 col-sm-6 col-xs-6"
+						resource="${museumThumb.getDetailsUrl}"
+						typeof="dbpedia-owl:Museum">
+						<img class="gal img-responsive" src="${museumThumb.imageUrl}"
+							alt="" rel="dbpedia-owl:thumbnail foaf:thumbnail" /> <a href="#"
+							data-uri=${museumThumb.getDetailsUrl
+							} onclick='getMuseumDetailsFromUri(this);return false;'>
 							<div id="myLink" rel="rdfs:label foaf:name">${museumThumb.museumName}</div>
 						</a>
 					</div>
@@ -352,8 +387,7 @@
 						<c:if test="${not empty museumRDF.getDirector()}">
 							<div id="director_section" class="accordion">
 								<h3>Director</h3>
-								<div id="dir">
-								</div>	
+								<div id="dir"></div>
 							</div>
 							<p id="hidden_director" style="display: none">
 								${museumRDF.getDirector().getSecond()}</p>
@@ -398,7 +432,8 @@
 								<div>
 									<p property="${museumRDF.getWebsite().getFirst()} dc:URI"
 										datatype="xsd:anyURI">
-										<a target="_blank" href="${museumRDF.getWebsite().getSecond()}">${museumRDF.getWebsite().getSecond()}
+										<a target="_blank"
+											href="${museumRDF.getWebsite().getSecond()}">${museumRDF.getWebsite().getSecond()}
 										</a>
 									</p>
 								</div>
@@ -426,9 +461,7 @@
 		</div>
 		<div class="wrapper row col6">
 			<div id="copyright">
-				<p class="fl_left">
-					Emu - Semantic web-enhanced museum
-				</p>
+				<p class="fl_left">Emu - Semantic web-enhanced museum</p>
 				<p class="fl_right">
 					WADE - 2015</a>
 				</p>
