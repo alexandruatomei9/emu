@@ -208,7 +208,6 @@
 		if ($('#hidden_works_list li').length > 1) {
 			$('#hidden_works_list li').each(function(i) {
 				if (i < 10) {
-					/* i++; */
 					$.ajax({
 						type : "GET",
 						url : "works",
@@ -459,12 +458,20 @@
 				</div>
 			</div>
 		</div>
-		<div class="wrapper row col6">
-			<div id="copyright">
-				<p class="fl_left">Emu - Semantic web-enhanced museum</p>
-				<p class="fl_right">
-					WADE - 2015</a>
+		<div class="wrapper col6">
+			<div id="copyright" class="row">
+			<div class="col-sm-6">
+				<p class="fl_left" style="text-align: left;">
+					<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Licenţa Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">EMU</span> de <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/alexandruatomei9/emu" property="cc:attributionName" rel="cc:attributionURL">EMUTeam</a> este licenţiat printr-o <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Licenţă Creative Commons Atribuire-NeComercial 4.0 Internațional </a>.
 				</p>
+			</div>
+			<div class="col-sm-6">
+				<p class="fl_right" style="text-align: right;">
+					Emu - Semantic web-enhanced museum
+				<br/>
+					WADE - 2015
+				</p>
+			</div>
 				<br class="clear" />
 			</div>
 		</div>

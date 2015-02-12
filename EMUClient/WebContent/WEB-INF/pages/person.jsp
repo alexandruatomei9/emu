@@ -1,3 +1,4 @@
+<div class="personDetails">
 <div about="${directorResourceName}" typeof="foaf:Person">
 
 	<div class="personDataImage">
@@ -15,4 +16,5 @@
 		</p>
 	</div>
 	<div class="personData" rel="" resource=""></div>
+</div>
 </div>
